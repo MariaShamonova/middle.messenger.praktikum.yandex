@@ -1,0 +1,39 @@
+<div class="page chats-page">
+
+  <div class="chats-page__layout layout">
+    <div class="layout-sider">
+      <div class="layout-sider__header">
+        {{{buttonToProfile}}}
+        {{{inputSearchMessages}}}
+      </div>
+
+      <div>
+        {{{lastMessage}}}
+      </div>
+    </div>
+    <div class="layout-content">
+      <div class="conversation">
+        <div class="conversation__header chat-header">
+          <div class="chat-header__avatar"></div>
+          <div class="chat-header__actions">
+            {{{dropdowntChatActions}}}
+          </div>
+        </div>
+        <div class="conversation__body">
+          {{#if (gt messages.length 0)}}
+            Сообщения
+            {{else}}
+            <div class="empty-box">У вас пока нет сообщений. Начните диалог</div>
+          {{/if}}
+        </div>
+        <div class="conversation__input">
+          {{{dropdownAttachments}}}
+          {{{inputMessage}}}
+          <div class="conversation__button">
+            <img src="/images/arrow-right.png" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
