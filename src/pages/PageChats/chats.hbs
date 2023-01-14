@@ -1,5 +1,4 @@
 <div class="page chats-page">
-
   <div class="chats-page__layout layout">
     <div class="layout-sider">
       <div class="layout-sider__header">
@@ -21,16 +20,16 @@
         </div>
         <div class="conversation__body">
           {{#if (gt messages.length 0)}}
-            Сообщения
-            {{else}}
-            <div class="empty-box">У вас пока нет сообщений. Начните диалог</div>
+          Сообщения
+          {{else}}
+          <div class="empty-box">У вас пока нет сообщений. Начните диалог</div>
           {{/if}}
         </div>
         <div class="conversation__input">
           {{{dropdownAttachments}}}
           {{{inputMessage}}}
           <div class="conversation__button">
-            <img src="/images/arrow-right.png" alt="">
+            <img src="/images/arrow-right.png" alt="стрелка вправо">
           </div>
         </div>
       </div>

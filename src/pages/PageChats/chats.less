@@ -9,16 +9,21 @@
       width: 25vw;
       min-width: 310px;
       height: 100%;
-      background-color: #2E333B;
+      background-color: var(--secondary-highlight-color__base);
       &__header {
         padding: 10px 20px 0px 20px;
-        border-bottom: 1px solid #41464F;
+        border-bottom: 1px solid var(--secondary-color__base);
         button.button {
           margin-bottom: 10px;
-          text-align: end;
+          
           &:hover {
             background-color: transparent;
-            color: rgba(#fff, 0.8)
+            color: rgba(#fff, 0.6)
+          }
+          a {
+            display: flex;
+            align-items: center;
+            justify-content: end;
           }
         }
       }
@@ -32,9 +37,10 @@
         height: 100%;
         display: flex;
         flex-direction: column;
+        box-sizing: border-box;
         &__header{
           height: 55px;
-          border-bottom: 1px solid #41464F;
+          border-bottom: 1px solid var(--secondary-color__base);
         }
         .chat-header {
           display: flex;
@@ -77,8 +83,8 @@
           align-items: center;
           justify-content: center;
           border-radius: 50%;
-          background-color: #3F79F6;
-          color: #fff;
+          background-color: var(--link-color__base);
+          color: var(--typography-color__base);
           width: 28px;
           height: 28px;
           &:hover {

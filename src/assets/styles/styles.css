@@ -3,7 +3,7 @@
 
 
 #root {
-  height: 100%;
+  height: calc(100% - 51px);
 }
 body, html {
   margin: 0 auto;
@@ -11,13 +11,22 @@ body, html {
   min-width: 320px;
   width: 100%;
   height: 100%;
-  background-color: #1F232E;
+  background-color: var(--main-background__base);
   font-size: 14px;
   font-family: 'Roboto';
   font-weight: 500;
-  color: #fff;
+  color: var(--typography-color__base);
 }
 
 a {
-  text-transform: none;
+  text-decoration: none;
+}
+
+p {
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  background-color: transparent;
 }

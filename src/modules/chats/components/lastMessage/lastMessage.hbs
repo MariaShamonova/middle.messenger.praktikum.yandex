@@ -1,20 +1,20 @@
 <div class="last-message row">
   <div class="last-message__avatar">
     {{#if avatarPath}}
-      <img src="{{avatarPath}}" alt="" class="avatar">
-      {{else}}
-         <img src="images/icon-user.png" alt="">
+    <img src="{{avatarPath}}" alt="изображение пользователя" class="avatar">
+    {{else}}
+    <img src="images/icon-user.png" alt="изображение отсутствует">
     {{/if}}
-    
+
   </div>
   <div class="last-message__info">
-    <div class="row" >
-      <div class="last-message__name">{{name}}</div>
-      <div class="last-message__date">{{date}}</div>
+    <div class="row">
+      <p class="last-message__name">{{name}}</p>
+      <p class="last-message__date">{{date}}</p>
     </div>
-    <div class="row" >
-      <div class="last-message__text">{{text}}</div>
-      <div class="last-message__counter">{{counter}}</div>
+    <div class="row">
+      <p class="last-message__text">{{text}}</p>
+      <p class="last-message__counter">{{counter}}</p>
     </div>
   </div>
 </div>

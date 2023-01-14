@@ -1,6 +1,6 @@
 .button {
   border-radius: 8px;
-  color: #1F232E;
+  color: var(--main-background__base);
   background-color: transparent;
   a {
     width: 100%;
@@ -16,24 +16,28 @@
     cursor: pointer;
   }
   &--primary {
-    background-color: #fff;
+    background-color: var(--typography-color__base);
     &:hover{
-      background-color: rgba(#fff, 0.8);
+      background-color: var(--typography-color__hover);
     }
   }
   &--secondary {
-    border: 1px solid #909090;
-    color: #909090;
+    border: 1px solid var(--button-secondary__base);
+    color: var(--button-secondary__base);
     &:hover{
-      border-color: rgba(#909090, 0.7);
+      border-color: var(--button-secondary__hover);
     }
   }
   &--borderless {
-    color: #fff;
+    color: var(--label-color__base);
     border: none;
     margin-top: 5px;
-    &:hover{
-      background-color: rgba(#1F232E, 0.5);
+    
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 12px;
+    &:hover {
+      background-color: var(--main-background__base);
     }
   }
   &-size {

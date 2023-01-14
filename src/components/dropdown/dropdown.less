@@ -15,11 +15,11 @@
     &:hover {
       cursor: pointer;
       opacity: 1;
-      background-color: rgba(#41464F, 0.6);
+      background-color: rgba(var(--secondary-color__base), 0.6);
     }
   }
   &-list {
-    background: #41464F;
+    background: var(--secondary-color__base);
     box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.14);
     border-radius: 12px;
     padding: 7px 0px;
@@ -39,17 +39,17 @@
           font-size: 12px;
           line-height: 14px;
 
-          color: #fff;
+          color: var(--typography-color__base);
           white-space: nowrap;
           
         }
       }
       &:hover {
         cursor: pointer;
-        background-color: rgba(#1F232E, 0.4);
+        background-color: rgba(var(--main-background__base), 0.4);
         transition: all 0.2s ease-in;
         .item__text {
-          color: rgba(#fff, 0.6);
+          color: rgba(var(--typography-color__base), 0.6);
           transition: all 0.2s ease-in;
         }
       }

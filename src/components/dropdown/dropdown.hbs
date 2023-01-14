@@ -1,19 +1,19 @@
 <div id="{{id}}" class="dropdown">
-  <div id="{{id}}-button"class="dropdown-button" style="width: {{size}}px; height: {{size}}px;">
-    <img src="/images/{{buttonIcon}}"/>
+  <div id="{{id}}-button" class="dropdown-button" style="width: {{size}}px; height: {{size}}px;">
+    <img src="/images/{{buttonIcon}}" alt="скрепка" />
   </div>
 
   {{#if isOpen}}
-    <div id="{{id}}-list" class="dropdown-list dropdown-list--{{position}}">
-      {{#each options}}
-      <div class="dropdown-list__item item row">
-        
-        <div class="item__icon">
-          <img src="/images/{{icon}}" alt="">
-        </div>
-        <div class="item__text">{{title}}</div>
+  <div id="{{id}}-list" class="dropdown-list dropdown-list--{{position}}">
+    {{#each options}}
+    <div class="dropdown-list__item item row">
+
+      <div class="item__icon">
+        <img src="/images/{{icon}}" :alt="{{id}}">
       </div>
-    {{/each}}
+      <div class="item__text">{{title}}</div>
     </div>
+    {{/each}}
+  </div>
   {{/if}}
 </div>

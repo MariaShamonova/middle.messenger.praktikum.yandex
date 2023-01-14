@@ -1,7 +1,7 @@
 input.input {
-  background-color: #41464F !important;
+  background-color: var(--secondary-color__base) !important;
   border-radius: 6px;
-  color: #fff !important;
+  color: var(--typography-color__base) !important;
   padding: 0 10px;
   &-size {
     &--m {
@@ -16,14 +16,14 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
 input:-webkit-autofill:active  {
-    -webkit-box-shadow: 0 0 0 30px #41464F inset !important;
+    -webkit-box-shadow: 0 0 0 30px var(--secondary-color__base) inset !important;
     border: none;
 }
 input:focus {
   outline: none;
 }
 input:-webkit-autofill{
-	-webkit-text-fill-color:#fff !important;
+	-webkit-text-fill-color: var(--typography-color__base) !important;
 }
 .input.block{
   width: 100%;
@@ -31,12 +31,12 @@ input:-webkit-autofill{
 }
 .input-container {
   span.label {
-    color: #989595;
+    color: var(--label-color__base);
     font-size: 14px;
     line-height: 27px;  
   }
   div.error-message {
-    color: #CD5F3F;
+    color: var(--error-color__base);
     font-size: 8px;
     line-height: 8px;
     margin-top: 8px;

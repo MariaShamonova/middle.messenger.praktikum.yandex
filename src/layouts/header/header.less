@@ -1,0 +1,23 @@
+.main-header {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--secondary-color__base);
+  &__links {
+    margin-left: 25px;
+    .header-link {
+      color:var(--typography-color__base);
+      margin-right: 25px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      &--active {
+       background-color: var(--secondary-color__base); 
+      }
+      &:hover {
+        color: var(--typography-color__hover);
+        text-decoration: underline;
+      }
+    }
+  }
+}
