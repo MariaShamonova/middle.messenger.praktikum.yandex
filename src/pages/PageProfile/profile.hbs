@@ -1,0 +1,52 @@
+<div class="page profile-page">
+  <div class="profile-page__return-button ">
+    <div class="return-button">
+      <a href="/">
+        <img src="/images/arrow-right.png" alt="стрелка влево" style="transform: rotate(180deg)">
+      </a>
+    </div>
+  </div>
+  <div class="profile-page__content">
+    <form class="profile-form">
+      <div class="profile-form__avatar avatar-container">
+        {{{avatar}}}
+        <p class="avatar-container__name">
+          {{name}}
+        </p>
+      </div>
+
+      <div class="profile-form__fields">
+        {{#if (eq mode "default")}}
+        {{{profileProperties}}}
+        {{else if (eq mode 'editData')}}
+        {{{editProfileProperties}}}
+        {{else}}
+        {{{oldPassswordInput}}}
+        {{{newPassswordInput}}}
+        {{{confirmNewPassswordInput}}}
+        {{/if}}
+      </div>
+      <div class="profile-form__actions">
+        {{#if (eq mode "default")}}
+        <div class="row">
+
+          {{{buttonEditPassword}}}
+          {{{buttonEditData}}}
+        </div>
+        {{{buttonExit}}}
+
+        {{else if (eq mode 'editData')}}
+        <div class="row">
+          {{{buttonReturnToDefaultMode}}}
+          {{{buttonSaveData}}}
+        </div>
+        {{else}}
+        <div class="row">
+          {{{buttonReturnToDefaultMode}}}
+          {{{buttonSavePassword}}}
+        </div>
+        {{/if}}
+      </div>
+    </form>
+  </div>
+</div>
