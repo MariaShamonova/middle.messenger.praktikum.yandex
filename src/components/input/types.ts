@@ -4,18 +4,18 @@ export enum InputSizeType {
 }
 
 export enum InputBlockType {
-  'fit',
-  'full',
+  'fit' = 'fit',
+  'fill' = 'fill',
 }
 
-export enum InputType {
+export enum InputValueType {
   'text',
   'password',
 }
 
 export interface InputPropsType {
-  id: string;
-  type?: InputType;
+  name: string;
+  type?: InputValueType;
   label?: string;
   placeholder: string;
   value?: string;

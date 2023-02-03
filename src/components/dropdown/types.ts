@@ -5,7 +5,6 @@ interface OptionIconType {
 }
 
 export interface DropdownPropsType {
-  id: string,
   buttonIcon: string,
   options: OptionIconType[],
   size?: number,

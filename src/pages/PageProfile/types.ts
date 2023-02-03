@@ -1,16 +1,25 @@
+import { AvatarType } from '../../modules/profile/avatar/Avatar';
+import { ProfilePropertyType } from '../../modules/profile/profileProperty/ProfileProperty';
+import { ButtonType } from '../../components/button/Button';
+import { InputType } from '../../components/input/Input';
+
 export interface PageProfilePropsType {
   mode: string;
-  avatar: string;
-  profileProperties: string;
-  editProfileProperties: string;
-  oldPasswordInput: string;
-  newPasswordInput: string;
-  confirmNewPasswordInput: string;
-  buttonEditPassword: string;
-  buttonEditData: string;
-  buttonExit: string;
-  buttonReturnToDefaultMode: string;
-  buttonSaveData: string;
-  buttonSavePassword: string;
+
+}
+
+export interface PageProfileChildType {
+  avatar: AvatarType;
+  profileProperties: ProfilePropertyType;
+  editProfileProperties: ButtonType;
+  oldPasswordInput: InputType;
+  newPasswordInput: InputType;
+  confirmNewPasswordInput: InputType;
+  buttonEditPassword: ButtonType;
+  buttonEditData: ButtonType;
+  buttonExit: ButtonType;
+  buttonReturnToDefaultMode: ButtonType;
+  buttonSaveData: ButtonType;
+  buttonSavePassword: ButtonType;
 
 }

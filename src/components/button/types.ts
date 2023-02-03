@@ -1,13 +1,13 @@
-export enum ButtonType {
-  'button',
-  'submit',
-  'reset',
+export enum ButtonValueType {
+  'button' = 'button',
+  'submit' = 'submit',
+  'reset' = 'reset',
 }
 
 export enum ButtonVariantType {
-  'primary',
-  'secondary',
-  'borderless',
+  'primary' = 'primary',
+  'secondary' = 'secondary',
+  'borderless' = 'borderless',
 }
 
 export enum ButtonSizeType {
@@ -16,16 +16,17 @@ export enum ButtonSizeType {
 }
 
 export enum ButtonBlockType {
-  'fit',
-  'full',
+  'fit' = 'fit',
+  'fill' = 'fill',
 }
 
 export interface ButtonPropsType {
-  id: string;
   text: string;
   link?: string;
-  type?: ButtonType;
+  type?: ButtonValueType;
   variant?: ButtonVariantType;
   size?: ButtonSizeType;
   block?: ButtonBlockType;
+
+  events?: any;
 }
