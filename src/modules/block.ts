@@ -168,16 +168,15 @@ export default abstract class Block {
         propsAndStubs[key] = `<div data-id="${child.id}"></div>`;
       }
     });
+
     const fragment = this._createDocumentElement('template') as HTMLTemplateElement;
     fragment.innerHTML = template(propsAndStubs);
-
     Object.values(this.children).forEach((child: Block) => {
       if (Array.isArray(child)) {
         child.forEach((element) => {
           extractStub(element, fragment.content);
         });
       } else {
-        console.log(fragment);
         extractStub(child, fragment.content);
       }
     });
@@ -203,7 +202,6 @@ export default abstract class Block {
 
   protected _addEvents() {
     const events = this.props.events as EventType;
-
     if (events) {
       Object.entries(events).forEach(([eventName, event]) => {
         this._element.addEventListener(eventName, event);

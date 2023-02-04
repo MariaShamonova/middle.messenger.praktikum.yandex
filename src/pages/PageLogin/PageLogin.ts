@@ -10,14 +10,24 @@ import { InputBlockType, InputValueType } from '../../components/input/types';
 export default class PageLogin extends Block {
   public props: any;
 
+  public form: {
+    login: string
+    password: string
+  };
+
   constructor(props: PageLoginPropsType) {
     super('div', props);
+    const self = this;
+    this.form = {
+      login: '',
+      password: '',
+    };
     this.children.buttonAuth = new Button({
       text: 'Вход',
       block: ButtonBlockType.fill,
       events: {
-        click: () => {
-          console.log('login');
+        click() {
+          console.log(self.form);
         },
       },
     });
@@ -26,6 +36,12 @@ export default class PageLogin extends Block {
       label: 'Логин',
       placeholder: 'Введите логин',
       block: InputBlockType.fill,
+      events: {
+        input(evn: KeyboardEvent) {
+          self.setFieldForm(evn, 'login');
+        },
+      },
+
     });
     this.children.passwordInput = new Input({
       name: 'password',
@@ -33,6 +49,11 @@ export default class PageLogin extends Block {
       label: 'Пароль',
       placeholder: 'Введите пароль',
       block: InputBlockType.fill,
+      events: {
+        input(evn: KeyboardEvent) {
+          self.setFieldForm(evn, 'password');
+        },
+      },
     });
     this.children.linkToRegistration = new Button({
       text: 'Зарегистрироваться',
@@ -40,11 +61,17 @@ export default class PageLogin extends Block {
       type: ButtonValueType.button,
       variant: ButtonVariantType.borderless,
       block: ButtonBlockType.fill,
+      events: {
+        click() {
+          // console.log('click');
+        },
+      },
     });
   }
 
-  changeLogin(value: string) {
-    this.setProps({ login: value });
+  setFieldForm(evn: KeyboardEvent, fieldName: string) {
+    const target = evn.target as HTMLInputElement;
+    this.form[fieldName as keyof typeof this.form] = target.value;
   }
 
   render() {

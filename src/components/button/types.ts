@@ -28,5 +28,5 @@ export interface ButtonPropsType {
   size?: ButtonSizeType;
   block?: ButtonBlockType;
 
-  events?: any;
+  events?: { [key: string]: Function };
 }

@@ -9,8 +9,8 @@ export enum InputBlockType {
 }
 
 export enum InputValueType {
-  'text',
-  'password',
+  'text' = 'text',
+  'password' = 'password',
 }
 
 export interface InputPropsType {
@@ -22,4 +22,5 @@ export interface InputPropsType {
   size?: InputSizeType;
   block?: InputBlockType;
   required?: boolean;
+  events?: { [key: string]: Function };
 }

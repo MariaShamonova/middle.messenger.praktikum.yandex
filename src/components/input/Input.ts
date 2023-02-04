@@ -9,6 +9,7 @@ export default class Input extends Block {
   public props: any;
 
   constructor({
+    name,
     label,
     placeholder,
 
@@ -17,9 +18,10 @@ export default class Input extends Block {
     size = InputSizeType.m,
     block = InputBlockType.fit,
     required = false,
+    events = {},
   }: InputPropsType) {
     const props = {
-      label, placeholder, value, type, size, block, required,
+      name, label, placeholder, value, type, size, block, required, events,
     };
     super('input', props);
   }

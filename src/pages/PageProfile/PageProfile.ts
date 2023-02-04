@@ -4,20 +4,55 @@ import { PageProfilePropsType } from './types';
 import Block from '../../modules/block';
 import Avatar from '../../modules/profile/avatar/Avatar';
 import ProfileProperty, { ProfilePropertyType } from '../../modules/profile/profileProperty/ProfileProperty';
-import properties from './const';
 import Input, { InputType } from '../../components/input/Input';
 import { InputBlockType, InputValueType } from '../../components/input/types';
 import Button from '../../components/button/Button';
 import { ButtonBlockType, ButtonValueType, ButtonVariantType } from '../../components/button/types';
+import properties from './const';
 import renderDOM from '../../utils/renderDOM';
+
+type FormUserType = {
+  first_name: string;
+  second_name: string;
+  email: string;
+  login: string;
+  display_name: string;
+  phone: string;
+};
+
+type FormPasswordType = {
+  oldPassword: string
+  newPassword: string
+  confirmNewPassword: string
+};
+
+function getInputValue(evn: KeyboardEvent) {
+  const target = evn.target as HTMLInputElement;
+  return target.value;
+}
 
 export default class PageProfile extends Block {
   public props: any;
 
   public children: any;
 
+  public formUser: FormUserType;
+
+  public formPassword: FormPasswordType;
+
   constructor(props: PageProfilePropsType) {
     super('div', props);
+
+    this.formUser = properties.reduce((acc: FormUserType, curr) => {
+      acc[curr.name as keyof FormUserType] = curr.value;
+      return acc;
+    }, {} as FormUserType);
+
+    this.formPassword = {
+      oldPassword: '',
+      newPassword: '',
+      confirmNewPassword: '',
+    };
 
     const self = this;
     this.children.avatar = new Avatar({ path: '' });
@@ -34,6 +69,11 @@ export default class PageProfile extends Block {
         placeholder: curr.placeholder,
         value: curr.value,
         block: InputBlockType.fill,
+        events: {
+          input(evn: KeyboardEvent) {
+            self.formUser[curr.name as keyof FormUserType] = getInputValue(evn);
+          },
+        },
       }));
       return acc;
     }, []);
@@ -43,6 +83,12 @@ export default class PageProfile extends Block {
         type: InputValueType.password,
         label: 'Старый пароль',
         placeholder: 'Введите старый пароль',
+        block: InputBlockType.fill,
+        // events: {
+        //   input(evn: KeyboardEvent) {
+        //     self.formPassword.oldPassword = getInputValue(evn);
+        //   },
+        // },
       },
     );
 
@@ -52,6 +98,12 @@ export default class PageProfile extends Block {
         type: InputValueType.password,
         label: 'Новый пароль',
         placeholder: 'Введите новый пароль',
+        block: InputBlockType.fill,
+        events: {
+          input(evn: KeyboardEvent) {
+            self.formPassword.newPassword = getInputValue(evn);
+          },
+        },
       },
     );
     this.children.confirmNewPasswordInput = new Input(
@@ -60,6 +112,12 @@ export default class PageProfile extends Block {
         type: InputValueType.password,
         label: 'Новый пароль еще раз',
         placeholder: 'Введите новый пароль еще раз',
+        block: InputBlockType.fill,
+        events: {
+          input(evn: KeyboardEvent) {
+            self.formPassword.confirmNewPassword = getInputValue(evn);
+          },
+        },
       },
     );
 
@@ -68,6 +126,11 @@ export default class PageProfile extends Block {
         text: 'Изменить пароль',
         variant: ButtonVariantType.secondary,
         block: ButtonBlockType.fill,
+        events: {
+          click() {
+            self.changeMode('editPassword');
+          },
+        },
       },
     );
     this.children.buttonEditData = new Button(
@@ -86,6 +149,11 @@ export default class PageProfile extends Block {
         text: 'Выйти',
         variant: ButtonVariantType.borderless,
         block: ButtonBlockType.fill,
+        events: {
+          click() {
+            console.log('logout');
+          },
+        },
       },
     );
     this.children.buttonReturnToDefaultMode = new Button(
@@ -105,14 +173,25 @@ export default class PageProfile extends Block {
     this.children.buttonSaveData = new Button(
       {
         text: 'Сохранить',
-        type: ButtonValueType.submit,
         block: ButtonBlockType.fill,
+        events: {
+          click() {
+            console.log(self.formUser);
+            self.changeMode('default');
+          },
+        },
       },
     );
     this.children.buttonSavePassword = new Button(
       {
         text: 'Сохранить',
-        type: ButtonValueType.submit,
+        block: ButtonBlockType.fill,
+        events: {
+          click() {
+            console.log(self.formPassword);
+            self.changeMode('default');
+          },
+        },
       },
     );
   }
