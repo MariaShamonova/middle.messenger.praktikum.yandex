@@ -1,0 +1,20 @@
+.dialog-message {
+  background-color: var(--secondary-highlight-color__base);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 10px;
+
+  &__wrapper {
+    width: 100%;
+    display: flex;
+
+    &--my {
+      justify-content: flex-end;
+
+      .dialog-message {
+        background-color: var(--typography-color__base);
+        color: var(--main-background__base);
+      }
+    }
+  }
+}

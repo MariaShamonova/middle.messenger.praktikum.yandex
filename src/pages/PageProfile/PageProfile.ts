@@ -3,7 +3,8 @@ import './profile.less';
 import { PageProfilePropsType } from './types';
 import Block from '../../modules/block';
 import Avatar from '../../modules/profile/avatar/Avatar';
-import ProfileProperty, { ProfilePropertyType } from '../../modules/profile/profileProperty/ProfileProperty';
+import ProfileProperty,
+{ ProfilePropertyType } from '../../modules/profile/profileProperty/ProfileProperty';
 import Input, { InputType } from '../../components/input/Input';
 import { InputBlockType, InputValueType } from '../../components/input/types';
 import Button from '../../components/button/Button';
@@ -170,7 +171,6 @@ export default class PageProfile extends Block {
 
   changeMode(currentMode: string) {
     this.setProps({ mode: currentMode });
-    console.log('props');
     renderDOM('#root', this);
   }
 

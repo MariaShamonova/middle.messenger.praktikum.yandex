@@ -1,12 +1,8 @@
-Variable declaration
+Для стилизации приложения используется препроцессор [Less](https://lesscss.org/)
+Основные используемые правила:
 
-* Each variable should be declared:
-
-    * using a var statement;
-    * only once in the current scope;
-    * on a new line;
-    * as close as possible to the place
-      where it's first used.
-
-* Each var statement should have only
-  one variable declared in it. 
+* Отступ равен двум пробелам
+* Одинарные ковычки
+* Правила, определенные в спецификациях Less, вплоть до черновиков редактора включительно, должны быть известны
+* Полноформатные шестнадцатеричные цвета могут состоять из 6 или 8 (с альфа-каналом) шестнадцатеричных символов. А их
+  сокращенные варианты — 3 и 4 символа соответственно

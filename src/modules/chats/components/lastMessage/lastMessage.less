@@ -1,24 +1,33 @@
 .last-message {
   padding: 12px 10px;
-  &__avatar{
+
+  &:hover {
+    background-color: var(--main-background__base);
+    cursor: pointer;
+  }
+
+  &__avatar {
     width: 47px;
     height: 47px;
     border-radius: 50%;
     background-color: var(--main-background__base);
     display: flex;
-    align-items: center;
+    //align-items: center;
     justify-content: center;
-    img.avatar {
+
+    img {
       display: block;
-      width: 100%;
-      height: 100%;
+      width: 24px;
+      height: auto;
     }
-    
+
   }
-  &__info{
+
+  &__info {
     margin-left: 10px;
   }
-  &__name{
+
+  &__name {
     width: 100%;
     box-sizing: border-box;
     font-weight: 600;
@@ -28,14 +37,16 @@
     color: var(--typography-color__base);
     margin-bottom: 4px;
   }
-  &__date{
+
+  &__date {
     font-weight: 500;
     font-size: 9px;
     line-height: 13px;
 
     color: var(--label-color__base);
   }
-  &__text{
+
+  &__text {
     width: 100%;
     box-sizing: border-box;
 
@@ -45,7 +56,8 @@
 
     color: var(--label-color__base);
   }
-  &__counter{
+
+  &__counter {
     font-weight: 500;
     font-size: 11px;
     line-height: 12px;

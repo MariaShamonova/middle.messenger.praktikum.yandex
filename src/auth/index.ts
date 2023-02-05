@@ -101,5 +101,3 @@ export default class HTTPTransport {
     });
   };
 }
-
-// new HTTPTransport().get('http://localhost:5005/1/check', {data: {}})

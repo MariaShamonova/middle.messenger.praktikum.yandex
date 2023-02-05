@@ -1,53 +1,53 @@
 input.input {
-    background-color: var(--secondary-color__base) !important;
-    border-radius: 6px;
-    color: var(--typography-color__base) !important;
-    padding: 0 10px;
+  background-color: var(--secondary-color__base) !important;
+  border-radius: 6px;
+  color: var(--typography-color__base) !important;
+  padding: 0 10px;
 
-    &-size {
-        &--middle {
-            height: 40px;
-        }
-
-        &--small {
-            height: 30px;
-        }
+  &-size {
+    &--middle {
+      height: 40px;
     }
+
+    &--small {
+      height: 30px;
+    }
+  }
 }
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px var(--secondary-color__base) inset !important;
-    border: none;
+  -webkit-box-shadow: 0 0 0 30px var(--secondary-color__base) inset !important;
+  border: none;
 }
 
 input:focus {
-    outline: none;
+  outline: none;
 }
 
 input:-webkit-autofill {
-    -webkit-text-fill-color: var(--typography-color__base) !important;
+  -webkit-text-fill-color: var(--typography-color__base) !important;
 }
 
 .input.fill {
-    width: 100%;
-    box-sizing: border-box;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .input-container {
-    span.label {
-        color: var(--label-color__base);
-        font-size: 14px;
-        line-height: 27px;
-    }
+  span.label {
+    color: var(--label-color__base);
+    font-size: 14px;
+    line-height: 27px;
+  }
 
-    div.error-message {
-        color: var(--error-color__base);
-        font-size: 8px;
-        line-height: 8px;
-        margin-top: 8px;
-        height: 8px;
-    }
+  div.error-message {
+    color: var(--error-color__base);
+    font-size: 8px;
+    line-height: 8px;
+    margin-top: 8px;
+    height: 8px;
+  }
 }

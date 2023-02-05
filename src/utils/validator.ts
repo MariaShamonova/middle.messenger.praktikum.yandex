@@ -22,7 +22,7 @@ const validePassword = {
 export const validator: RulesType = {
   first_name: {
     regex: /^([А-Я]{1}[а-яё]{1,}|[A-Z]{1}[a-z]{1,})$/,
-    message: ` латиница или кириллица, первая буква должна быть заглавной, 
+    message: ` латиница или кириллица, первая буква должна быть заглавной,
       без пробелов и без цифр, нет спецсимволов (допустим только дефис).`,
     match(value: string) {
       return matchReg(value, this.regex, this.message);
@@ -30,7 +30,7 @@ export const validator: RulesType = {
   },
   second_name: {
     regex: /^([А-Я]{1}[а-яё]{1,}|[A-Z]{1}[a-z]{1,})$/,
-    message: ` латиница или кириллица, первая буква должна быть заглавной, 
+    message: ` латиница или кириллица, первая буква должна быть заглавной,
       без пробелов и без цифр, нет спецсимволов (допустим только дефис)`,
     match(value: string) {
       return matchReg(value, this.regex, this.message);
@@ -38,7 +38,7 @@ export const validator: RulesType = {
   },
   login: {
     regex: /^(?!\d+$)[\da-zA-Z_-]+$/g,
-    message: `от 3 до 20 символов, латиница, может содержать цифры, но не состоять из них, 
+    message: `от 3 до 20 символов, латиница, может содержать цифры, но не состоять из них,
     без пробелов, без спецсимволов (допустимы дефис и нижнее подчёркивание)`,
     match(value: string) {
       return matchReg(value, this.regex, this.message);
@@ -46,8 +46,9 @@ export const validator: RulesType = {
   },
   email: {
     regex: /^[a-zA-Z-.]+@[a-z]+\.[a-z]{2,3}$/,
-    message: `латиница, может включать цифры и спецсимволы вроде дефиса, 
-    обязательно должна быть «собака» (@) и точка после неё, но перед точкой обязательно должны быть буквы`,
+    message: `латиница, может включать цифры и спецсимволы вроде дефиса,
+    обязательно должна быть «собака» (@) и точка после неё,
+    но перед точкой обязательно должны быть буквы`,
     match(value: string) {
       return matchReg(value, this.regex, this.message);
     },

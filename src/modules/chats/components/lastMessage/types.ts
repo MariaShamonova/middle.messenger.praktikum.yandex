@@ -1,8 +1,16 @@
+export enum StatusMessage {
+  active = 'active',
+  default = 'default',
+}
+
 export interface LastMessageProps {
+  userId: number;
+  active: StatusMessage;
   text: string;
-  name: string;
+  user: string;
   date: string;
-  counter: string | number;
+  unreadMessage: string | number;
   avatarPath?: string;
+  events?: { [key: string]: Function };
 
 }

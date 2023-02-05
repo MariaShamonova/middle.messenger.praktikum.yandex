@@ -7,7 +7,9 @@
             </div>
 
             <div>
-                {{{lastMessage}}}
+                {{#each lastMessage}}
+                    {{{this}}}
+                {{/each}}
             </div>
         </div>
     </div>
@@ -20,8 +22,10 @@
                 </div>
             </div>
             <div class="conversation__body">
-                {{#if (gt messages.length 0)}}
-                    Сообщения
+                {{#if dialogs}}
+                    {{#each dialogs}}
+                        {{{this}}}
+                    {{/each}}
                 {{else}}
                     <div class="empty-box">У вас пока нет сообщений. Начните диалог</div>
                 {{/if}}
@@ -29,7 +33,7 @@
             <div class="conversation__input">
                 {{{dropdownAttachments}}}
                 {{{formMessage}}}
-            
+
             </div>
         </div>
     </div>

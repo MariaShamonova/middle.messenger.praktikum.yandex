@@ -6,12 +6,7 @@ import { LastMessageProps } from './types';
 export default class LastMessage extends Block {
   public props: any;
 
-  constructor({
-    name = '', text = '', date = '', counter = 0, avatarPath = '',
-  }: LastMessageProps) {
-    const props = {
-      name, text, date, counter, avatarPath,
-    };
+  constructor(props: LastMessageProps) {
     super('div', props);
   }
 

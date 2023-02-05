@@ -1,5 +1,4 @@
 export default function uploadFile(
-  clickEvent: Event,
   { onChangeInput }: { onChangeInput: (file: File) => void },
 ) {
   const input = document.createElement('input');

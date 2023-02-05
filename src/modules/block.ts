@@ -22,6 +22,7 @@ function extractStub(child: Block, content: DocumentFragment): void {
   const stub = content.querySelector(`[data-id="${child.id}"]`);
 
   if (stub) {
+    console.log(child);
     stub.replaceWith(child.getContent());
   }
 }
@@ -168,9 +169,10 @@ export default abstract class Block {
         propsAndStubs[key] = `<div data-id="${child.id}"></div>`;
       }
     });
-
+    console.log(propsAndStubs);
     const fragment = this._createDocumentElement('template') as HTMLTemplateElement;
     fragment.innerHTML = template(propsAndStubs);
+    console.log(fragment.innerHTML);
 
     Object.values(this.children).forEach((child: Block | Block[]) => {
       if (Array.isArray(child)) {
@@ -189,6 +191,7 @@ export default abstract class Block {
     this._removeEvents();
 
     const fragment = this.render().firstChild;
+    console.log(fragment);
     this._element = fragment as HTMLElement;
     this._element.replaceWith(this._element.cloneNode(true));
     this._addEvents();

@@ -42,7 +42,12 @@ function ServerErrorPage() {
 
 export interface RoutesType {
   [key: string]: {
-    template: () => PageProfileType | PageChatsType | PageLoginType | PageNotFoundType | PageRegistrationType | PageServerErrorType
+    template: () => PageProfileType |
+    PageChatsType |
+    PageLoginType |
+    PageNotFoundType |
+    PageRegistrationType |
+    PageServerErrorType
     title: string
   };
 }

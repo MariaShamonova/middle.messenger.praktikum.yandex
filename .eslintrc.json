@@ -14,11 +14,11 @@
     "browser": true
   },
   "rules": {
-    //    "max-len": [
-    //      2,
-    //      100
-    //    ],
-    //    "@typescript-eslint/no-unused-vars": 2,
+    "max-len": [
+      2,
+      100
+    ],
+    "@typescript-eslint/no-unused-vars": 2,
     "no-underscore-dangle": "off"
   }
 }

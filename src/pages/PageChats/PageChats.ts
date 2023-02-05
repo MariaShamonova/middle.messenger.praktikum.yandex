@@ -4,23 +4,80 @@ import './chats.less';
 import { PageChatsPropsType } from './types';
 import Input from '../../components/input/Input';
 import { InputBlockType, InputSizeType } from '../../components/input/types';
-import LastMessage from '../../modules/chats/components/lastMessage/LastMessage';
+import LastMessage,
+{ LastMessageType } from '../../modules/chats/components/lastMessage/LastMessage';
 import Dropdown from '../../components/dropdown/Dropdown';
 import Button from '../../components/button/Button';
 import { ButtonValueType, ButtonVariantType } from '../../components/button/types';
 import Form from '../../modules/form/Form';
+import ChatController, { ChatByUserId } from '../../controllers/ChatController';
+import { StatusMessage } from '../../modules/chats/components/lastMessage/types';
+import renderDOM from '../../utils/renderDOM';
+import Message, { MessageType } from '../../modules/chats/components/message/Message';
+import { MessageByUserType } from '../../modules/chats/components/message/types';
+
+interface MessagesType {
+  id: number;
+  user: string;
+  text: string;
+  date: string;
+  unreadMessage: number;
+}
 
 export default class PageChats extends Block {
   public props: any;
 
+  public activeChat: number | null;
+
   constructor(props: PageChatsPropsType) {
     super('div', props);
-    this.children.lastMessage = new LastMessage({
-      text: 'Друзья, у меня для вас особенный выпуск новостей!...',
-      name: 'Maria Shamonova',
-      date: '10:34',
-      counter: 4,
-    });
+    this.activeChat = null;
+    const self = this;
+    this.props.messages = [
+      {
+        id: '44',
+        user: 'Maria Shamonova',
+        text: 'Друзья, у меня для вас особенный выпуск новостей! Здесь нужно обрывать сообщение',
+        date: '10:34',
+        unreadMessage: '4',
+      },
+      {
+        id: '23',
+        user: 'Mark Kozlov',
+        text: 'можете использовать в своих коварных целях',
+        date: '10:35',
+        unreadMessage: '0',
+      },
+      {
+        id: '17',
+        user: 'Semen Zabelin',
+        text: `Создаешь чаты, находишь смешные картинки для авы,
+              а потом из этого делают бейджи) это ли не успех`,
+        date: '10:35',
+        unreadMessage: '0',
+      },
+    ];
+    this.props.dialogs = [];
+
+    this.children.lastMessage = this.props.messages.reduce((
+      acc: LastMessageType[],
+      curr: MessagesType,
+    ) => {
+      acc.push(new LastMessage({
+        active: StatusMessage.default,
+        userId: curr.id,
+        text: curr.text,
+        user: curr.user,
+        date: curr.date,
+        unreadMessage: curr.unreadMessage,
+        events: {
+          click() {
+            self.changeActiveChat(curr.id);
+          },
+        },
+      }));
+      return acc;
+    }, [] as LastMessageType[]);
     this.children.dropdownChatActions = new Dropdown(
       {
         buttonIcon: 'more.png',
@@ -98,6 +155,25 @@ export default class PageChats extends Block {
     });
   }
 
+  renderDialog(dialogs: ChatByUserId[]) {
+    this.children.dialogs = dialogs.reduce((acc, curr) => {
+      acc.push(new Message({
+        text: curr.text,
+        date: curr.date,
+        user: curr.userId === null ? MessageByUserType.my : MessageByUserType.default,
+      }));
+      return acc;
+    }, [] as MessageType[]);
+    //   this.setProps({
+    //     dialogs: ,
+    //   });
+  }
+
+  changeActiveChat(id: number) {
+    this.renderDialog(ChatController.getChatByUserId(id));
+    renderDOM('#root', this);
+  }
+
   render() {
     return this.compile(tpl, {
       lastMessage: this.children.lastMessage,
@@ -106,6 +182,7 @@ export default class PageChats extends Block {
       buttonToProfile: this.children.buttonToProfile,
       inputSearchMessages: this.children.inputSearchMessages,
       formMessage: this.children.formMessage,
+      dialogs: this.children.dialogs,
     });
   }
 }
