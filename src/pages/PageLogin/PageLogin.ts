@@ -7,11 +7,13 @@ import { PageLoginPropsType } from './types';
 import { ButtonBlockType, ButtonValueType, ButtonVariantType } from '../../components/button/types';
 import { InputBlockType, InputValueType } from '../../components/input/types';
 import Form from '../../modules/form/Form';
+import Validator from '../../utils/validator';
+import getFormValues from '../../utils/getFormValues';
+import LoginController from '../../controllers/LoginController';
 
 export default class PageLogin extends Block {
   constructor(props: PageLoginPropsType) {
     super('div', props);
-    const self = this;
 
     this.children.form = new Form({
       title: 'Авторизоваться',
@@ -22,6 +24,16 @@ export default class PageLogin extends Block {
           label: 'Логин',
           placeholder: 'Введите логин',
           block: InputBlockType.fill,
+          events: {
+            input(evn: Event) {
+              const target = evn.target as HTMLInputElement;
+              Validator.setErrorValue(target, '');
+            },
+            blur(evn: Event) {
+              const target = evn.target as HTMLInputElement;
+              Validator.validateInput(target.value, null, evn);
+            },
+          },
         }),
         new Input({
           value: '',
@@ -30,6 +42,16 @@ export default class PageLogin extends Block {
           label: 'Пароль',
           placeholder: 'Введите пароль',
           block: InputBlockType.fill,
+          events: {
+            input(evn: Event) {
+              const target = evn.target as HTMLInputElement;
+              Validator.setErrorValue(target, '');
+            },
+            blur(evn: Event) {
+              const target = evn.target as HTMLInputElement;
+              Validator.validateInput(target.value, null, evn);
+            },
+          },
         }),
 
       ],
@@ -37,6 +59,17 @@ export default class PageLogin extends Block {
         text: 'Вход',
         block: ButtonBlockType.fill,
         type: ButtonValueType.submit,
+        events: {
+          click(evn: Event) {
+            evn.preventDefault();
+            const formElement: HTMLFormElement = this.closest('form')!;
+            const isValidForm = Validator.validateForm(formElement);
+            if (isValidForm) {
+              const form = getFormValues(formElement);
+              LoginController.login(form);
+            }
+          },
+        },
       }),
       borderlessButton: new Button({
         text: 'Зарегистрироваться',
@@ -45,16 +78,7 @@ export default class PageLogin extends Block {
         variant: ButtonVariantType.borderless,
         block: ButtonBlockType.fill,
       }),
-      action() {
-        self.login();
-      },
-
     });
-  }
-
-  login() {
-    console.log('login');
-    window.location.href = '/';
   }
 
   render() {

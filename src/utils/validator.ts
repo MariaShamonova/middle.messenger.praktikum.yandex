@@ -63,3 +63,104 @@ export const validator: RulesType = {
   password: validePassword,
   newPassword: validePassword,
 };
+
+function setErrorMessage(label: HTMLLabelElement, text: string) {
+  const errorBlockPassword = label.querySelector('.error-message');
+  if (errorBlockPassword) {
+    errorBlockPassword.textContent = text;
+  }
+}
+
+export default class Validator {
+  static validateForm(form: HTMLFormElement): boolean {
+    const isValid: boolean = true;
+
+    const inputs = form.querySelectorAll('input');
+    const buttonSubmit = form.querySelector('button[type="submit"]');
+    if (inputs) {
+      for (let index = 0; index < inputs.length; index += 1) {
+        const isValidInput = this.validateInput(inputs[index].value, inputs[index]);
+        if (index === inputs.length - 1 && isValidInput) {
+          buttonSubmit?.classList.remove('disabled');
+        } else {
+          buttonSubmit?.classList.add('disabled');
+        }
+      }
+    }
+
+    return isValid;
+  }
+
+  static validateInput(
+    value: string,
+    inputElement: HTMLInputElement | null,
+    evn?: Event,
+    submit: boolean = false,
+  ) {
+    const input = ((inputElement || (evn as Event).target) as HTMLInputElement);
+
+    if (input.required && value === '') {
+      if (input.parentElement) {
+        setErrorMessage(input.parentElement as HTMLLabelElement, 'Обязательное поле');
+      }
+
+      return false;
+    }
+
+    if (input.name && validator[input.name]) {
+      const validMessage = validator[input.name].match(value);
+      if (validMessage) {
+        return false;
+      }
+    }
+    if (!submit) {
+      const form = input.closest('form') as HTMLFormElement;
+      const inputs = form.querySelectorAll('input');
+      const buttonSubmit = form.querySelector('button[type="submit"]');
+      let isValidForm: boolean = true;
+      inputs.forEach((element: HTMLInputElement) => {
+        if (element.name
+          && validator[element.name]
+          && validator[element.name].match(element.value)) {
+          isValidForm = false;
+        }
+      });
+      const passwordInput = form.querySelector(
+        'input[id="password"]',
+      ) as HTMLInputElement;
+      const confirmPasswordInput = form.querySelector(
+        'input[id="confirm_password"]',
+      ) as HTMLInputElement;
+      if (passwordInput
+        && confirmPasswordInput
+        && passwordInput.value !== confirmPasswordInput.value) {
+        isValidForm = false;
+      }
+      if (isValidForm) {
+        buttonSubmit?.classList.remove('disabled');
+      }
+    }
+    return true;
+  }
+
+  static setErrorValue = (input: HTMLInputElement, text = '') => {
+    const label = input.closest('label')!;
+    const errorBlock = label.querySelector('.error-message')!;
+    errorBlock.textContent = text;
+  };
+
+  static validatePasswords(
+    passwordInput: HTMLInputElement,
+    confirmPasswordInput: HTMLInputElement,
+  ) {
+    if (passwordInput.value !== confirmPasswordInput.value && confirmPasswordInput.value.length) {
+      const text: string = 'Пароли не совпадают';
+      this.setErrorValue(passwordInput, text);
+      this.setErrorValue(confirmPasswordInput, text);
+      return false;
+    }
+    this.setErrorValue(passwordInput, '');
+    this.setErrorValue(passwordInput, '');
+    return true;
+  }
+}

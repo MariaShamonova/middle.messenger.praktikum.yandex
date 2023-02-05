@@ -1,5 +1,5 @@
 export default class LoginController {
-  static login() {
-    console.log('login');
+  static login(form: { [key: string]: string }) {
+    console.log(form);
   }
 }

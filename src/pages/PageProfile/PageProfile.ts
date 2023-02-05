@@ -12,6 +12,9 @@ import { ButtonBlockType, ButtonValueType, ButtonVariantType } from '../../compo
 import Form from '../../modules/form/Form';
 import properties from './const';
 import renderDOM from '../../utils/renderDOM';
+import Validator from '../../utils/validator';
+import getFormValues from '../../utils/getFormValues';
+import ProfileController from '../../controllers/ProfileController';
 
 export default class PageProfile extends Block {
   constructor(props: PageProfilePropsType) {
@@ -19,6 +22,16 @@ export default class PageProfile extends Block {
 
     const self = this;
     this.children.avatar = new Avatar({ path: '' });
+    const inputEvents = {
+      input(evn: Event) {
+        const target = evn.target as HTMLInputElement;
+        Validator.setErrorValue(target, '');
+      },
+      blur(evn: Event) {
+        const target = evn.target as HTMLInputElement;
+        Validator.validateInput(target.value, null, evn);
+      },
+    };
 
     this.children.formPassword = new Form({
       fields: [
@@ -30,6 +43,7 @@ export default class PageProfile extends Block {
             label: 'Старый пароль',
             placeholder: 'Введите старый пароль',
             block: InputBlockType.fill,
+            events: inputEvents,
           },
         ),
         new Input(
@@ -41,7 +55,21 @@ export default class PageProfile extends Block {
             label: 'Новый пароль',
             placeholder: 'Введите новый пароль',
             block: InputBlockType.fill,
-
+            events: {
+              input(evn: Event) {
+                const target = evn.target as HTMLInputElement;
+                Validator.setErrorValue(target, '');
+              },
+              blur(evn: Event) {
+                const target = evn.target as HTMLInputElement;
+                Validator.validateInput(target.value, null, evn);
+                const form = target.closest('form')!;
+                const confirmPasswordInput = form.querySelector(
+                  'input[id="confirm_password"]',
+                ) as HTMLInputElement;
+                Validator.validatePasswords(target, confirmPasswordInput);
+              },
+            },
           },
         ),
         new Input(
@@ -53,7 +81,21 @@ export default class PageProfile extends Block {
             label: 'Новый пароль еще раз',
             placeholder: 'Введите новый пароль еще раз',
             block: InputBlockType.fill,
-
+            events: {
+              input(evn: Event) {
+                const target = evn.target as HTMLInputElement;
+                Validator.setErrorValue(target, '');
+              },
+              blur(evn: Event) {
+                const target = evn.target as HTMLInputElement;
+                Validator.validateInput(target.value, null, evn);
+                const form = target.closest('form')!;
+                const passwordInput = form.querySelector(
+                  'input[id="password"]',
+                ) as HTMLInputElement;
+                Validator.validatePasswords(passwordInput, target);
+              },
+            },
           },
         ),
       ],
@@ -62,7 +104,17 @@ export default class PageProfile extends Block {
           text: 'Сохранить',
           block: ButtonBlockType.fill,
           type: ButtonValueType.submit,
-
+          events: {
+            click(evn: Event) {
+              evn.preventDefault();
+              const formElement: HTMLFormElement = this.closest('form')!;
+              const isValidForm = Validator.validateForm(formElement);
+              if (isValidForm) {
+                const form = getFormValues(formElement);
+                ProfileController.changePassword(form);
+              }
+            },
+          },
         },
       ),
       secondaryButton: new Button(
@@ -78,9 +130,6 @@ export default class PageProfile extends Block {
           },
         },
       ),
-      action() {
-        self.changeMode('default');
-      },
     });
 
     this.children.formUser = new Form({
@@ -91,6 +140,7 @@ export default class PageProfile extends Block {
           placeholder: curr.placeholder,
           value: curr.value,
           block: InputBlockType.fill,
+          events: inputEvents,
         }));
         return acc;
       }, [] as InputType[]),
@@ -100,10 +150,17 @@ export default class PageProfile extends Block {
           block: ButtonBlockType.fill,
           type: ButtonValueType.submit,
           events: {
-            click() {
-              self.changeMode('default');
+            click(evn: Event) {
+              evn.preventDefault();
+              const formElement: HTMLFormElement = this.closest('form')!;
+              const isValidForm = Validator.validateForm(formElement);
+              if (isValidForm) {
+                const form = getFormValues(formElement);
+                ProfileController.changeUserData(form);
+              }
             },
           },
+
         },
       ),
       secondaryButton: new Button(
@@ -119,9 +176,6 @@ export default class PageProfile extends Block {
           },
         },
       ),
-      action() {
-        self.changeMode('default');
-      },
     });
 
     this.children.profileProperties = properties.reduce((acc: ProfilePropertyType[], curr) => {

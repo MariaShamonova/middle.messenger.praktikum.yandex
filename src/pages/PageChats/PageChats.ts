@@ -15,6 +15,9 @@ import { StatusMessage } from '../../modules/chats/components/lastMessage/types'
 import renderDOM from '../../utils/renderDOM';
 import Message, { MessageType } from '../../modules/chats/components/message/Message';
 import { MessageByUserType } from '../../modules/chats/components/message/types';
+import Validator from '../../utils/validator';
+import getFormValues from '../../utils/getFormValues';
+import messages from './messages';
 
 interface MessagesType {
   id: number;
@@ -33,30 +36,7 @@ export default class PageChats extends Block {
     super('div', props);
     this.activeChat = null;
     const self = this;
-    this.props.messages = [
-      {
-        id: '44',
-        user: 'Maria Shamonova',
-        text: 'Друзья, у меня для вас особенный выпуск новостей! Здесь нужно обрывать сообщение',
-        date: '10:34',
-        unreadMessage: '4',
-      },
-      {
-        id: '23',
-        user: 'Mark Kozlov',
-        text: 'можете использовать в своих коварных целях',
-        date: '10:35',
-        unreadMessage: '0',
-      },
-      {
-        id: '17',
-        user: 'Semen Zabelin',
-        text: `Создаешь чаты, находишь смешные картинки для авы,
-              а потом из этого делают бейджи) это ли не успех`,
-        date: '10:35',
-        unreadMessage: '0',
-      },
-    ];
+    this.props.messages = messages;
     this.props.dialogs = [];
 
     this.children.lastMessage = this.props.messages.reduce((
@@ -139,6 +119,19 @@ export default class PageChats extends Block {
           placeholder: 'Сообщение',
           block: InputBlockType.fill,
           required: true,
+          events: {
+            input(evn: Event) {
+              const target = evn.target as HTMLInputElement;
+              Validator.setErrorValue(target, '');
+              const form = target.closest('form')!;
+              const buttonSubmit = form.querySelector('button[type="submit"]')!;
+              if (target.value) {
+                buttonSubmit.classList.remove('disabled');
+              } else {
+                buttonSubmit.classList.add('disabled');
+              }
+            },
+          },
         }),
       ],
       submitButton: new Button(
@@ -146,12 +139,19 @@ export default class PageChats extends Block {
           text: '→',
           type: ButtonValueType.submit,
           variant: ButtonVariantType.secondary,
+          events: {
+            click(evn: Event) {
+              evn.preventDefault();
+              const formElement: HTMLFormElement = this.closest('form')!;
+              const isValidForm = Validator.validateForm(formElement);
+              if (isValidForm) {
+                const form = getFormValues(formElement);
+                ChatController.sendMessage(form);
+              }
+            },
+          },
         },
       ),
-      action() {
-        console.log('send message');
-      },
-
     });
   }
 

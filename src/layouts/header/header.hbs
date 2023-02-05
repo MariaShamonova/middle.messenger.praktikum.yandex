@@ -1,8 +1,14 @@
 <div class="main-header">
   <p>Ссылки: </p>
-  <div class="main-header__links">
+
+  <ul class="main-header__links">
+
     {{#each routes}}
-    <a href="{{@key}}" class="header-link">{{title}}</a>
+      <li class="header-link">
+        <a href="{{@key}}">{{title}}</a>
+      </li>
     {{/each}}
-  </div>
+
+  </ul>
+
 </div>

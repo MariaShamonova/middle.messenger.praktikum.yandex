@@ -7,5 +7,5 @@ export interface FormPropsType {
   submitButton: ButtonType;
   secondaryButton?: ButtonType;
   borderlessButton?: ButtonType;
-  action: (form: { [key: string]: string }) => void;
+  actions?: { [key: string]: Function };
 }

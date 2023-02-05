@@ -10,10 +10,7 @@ interface DataType {
 }
 
 function queryStringify(data: DataType) {
-  return `?${Object.entries(data).map(([key, value]) => {
-    console.log(key, value);
-    return `${key}=${value}`;
-  }).join('&')}`;
+  return `?${Object.entries(data).map(([key, value]) => `${key}=${value}`).join('&')}`;
 }
 
 interface HeadersType {

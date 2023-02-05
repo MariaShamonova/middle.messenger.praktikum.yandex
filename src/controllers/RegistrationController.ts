@@ -1,5 +1,5 @@
 export default class RegistrationController {
-  static registration() {
-    console.log('registration');
+  static registration(form: { [key: string]: string }) {
+    console.log(form);
   }
 }

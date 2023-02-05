@@ -22,7 +22,6 @@ function extractStub(child: Block, content: DocumentFragment): void {
   const stub = content.querySelector(`[data-id="${child.id}"]`);
 
   if (stub) {
-    console.log(child);
     stub.replaceWith(child.getContent());
   }
 }
@@ -50,11 +49,11 @@ export default abstract class Block {
   };
 
   /** JSDoc
-     * @param {string} tagName
-     * @param {Object} propsAndChildren
-     *
-     * @returns {void}
-     */
+   * @param {string} tagName
+   * @param {Object} propsAndChildren
+   *
+   * @returns {void}
+   */
   protected constructor(tagName: string = 'div', propsAndChildren = {}) {
     const eventBus = new EventBus();
     this._element = document.createElement('div');
@@ -169,10 +168,8 @@ export default abstract class Block {
         propsAndStubs[key] = `<div data-id="${child.id}"></div>`;
       }
     });
-    console.log(propsAndStubs);
     const fragment = this._createDocumentElement('template') as HTMLTemplateElement;
     fragment.innerHTML = template(propsAndStubs);
-    console.log(fragment.innerHTML);
 
     Object.values(this.children).forEach((child: Block | Block[]) => {
       if (Array.isArray(child)) {
@@ -191,7 +188,6 @@ export default abstract class Block {
     this._removeEvents();
 
     const fragment = this.render().firstChild;
-    console.log(fragment);
     this._element = fragment as HTMLElement;
     this._element.replaceWith(this._element.cloneNode(true));
     this._addEvents();
@@ -201,7 +197,14 @@ export default abstract class Block {
     this.listeners.forEach(({ eventName, fn }: {
       eventName: string,
       fn: (evn: Event) => void
-    }) => this._element.removeEventListener(eventName, fn));
+    }) => {
+      if (eventName === 'blur' || eventName === 'focus' || eventName === 'input') {
+        const input = this.element.querySelector('input')!;
+        input.removeEventListener(eventName, fn);
+      } else {
+        this._element.removeEventListener(eventName, fn);
+      }
+    });
   }
 
   protected _addEvents() {
@@ -209,8 +212,13 @@ export default abstract class Block {
 
     if (events) {
       Object.entries(events).forEach(([eventName, event]) => {
-        this._element.addEventListener(eventName, event);
-        this.listeners.push({ eventName, fn: event });
+        if (eventName === 'blur' || eventName === 'focus' || eventName === 'input') {
+          const input = this.element.querySelector('input')!;
+          input.addEventListener(eventName, event);
+        } else {
+          this._element.addEventListener(eventName, event);
+          this.listeners.push({ eventName, fn: event });
+        }
       });
     }
   }
