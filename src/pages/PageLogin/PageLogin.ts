@@ -54,6 +54,7 @@ export default class PageLogin extends Block {
 
   login() {
     console.log('login');
+    window.location.href = '/';
   }
 
   render() {

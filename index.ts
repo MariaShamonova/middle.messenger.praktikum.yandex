@@ -6,7 +6,7 @@ import renderDOM from './src/utils/renderDOM';
 
 registerHelpers();
 const result = getPageByPathname(window.location.pathname, routes).template();
-console.log(result);
+
 renderDOM('#root', result);
 // console.log(result);
 // const rootElement = document.getElementById('root')!;

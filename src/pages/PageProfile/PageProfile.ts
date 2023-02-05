@@ -99,8 +99,7 @@ export default class PageProfile extends Block {
           block: ButtonBlockType.fill,
           type: ButtonValueType.submit,
           events: {
-            click(evn: MouseEvent) {
-              evn.preventDefault();
+            click() {
               self.changeMode('default');
             },
           },
@@ -120,7 +119,6 @@ export default class PageProfile extends Block {
         },
       ),
       action() {
-        console.log('change user data');
         self.changeMode('default');
       },
     });
@@ -136,7 +134,6 @@ export default class PageProfile extends Block {
         block: ButtonBlockType.fill,
         events: {
           click() {
-            console.log('change mode');
             self.changeMode('editData');
           },
         },
@@ -150,7 +147,6 @@ export default class PageProfile extends Block {
         block: ButtonBlockType.fill,
         events: {
           click() {
-            console.log('logout');
             self.changeMode('editPassword');
           },
         },
@@ -162,6 +158,7 @@ export default class PageProfile extends Block {
         text: 'Выйти',
         variant: ButtonVariantType.borderless,
         block: ButtonBlockType.fill,
+        link: '/login',
         events: {
           click() {
             console.log('logout');

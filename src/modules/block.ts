@@ -168,7 +168,7 @@ export default abstract class Block {
         propsAndStubs[key] = `<div data-id="${child.id}"></div>`;
       }
     });
-    console.log(propsAndStubs);
+
     const fragment = this._createDocumentElement('template') as HTMLTemplateElement;
     fragment.innerHTML = template(propsAndStubs);
 
