@@ -14,7 +14,8 @@ export enum InputValueType {
 }
 
 export interface InputPropsType {
-  name: string;
+  id?: string;
+  name?: string;
   type?: InputValueType;
   label?: string;
   placeholder: string;
@@ -23,4 +24,5 @@ export interface InputPropsType {
   block?: InputBlockType;
   required?: boolean;
   events?: { [key: string]: Function };
+
 }

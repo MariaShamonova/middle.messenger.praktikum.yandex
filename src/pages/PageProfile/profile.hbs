@@ -7,52 +7,32 @@
         </div>
     </div>
     <div class="profile-page__content">
-        <form class="profile-form">
-            <div class="profile-form__avatar avatar-container">
-                {{{avatar}}}
-                <p class="avatar-container__name">
-                    {{name}}
-                </p>
-            </div>
+        <div class="profile-page__avatar avatar-container">
+            {{{avatar}}}
+            <p class="avatar-container__name">
+                {{name}}
+            </p>
+        </div>
 
-            <div class="profile-form__fields">
-
-                {{#if (eq mode "default")}}
-
+        {{#if (eq mode "default")}}
+            <form class="profile-form">
+                <div class="profile-form__fields">
                     {{#each profileProperties}}
                         {{{this}}}
                     {{/each}}
-                {{else if (eq mode 'editData')}}
-                    {{#each editProfileProperties}}
-                        {{{this}}}
-                    {{/each}}
-                {{else}}
-                    {{{oldPasswordInput}}}
-                    {{{newPasswordInput}}}
-                    {{{confirmNewPasswordInput}}}
-                {{/if}}
-            </div>
-            <div class="profile-form__actions ">
-                {{#if (eq mode "default")}}
+                </div>
+                <div class="profile-form__actions ">
                     <div class="d-flex row">
-
                         {{{buttonEditPassword}}}
                         {{{buttonEditData}}}
                     </div>
                     {{{buttonExit}}}
-
-                {{else if (eq mode 'editData')}}
-                    <div class="row">
-                        {{{buttonReturnToDefaultMode}}}
-                        {{{buttonSaveData}}}
-                    </div>
-                {{else}}
-                    <div class="row">
-                        {{{buttonReturnToDefaultMode}}}
-                        {{{buttonSavePassword}}}
-                    </div>
-                {{/if}}
-            </div>
-        </form>
+                </div>
+            </form>
+        {{else if (eq mode "editData")}}
+            {{{formUser}}}
+        {{else}}
+            {{{formPassword}}}
+        {{/if}}
     </div>
 </div>

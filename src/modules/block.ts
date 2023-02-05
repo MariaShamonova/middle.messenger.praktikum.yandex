@@ -2,7 +2,7 @@ import { v4 as makeUUID } from 'uuid';
 import EventBus, { ListenerType } from '../../event-bus';
 
 export interface ChildrenPropsType {
-  [key: string]: Block;
+  [key: string]: Block | Block[];
 }
 
 export interface PropsType {
@@ -11,7 +11,7 @@ export interface PropsType {
 
 interface ElementListenerType {
   eventName: string;
-  fn: () => unknown;
+  fn: (evn: Event) => void;
 }
 
 export interface EventType {
@@ -31,7 +31,7 @@ export default abstract class Block {
 
   private readonly listeners: ElementListenerType[];
 
-  private eventBus: () => EventBus;
+  public eventBus: () => EventBus;
 
   private readonly _id: string;
 
@@ -54,7 +54,7 @@ export default abstract class Block {
      *
      * @returns {void}
      */
-  constructor(tagName: string = 'div', propsAndChildren = {}) {
+  protected constructor(tagName: string = 'div', propsAndChildren = {}) {
     const eventBus = new EventBus();
     this._element = document.createElement('div');
     this._id = makeUUID();
@@ -83,7 +83,7 @@ export default abstract class Block {
     this.dispatchComponentDidMount = this.dispatchComponentDidMount.bind(this);
   }
 
-  private _getChildren(propsAndChildren: Record<string, unknown>) {
+  private _getChildren(propsAndChildren: { [key: string]: unknown }) {
     const children: ChildrenPropsType = {};
     const props: PropsType = {};
 
@@ -164,19 +164,20 @@ export default abstract class Block {
         child.forEach((element: Block) => {
           propsAndStubs[key].push(`<div data-id="${element.id}"></div>`);
         });
-      } else {
+      } else if (child) {
         propsAndStubs[key] = `<div data-id="${child.id}"></div>`;
       }
     });
-
+    console.log(propsAndStubs);
     const fragment = this._createDocumentElement('template') as HTMLTemplateElement;
     fragment.innerHTML = template(propsAndStubs);
-    Object.values(this.children).forEach((child: Block) => {
+
+    Object.values(this.children).forEach((child: Block | Block[]) => {
       if (Array.isArray(child)) {
         child.forEach((element) => {
           extractStub(element, fragment.content);
         });
-      } else {
+      } else if (child) {
         extractStub(child, fragment.content);
       }
     });
@@ -186,22 +187,23 @@ export default abstract class Block {
 
   protected _render() {
     this._removeEvents();
+
     const fragment = this.render().firstChild;
     this._element = fragment as HTMLElement;
+    this._element.replaceWith(this._element.cloneNode(true));
     this._addEvents();
   }
 
   protected _removeEvents() {
-    this.listeners.forEach(
-      ({
-        eventName,
-        fn,
-      }: { eventName: string, fn: () => void }) => this._element.removeEventListener(eventName, fn),
-    );
+    this.listeners.forEach(({ eventName, fn }: {
+      eventName: string,
+      fn: (evn: Event) => void
+    }) => this._element.removeEventListener(eventName, fn));
   }
 
   protected _addEvents() {
     const events = this.props.events as EventType;
+
     if (events) {
       Object.entries(events).forEach(([eventName, event]) => {
         this._element.addEventListener(eventName, event);
@@ -217,8 +219,6 @@ export default abstract class Block {
   }
 
   protected _makePropsProxy(props: ChildrenPropsType | PropsType) {
-    // Можно и так передать this
-    // Такой способ больше не применяется с приходом ES6+
     const self = this;
     const proxyData = new Proxy(props, {
       get(target: ChildrenPropsType | PropsType, prop: string) {

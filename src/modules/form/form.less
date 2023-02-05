@@ -1,0 +1,42 @@
+.center-align() {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form {
+    .center-align();
+    flex-direction: column;
+
+    background-color: var(--secondary-highlight-color__base);
+    border-radius: 12px;
+
+    padding: 50px 30px;
+    gap: 95px;
+
+    width: 340px;
+
+    &__title {
+        font-weight: 700;
+        font-size: 25px;
+        line-height: 20px;
+    }
+
+    &__fields {
+        width: 100%;
+    }
+
+    &__actions {
+        width: 100%;
+
+        .row {
+            .button--secondary {
+                margin-right: 20px;
+            }
+        }
+    }
+}
+
+form:invalid > button[type=submit] {
+    pointer-events: none;
+}

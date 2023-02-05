@@ -8,6 +8,7 @@ import LastMessage from '../../modules/chats/components/lastMessage/LastMessage'
 import Dropdown from '../../components/dropdown/Dropdown';
 import Button from '../../components/button/Button';
 import { ButtonValueType, ButtonVariantType } from '../../components/button/types';
+import Form from '../../modules/form/Form';
 
 export default class PageChats extends Block {
   public props: any;
@@ -66,25 +67,35 @@ export default class PageChats extends Block {
     );
 
     this.children.inputSearchMessages = new Input({
+      label: '',
       name: 'search',
       placeholder: 'Поиск',
       size: InputSizeType.s,
       block: InputBlockType.fill,
     });
 
-    this.children.inputMessage = new Input({
-      name: 'message',
-      placeholder: 'Сообщение',
-      block: InputBlockType.fill,
-    });
-
-    this.children.buttonSendMessage = new Button(
-      {
-        text: '→',
-        type: ButtonValueType.submit,
-        variant: ButtonVariantType.secondary,
+    this.children.formMessage = new Form({
+      fields: [
+        new Input({
+          label: '',
+          name: 'message',
+          placeholder: 'Сообщение',
+          block: InputBlockType.fill,
+          required: true,
+        }),
+      ],
+      submitButton: new Button(
+        {
+          text: '→',
+          type: ButtonValueType.submit,
+          variant: ButtonVariantType.secondary,
+        },
+      ),
+      action() {
+        console.log('send message');
       },
-    );
+
+    });
   }
 
   render() {
@@ -94,8 +105,7 @@ export default class PageChats extends Block {
       dropdownAttachments: this.children.dropdownAttachments,
       buttonToProfile: this.children.buttonToProfile,
       inputSearchMessages: this.children.inputSearchMessages,
-      inputMessage: this.children.inputMessage,
-      buttonSendMessage: this.children.buttonSendMessage,
+      formMessage: this.children.formMessage,
     });
   }
 }
