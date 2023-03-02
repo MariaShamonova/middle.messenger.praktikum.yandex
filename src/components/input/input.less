@@ -3,38 +3,46 @@ input.input {
   border-radius: 6px;
   color: var(--typography-color__base) !important;
   padding: 0 10px;
+
   &-size {
-    &--m {
+    &--middle {
       height: 40px;
     }
-    &--s {
+
+    &--small {
       height: 30px;
     }
   }
 }
+
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
-input:-webkit-autofill:active  {
-    -webkit-box-shadow: 0 0 0 30px var(--secondary-color__base) inset !important;
-    border: none;
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--secondary-color__base) inset !important;
+  border: none;
 }
+
 input:focus {
   outline: none;
 }
-input:-webkit-autofill{
-	-webkit-text-fill-color: var(--typography-color__base) !important;
+
+input:-webkit-autofill {
+  -webkit-text-fill-color: var(--typography-color__base) !important;
 }
-.input.block{
+
+.input.fill {
   width: 100%;
   box-sizing: border-box;
 }
+
 .input-container {
   span.label {
     color: var(--label-color__base);
     font-size: 14px;
-    line-height: 27px;  
+    line-height: 27px;
   }
+
   div.error-message {
     color: var(--error-color__base);
     font-size: 8px;
