@@ -32,10 +32,11 @@ export default class PageChats extends Block {
 
   public activeChat: number | null;
 
-  constructor(props: PageChatsPropsType) {
+  constructor (props: PageChatsPropsType) {
     super('div', props);
     this.activeChat = null;
     const self = this;
+
     this.props.messages = messages;
     this.props.dialogs = [];
 
@@ -51,7 +52,7 @@ export default class PageChats extends Block {
         date: curr.date,
         unreadMessage: curr.unreadMessage,
         events: {
-          click() {
+          click () {
             self.changeActiveChat(curr.id);
           },
         },
@@ -61,7 +62,7 @@ export default class PageChats extends Block {
     this.children.dropdownChatActions = new Dropdown(
       {
         buttonIcon: 'more.png',
-        options: [{
+        options: [ {
           id: 'add-user',
           title: 'Добавить пользователя',
           icon: 'plus-circle.png',
@@ -69,7 +70,7 @@ export default class PageChats extends Block {
           id: 'remove-user',
           title: 'Удалить пользователя',
           icon: 'close-circle.png',
-        }],
+        } ],
         size: 32,
         position: 'bottom',
       },
@@ -77,21 +78,21 @@ export default class PageChats extends Block {
     this.children.dropdownAttachments = new Dropdown(
       {
         buttonIcon: 'paperclip.png',
-        options: [{
+        options: [ {
           id: 'иконка файла',
           title: 'Файл',
           icon: 'file.png',
         },
-        {
-          id: 'иконка фото',
-          title: 'Фото и видео',
-          icon: 'image.png',
-        },
-        {
-          id: 'иконка локации',
-          title: 'Локация',
-          icon: 'location.png',
-        }],
+          {
+            id: 'иконка фото',
+            title: 'Фото и видео',
+            icon: 'image.png',
+          },
+          {
+            id: 'иконка локации',
+            title: 'Локация',
+            icon: 'location.png',
+          } ],
       },
     );
 
@@ -120,7 +121,7 @@ export default class PageChats extends Block {
           block: InputBlockType.fill,
           required: true,
           events: {
-            input(evn: Event) {
+            input (evn: Event) {
               const target = evn.target as HTMLInputElement;
               Validator.setErrorValue(target, '');
               const form = target.closest('form')!;
@@ -140,7 +141,7 @@ export default class PageChats extends Block {
           type: ButtonValueType.submit,
           variant: ButtonVariantType.secondary,
           events: {
-            click(evn: Event) {
+            click (evn: Event) {
               evn.preventDefault();
               const formElement: HTMLFormElement = this.closest('form')!;
               const isValidForm = Validator.validateForm(formElement);
@@ -155,7 +156,7 @@ export default class PageChats extends Block {
     });
   }
 
-  renderDialog(dialogs: ChatByUserId[]) {
+  renderDialog (dialogs: ChatByUserId[]) {
     this.children.dialogs = dialogs.reduce((acc, curr) => {
       acc.push(new Message({
         text: curr.text,
@@ -169,12 +170,12 @@ export default class PageChats extends Block {
     //   });
   }
 
-  changeActiveChat(id: number) {
+  changeActiveChat (id: number) {
     this.renderDialog(ChatController.getChatByUserId(id));
     renderDOM('#root', this);
   }
 
-  render() {
+  render () {
     return this.compile(tpl, {
       lastMessage: this.children.lastMessage,
       dropdownChatActions: this.children.dropdownChatActions,
@@ -187,3 +188,4 @@ export default class PageChats extends Block {
   }
 }
 export type PageChatsType = PageChats;
+export type PageChatsTypeOf = typeof PageChats;

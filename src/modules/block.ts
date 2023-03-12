@@ -262,7 +262,7 @@ export default abstract class Block {
   }
 
   show() {
-    this._element.style.display = 'block';
+    this._element.style.display = '';
   }
 
   hide() {

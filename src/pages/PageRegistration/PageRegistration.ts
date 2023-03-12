@@ -12,14 +12,15 @@ import getFormValues from '../../utils/getFormValues';
 import RegistrationController from '../../controllers/RegistrationController';
 
 export default class PageRegistration extends Block {
-  constructor(props: PageRegistrationPropsType) {
+  constructor (props: PageRegistrationPropsType) {
     super('div', props);
+    this.props.title = 'Регистрация';
     const inputEvents = {
-      input(evn: Event) {
+      input (evn: Event) {
         const target = evn.target as HTMLInputElement;
         Validator.setErrorValue(target, '');
       },
-      blur(evn: Event) {
+      blur (evn: Event) {
         const target = evn.target as HTMLInputElement;
         Validator.validateInput(target.value, null, evn);
       },
@@ -68,11 +69,11 @@ export default class PageRegistration extends Block {
           block: InputBlockType.fill,
           required: true,
           events: {
-            input(evn: Event) {
+            input (evn: Event) {
               const target = evn.target as HTMLInputElement;
               Validator.setErrorValue(target, '');
             },
-            blur(evn: Event) {
+            blur (evn: Event) {
               const target = evn.target as HTMLInputElement;
               Validator.validateInput(target.value, null, evn);
               const form = target.closest('form')!;
@@ -92,11 +93,11 @@ export default class PageRegistration extends Block {
             block: InputBlockType.fill,
             required: true,
             events: {
-              input(evn: Event) {
+              input (evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.setErrorValue(target, '');
               },
-              blur(evn: Event) {
+              blur (evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.validateInput(target.value, null, evn);
                 const form = target.closest('form')!;
@@ -125,7 +126,7 @@ export default class PageRegistration extends Block {
           type: ButtonValueType.submit,
           block: ButtonBlockType.fill,
           events: {
-            click(evn: Event) {
+            click (evn: Event) {
               evn.preventDefault();
               const formElement: HTMLFormElement = this.closest('form')!;
               const isValidForm = Validator.validateForm(formElement);
@@ -148,7 +149,7 @@ export default class PageRegistration extends Block {
     });
   }
 
-  render() {
+  render () {
     return this.compile(tpl, {
       form: this.children.form,
     });
@@ -156,3 +157,4 @@ export default class PageRegistration extends Block {
 }
 
 export type PageRegistrationType = PageRegistration;
+export type PageRegistrationTypeOf = typeof PageRegistration;

@@ -6,13 +6,14 @@ import Block from '../../modules/block';
 export default class PageNotFound extends Block {
   public props: any;
 
-  constructor(props: PageNotFoundPropsType) {
+  constructor (props: PageNotFoundPropsType) {
     super('div', props);
   }
 
-  render() {
+  render () {
     return this.compile(tpl, this.props);
   }
 }
 
 export type PageNotFoundType = PageNotFound;
+export type PageNotFoundTypeOf = typeof PageNotFound;

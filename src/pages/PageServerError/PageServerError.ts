@@ -6,12 +6,13 @@ import Block from '../../modules/block';
 export default class PageServerError extends Block {
   public props: any;
 
-  constructor(props: PageServerErrorPropsType) {
+  constructor (props: PageServerErrorPropsType) {
     super('div', props);
   }
 
-  render() {
+  render () {
     return this.compile(tpl, this.props);
   }
 }
 export type PageServerErrorType = PageServerError;
+export type PageServerErrorTypeOf = typeof PageServerError;

@@ -12,9 +12,13 @@ import getFormValues from '../../utils/getFormValues';
 import LoginController from '../../controllers/LoginController';
 
 export default class PageLogin extends Block {
-  constructor(props: PageLoginPropsType) {
+  constructor (props: PageLoginPropsType) {
     super('div', props);
-
+    this.props.title = 'Авторизация';
+    this.props.form = {
+      login: '',
+      password: '',
+    };
     this.children.form = new Form({
       title: 'Авторизоваться',
       fields: [
@@ -25,11 +29,11 @@ export default class PageLogin extends Block {
           placeholder: 'Введите логин',
           block: InputBlockType.fill,
           events: {
-            input(evn: Event) {
+            input (evn: Event) {
               const target = evn.target as HTMLInputElement;
               Validator.setErrorValue(target, '');
             },
-            blur(evn: Event) {
+            blur (evn: Event) {
               const target = evn.target as HTMLInputElement;
               Validator.validateInput(target.value, null, evn);
             },
@@ -43,11 +47,11 @@ export default class PageLogin extends Block {
           placeholder: 'Введите пароль',
           block: InputBlockType.fill,
           events: {
-            input(evn: Event) {
+            input (evn: Event) {
               const target = evn.target as HTMLInputElement;
               Validator.setErrorValue(target, '');
             },
-            blur(evn: Event) {
+            blur (evn: Event) {
               const target = evn.target as HTMLInputElement;
               Validator.validateInput(target.value, null, evn);
             },
@@ -60,7 +64,7 @@ export default class PageLogin extends Block {
         block: ButtonBlockType.fill,
         type: ButtonValueType.submit,
         events: {
-          click(evn: Event) {
+          click (evn: Event) {
             evn.preventDefault();
             const formElement: HTMLFormElement = this.closest('form')!;
             const isValidForm = Validator.validateForm(formElement);
@@ -81,7 +85,7 @@ export default class PageLogin extends Block {
     });
   }
 
-  render() {
+  render () {
     return this.compile(tpl, {
       form: this.children.form,
     });
@@ -89,3 +93,4 @@ export default class PageLogin extends Block {
 }
 
 export type PageLoginType = PageLogin;
+export type PageLoginTypeOf = typeof PageLogin;
