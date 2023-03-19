@@ -1,7 +1,7 @@
 import tpl from './profile.hbs';
 import './profile.less';
 import { PageProfilePropsType } from './types';
-import Block from '../../modules/block';
+import Block from '../../utils/block';
 import Avatar from '../../modules/profile/avatar/Avatar';
 import ProfileProperty,
 { ProfilePropertyType } from '../../modules/profile/profileProperty/ProfileProperty';
@@ -10,7 +10,7 @@ import { InputBlockType, InputValueType } from '../../components/input/types';
 import Button from '../../components/button/Button';
 import { ButtonBlockType, ButtonValueType, ButtonVariantType } from '../../components/button/types';
 import Form from '../../modules/form/Form';
-import renderDOM from '../../utils/renderDOM';
+import renderDOM from '../../helpers/renderDOM';
 import Validator from '../../utils/validator';
 import ProfileController from '../../controllers/ProfileController';
 import { withStore } from '../../hoc/withStore';

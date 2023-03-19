@@ -3,7 +3,7 @@ import './dropdown.less';
 // import uploadFile from '../../utils/uploadFile';
 // import handlerButtonClick from '../../utils/handlerButtonClick';
 import { DropdownPropsType } from './types';
-import Block from '../../modules/block';
+import Block from '../../utils/block';
 
 // const isOpen = false;
 

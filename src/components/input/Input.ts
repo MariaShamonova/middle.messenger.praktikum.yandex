@@ -3,7 +3,7 @@ import './input.less';
 import {
   InputPropsType, InputBlockType, InputSizeType, InputValueType,
 } from './types';
-import Block from '../../modules/block';
+import Block from '../../utils/block';
 import { validator } from '../../utils/validator';
 
 export default class Input extends Block {

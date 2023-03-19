@@ -1,7 +1,7 @@
 import tpl from './profileProperty.hbs';
 import './profileProperty.less';
 import { ProfilePropertyPropsType } from './types';
-import Block from '../../block';
+import Block from '../../../utils/block';
 
 export default class ProfileProperty extends Block {
   constructor(props: ProfilePropertyPropsType) {

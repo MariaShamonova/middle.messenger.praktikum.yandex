@@ -1,6 +1,6 @@
 import tpl from './avatar.hbs';
 import './avatar.less';
-import Block from '../../block';
+import Block from '../../../utils/block';
 import { AvatarProps } from './types';
 
 export default class Avatar extends Block {

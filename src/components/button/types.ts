@@ -1,5 +1,5 @@
 import RouterLink from '../../router/components/RouterLink';
-import Block from '../../modules/block';
+import Block from '../../utils/block';
 
 export enum ButtonValueType {
   'button' = 'button',

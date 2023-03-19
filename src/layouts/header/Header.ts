@@ -1,7 +1,7 @@
 import tpl from './header.hbs';
 import './header.less';
 import router from '../../router/routes';
-import Block from '../../modules/block';
+import Block from '../../utils/block';
 import { HeaderPropsType } from './types';
 import RouterLink from '../../router/components/RouterLink';
 import Route from '../../router/Route';

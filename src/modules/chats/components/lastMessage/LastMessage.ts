@@ -1,6 +1,6 @@
 import tpl from './lastMessage.hbs';
 import './lastMessage.less';
-import Block from '../../../block';
+import Block from '../../../../utils/block';
 import { LastMessageProps } from './types';
 import formatDate from '../../../../helpers/formatDate';
 

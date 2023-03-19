@@ -1,7 +1,7 @@
 import ProfileAPI from '../api/ProfileAPI';
 import Store from '../store/Store';
 import Validator from '../utils/validator';
-import getFormValues from '../utils/getFormValues';
+import getFormValues from '../helpers/getFormValues';
 
 const profileApi = new ProfileAPI();
 

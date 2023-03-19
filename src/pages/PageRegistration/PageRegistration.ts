@@ -1,7 +1,7 @@
 import tpl from './registration.hbs';
 import './registration.less';
 import { PageRegistrationPropsType } from './types';
-import Block from '../../modules/block';
+import Block from '../../utils/block';
 import Input from '../../components/input/Input';
 import { InputBlockType, InputValueType } from '../../components/input/types';
 import Button from '../../components/button/Button';

@@ -1,12 +1,30 @@
 import EventBus from '../../event-bus';
-import set from '../utils/set';
+import set from '../helpers/set';
 import { ChatType } from '../modules/chats/components/lastMessage/types';
-import { UserProfileType } from '../api/AuthAPI';
+import { UserProfileType, UserResponseType } from '../api/AuthAPI';
+import { MessageType } from '../modules/chats/components/message/Message';
+
+export interface MessageResponseType {
+  id: number;
+  time: string;
+  user_id: string;
+  content: string;
+  type: string;
+  file: {
+    id: number
+    user_id: number
+    path: string
+    filename: string
+    content_type: string
+    content_size: number
+    upload_date: string
+  };
+}
 
 export interface State {
   user: {
     isLoading: boolean
-    data: UserProfileType
+    data: UserResponseType
     error: string
   };
   chats: {
@@ -15,6 +33,11 @@ export interface State {
     error: string
   };
   selectedChat: number | null;
+  messages: Record<string, {
+    idLoading: boolean
+    data: MessageResponseType[]
+    error: string
+  }>;
 }
 
 export enum StoreEvents {
@@ -24,7 +47,7 @@ export enum StoreEvents {
 class Store extends EventBus {
   private state: State = {
     user: {
-      data: {} as UserProfileType,
+      data: {} as UserResponseType,
       error: '',
       isLoading: false,
     },
@@ -33,6 +56,7 @@ class Store extends EventBus {
       error: '',
       isLoading: false,
     },
+    messages: {},
     selectedChat: null,
   };
 

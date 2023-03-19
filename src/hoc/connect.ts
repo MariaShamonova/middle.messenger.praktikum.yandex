@@ -1,6 +1,6 @@
-import Block from '../modules/block';
+import Block from '../utils/block';
 import store, { StoreEvents } from '../store/Store';
-import isEqual from '../utils/isEqual';
+import isEqual from '../helpers/isEqual';
 import { Indexed } from '../types/ComponentType';
 
 export default function connect(mapStateToProps: (state: Indexed) => Indexed) {

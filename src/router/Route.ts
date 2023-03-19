@@ -1,5 +1,5 @@
-import isEqual from '../utils/isEqual';
-import renderDOM from '../utils/renderDOM';
+import isEqual from '../helpers/isEqual';
+import renderDOM from '../helpers/renderDOM';
 import { RoutesType } from './routes';
 
 export default class Route {

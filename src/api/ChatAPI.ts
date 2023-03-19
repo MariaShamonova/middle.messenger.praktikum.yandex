@@ -1,16 +1,19 @@
-import BaseAPI from '../BaseAPI';
+import BaseAPI from './BaseAPI';
 
 export default class ChatAPI extends BaseAPI {
   constructor() {
     super('/chats');
   }
 
-  async create() {
-    return this.http.post('', {
-      data: {
-        title: 'string', headers: { accept: 'application/json', 'Content-Type': 'application/json' },
-      },
-    });
+  async create(data: { title: string }) {
+    try {
+      return await this.http.post('', {
+        data,
+        headers: { accept: 'application/json', 'Content-Type': 'application/json' },
+      });
+    } catch {
+      throw new Error('Failed to create chat');
+    }
   }
 
   async request() {
@@ -20,11 +23,11 @@ export default class ChatAPI extends BaseAPI {
 
   async getToken(id: number) {
     try {
-      return await this.http.get(`/token/${id}`, {
+      return await this.http.post(`/token/${id}`, {
         headers: { accept: 'application/json', 'Content-Type': 'application/json' },
       });
     } catch {
-      throw new Error('Method /logout failed');
+      throw new Error('Method getToken failed');
     }
   }
 

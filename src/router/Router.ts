@@ -1,5 +1,5 @@
 import Route from './Route';
-import Block from '../modules/block';
+import Block from '../utils/block';
 import UserController from '../controllers/UserController';
 import Routes from './routes';
 

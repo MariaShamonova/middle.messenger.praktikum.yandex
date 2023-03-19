@@ -1,6 +1,6 @@
 import tpl from './login.hbs';
 import './login.less';
-import Block from '../../modules/block';
+import Block from '../../utils/block';
 import Button from '../../components/button/Button';
 import Input from '../../components/input/Input';
 import { PageLoginPropsType } from './types';

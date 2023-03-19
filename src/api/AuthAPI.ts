@@ -14,6 +14,10 @@ export interface UserProfileType {
   phone: string;
 }
 
+export interface UserResponseType extends UserProfileType {
+  id: number
+}
+
 export default class AuthAPI extends BaseAPI {
   constructor() {
     super('/auth');

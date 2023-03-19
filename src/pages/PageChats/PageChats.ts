@@ -1,4 +1,4 @@
-import Block from '../../modules/block';
+import Block from '../../utils/block';
 import tpl from './chats.hbs';
 import './chats.less';
 import { PageChatsPropsType } from './types';
@@ -12,16 +12,17 @@ import { ButtonValueType, ButtonVariantType } from '../../components/button/type
 import Form from '../../modules/form/Form';
 import ChatController from '../../controllers/ChatController';
 import { ChatType, StatusMessage } from '../../modules/chats/components/lastMessage/types';
-import renderDOM from '../../utils/renderDOM';
+import renderDOM from '../../helpers/renderDOM';
 import Message, { MessageType } from '../../modules/chats/components/message/Message';
 import { MessageByUserType } from '../../modules/chats/components/message/types';
 import Validator from '../../utils/validator';
-import getFormValues from '../../utils/getFormValues';
+import getFormValues from '../../helpers/getFormValues';
 import { ChatByUserId } from '../../types/ChatTypes';
 import { withStore } from '../../hoc/withStore';
-import Store, { StoreEvents } from '../../store/Store';
+import Store, { MessageResponseType, StoreEvents } from '../../store/Store';
 import RouterLink from '../../router/components/RouterLink';
 import Router from '../../router/Router';
+import formatDate from '../../helpers/formatDate';
 
 interface MessagesType {
   id: number;
@@ -42,7 +43,9 @@ class PageChats extends Block {
     this.activeChat = null;
     this.props.dialogs = [];
 
-    this.children.lastMessage = this.createChatsList(this.props.chats.data);
+    this.children.lastMessage = PageChats.createChatsList(this.props.chats.data);
+    const { selectedChat } = this.props;
+    this.children.dialogs = PageChats.createMessagesList(selectedChat ? this.props.chats[selectedChat] : []);
 
     this.children.dropdownChatActions = new Dropdown(
       {
@@ -95,6 +98,20 @@ class PageChats extends Block {
         variant: ButtonVariantType.borderless,
       },
     );
+    this.children.buttonCreateChat = new Button(
+      {
+        text: 'Создать',
+        link: new RouterLink({
+          text: 'Создать',
+          events: {
+            async click() {
+              ChatController.createChat();
+            },
+          },
+        }),
+        variant: ButtonVariantType.borderless,
+      },
+    );
 
     this.children.inputSearchMessages = new Input({
       label: '',
@@ -136,11 +153,7 @@ class PageChats extends Block {
             click(evn: Event) {
               evn.preventDefault();
               const formElement: HTMLFormElement = this.closest('form')!;
-              const isValidForm = Validator.validateForm(formElement);
-              if (isValidForm) {
-                const form = getFormValues(formElement);
-                ChatController.sendMessage(form);
-              }
+              ChatController.sendMessage(formElement);
             },
           },
         },
@@ -153,22 +166,26 @@ class PageChats extends Block {
     Store.on(StoreEvents.Updated, () => {
       const state = Store.getState();
       // вызываем обновление компонента, передав данные из хранилища
-      this.children.lastMessage = this.createChatsList(state.chats.data);
+
+      this.children.lastMessage = PageChats.createChatsList(state.chats.data, state.selectedChat);
+      if (state.selectedChat !== null) {
+        this.children.dialogs = PageChats.createMessagesList(
+          state.messages[state.selectedChat]?.data,
+        );
+      }
     });
   }
 
-  createChatsList(data: ChatType[]) {
-    const self = this;
+  static createChatsList(data: ChatType[], activeId: number | null = null) {
     return data.reduce((
       acc: LastMessageType[],
       curr: ChatType,
     ) => {
       acc.push(new LastMessage({
-        active: StatusMessage.default,
+        active: curr.id === activeId ? StatusMessage.active : StatusMessage.default,
         message: curr,
         events: {
           click() {
-            self.changeActiveChat(curr.id);
             ChatController.selectChat(curr.id);
           },
         },
@@ -177,20 +194,18 @@ class PageChats extends Block {
     }, [] as LastMessageType[]);
   }
 
-  renderDialog(dialogs: ChatByUserId[]) {
-    this.children.dialogs = dialogs.reduce((acc, curr) => {
+  static createMessagesList(dialogs: MessageResponseType[]) {
+    const state = Store.getState();
+    return dialogs.reduce((acc, curr) => {
       acc.push(new Message({
-        text: curr.text,
-        date: curr.date,
-        user: curr.userId === null ? MessageByUserType.my : MessageByUserType.default,
+        text: curr.content,
+        date: formatDate(curr.time),
+        user: Number(curr.user_id) === state.user.data.id
+          ? MessageByUserType.my
+          : MessageByUserType.default,
       }));
       return acc;
     }, [] as MessageType[]);
-  }
-
-  changeActiveChat(id: number) {
-    this.renderDialog(ChatController.getChatByUserId(id));
-    renderDOM('#root', this);
   }
 
   render() {
@@ -209,6 +224,7 @@ class PageChats extends Block {
 function mapUserToProps(state) {
   return {
     chats: state.chats,
+    messages: state.messanges,
   };
 }
 

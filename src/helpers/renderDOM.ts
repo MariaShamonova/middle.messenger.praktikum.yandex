@@ -1,4 +1,4 @@
-import { BlockType } from '../modules/block';
+import { BlockType } from '../utils/block';
 
 export default function renderDOM(query: string, block: BlockType) {
   const root = document.querySelector(query)!;

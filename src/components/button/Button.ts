@@ -3,7 +3,7 @@ import './button.less';
 import {
   ButtonPropsType, ButtonValueType, ButtonVariantType, ButtonSizeType, ButtonBlockType,
 } from './types';
-import Block from '../../modules/block';
+import Block from '../../utils/block';
 
 export default class Button extends Block {
   constructor(props: ButtonPropsType) {

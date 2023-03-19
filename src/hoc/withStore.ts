@@ -1,7 +1,7 @@
-import Block from '../modules/block';
-import isEqual from '../utils/isEqual';
+import Block from '../utils/block';
+import isEqual from '../helpers/isEqual';
 import store, { StoreEvents, State } from '../store/Store';
-import cloneDeep from '../utils/cloneDeep';
+import cloneDeep from '../helpers/cloneDeep';
 
 type Indexed = {
   [key: string]: any

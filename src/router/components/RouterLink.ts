@@ -1,6 +1,6 @@
 import tpl from './routerLink.hbs';
 import './routerLink.less';
-import Block from '../../modules/block';
+import Block from '../../utils/block';
 import { RouterLinkPropsType } from './types';
 import { withStore } from '../../hoc/withStore';
 

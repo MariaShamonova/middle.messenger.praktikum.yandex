@@ -1,7 +1,7 @@
 import AuthAPI from '../api/AuthAPI';
 import Router from '../router/Router';
 import Validator from '../utils/validator';
-import getFormValues from '../utils/getFormValues';
+import getFormValues from '../helpers/getFormValues';
 import Store from '../store/Store';
 
 const authApi = new AuthAPI();

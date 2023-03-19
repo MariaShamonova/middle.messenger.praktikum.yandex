@@ -1,4 +1,4 @@
-import Block from '../block';
+import Block from '../../utils/block';
 import tml from './form.hbs';
 import { FormPropsType } from './types';
 import './form.less';

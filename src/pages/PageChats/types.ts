@@ -2,7 +2,7 @@ import { LastMessageType } from '../../modules/chats/components/lastMessage/Last
 import { DropdownType } from '../../components/dropdown/Dropdown';
 import { ButtonType } from '../../components/button/Button';
 import { InputType } from '../../components/input/Input';
-import Block from '../../modules/block';
+import Block from '../../utils/block';
 
 export interface PageChatsPropsType {
 

@@ -1,7 +1,7 @@
 import tpl from './notFound.hbs';
 import './notFound.less';
 import { PageNotFoundPropsType } from './types';
-import Block from '../../modules/block';
+import Block from '../../utils/block';
 import connect from '../../hoc/connect';
 
 class PageNotFound extends Block {

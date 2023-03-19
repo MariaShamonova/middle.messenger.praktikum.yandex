@@ -5,7 +5,7 @@ import PageNotFound from '../pages/PageNotFound/PageNotFound';
 import PageServerError from '../pages/PageServerError/PageServerError';
 import PageChats from '../pages/PageChats/PageChats';
 import Router from './Router';
-import registerHelpers from '../utils/registerHelpers';
+import registerHelpers from '../helpers/registerHelpers';
 
 registerHelpers();
 

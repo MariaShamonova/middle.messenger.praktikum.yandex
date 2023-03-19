@@ -1,7 +1,7 @@
 import tpl from './serverError.hbs';
 import './serverError.less';
 import { PageServerErrorPropsType } from './types';
-import Block from '../../modules/block';
+import Block from '../../utils/block';
 import connect from '../../hoc/connect';
 
 class PageServerError extends Block {

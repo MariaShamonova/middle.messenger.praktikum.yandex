@@ -7,7 +7,7 @@ function _splitDate(date: Date) {
   return [dayWeek, dayMonth, month, year];
 }
 
-export default function formatDate(date: string) {
+export default function formatDate(date: string): string {
   const nowDate = new Date();
   const messageDate = new Date(date);
 
@@ -19,7 +19,7 @@ export default function formatDate(date: string) {
     return [messageDate.getHours(), messageDate.getMinutes()].join(':');
   }
   if (nowYear === mesYear && mesMonth === nowMonth && nowDayMonth - nowDayMonth < 7) {
-    return nowDayWeek;
+    return nowDayWeek.toString();
   }
   return [mesDayMonth, (mesMonth + 1), mesYear].join('.');
 }
