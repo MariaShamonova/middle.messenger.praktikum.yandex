@@ -10,25 +10,41 @@ import { InputBlockType, InputValueType } from '../../components/input/types';
 import Button from '../../components/button/Button';
 import { ButtonBlockType, ButtonValueType, ButtonVariantType } from '../../components/button/types';
 import Form from '../../modules/form/Form';
-import properties from './const';
 import renderDOM from '../../utils/renderDOM';
 import Validator from '../../utils/validator';
-import getFormValues from '../../utils/getFormValues';
 import ProfileController from '../../controllers/ProfileController';
+import { withStore } from '../../hoc/withStore';
+import Store, { StoreEvents } from '../../store/Store';
+import getProperties from './getUserProperties';
+import AuthController from '../../controllers/AuthController';
+import RouterLink from '../../router/components/RouterLink';
 
-export default class PageProfile extends Block {
-  constructor (props: PageProfilePropsType) {
+class PageProfile extends Block {
+  constructor(props: PageProfilePropsType) {
     super('div', props);
 
     const self = this;
     this.props.mode = 'default';
-    this.children.avatar = new Avatar({ path: '' });
+    this.children.avatar = new Avatar({
+      path: '',
+      events: {
+        click() {
+          const input = document.createElement('input');
+          input.type = 'file';
+          input.onchange = (_) => {
+            const files = Array.from(input.files);
+            ProfileController.changeUserAvatar(files[0]);
+          };
+          input.click();
+        },
+      },
+    });
     const inputEvents = {
-      input (evn: Event) {
+      input(evn: Event) {
         const target = evn.target as HTMLInputElement;
         Validator.setErrorValue(target, '');
       },
-      blur (evn: Event) {
+      blur(evn: Event) {
         const target = evn.target as HTMLInputElement;
         Validator.validateInput(target.value, null, evn);
       },
@@ -57,11 +73,11 @@ export default class PageProfile extends Block {
             placeholder: 'Введите новый пароль',
             block: InputBlockType.fill,
             events: {
-              input (evn: Event) {
+              input(evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.setErrorValue(target, '');
               },
-              blur (evn: Event) {
+              blur(evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.validateInput(target.value, null, evn);
                 const form = target.closest('form')!;
@@ -83,11 +99,11 @@ export default class PageProfile extends Block {
             placeholder: 'Введите новый пароль еще раз',
             block: InputBlockType.fill,
             events: {
-              input (evn: Event) {
+              input(evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.setErrorValue(target, '');
               },
-              blur (evn: Event) {
+              blur(evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.validateInput(target.value, null, evn);
                 const form = target.closest('form')!;
@@ -106,14 +122,11 @@ export default class PageProfile extends Block {
           block: ButtonBlockType.fill,
           type: ButtonValueType.submit,
           events: {
-            click (evn: Event) {
+            async click(evn: Event) {
               evn.preventDefault();
               const formElement: HTMLFormElement = this.closest('form')!;
-              const isValidForm = Validator.validateForm(formElement);
-              if (isValidForm) {
-                const form = getFormValues(formElement);
-                ProfileController.changePassword(form);
-              }
+              await ProfileController.changeUserPassword(formElement);
+              self.changeMode('default');
             },
           },
         },
@@ -125,7 +138,7 @@ export default class PageProfile extends Block {
           variant: ButtonVariantType.secondary,
           block: ButtonBlockType.fill,
           events: {
-            click () {
+            click() {
               self.changeMode('default');
             },
           },
@@ -134,7 +147,7 @@ export default class PageProfile extends Block {
     });
 
     this.children.formUser = new Form({
-      fields: properties.reduce((acc: InputType[], curr) => {
+      fields: getProperties(this.props.user.data).reduce((acc: InputType[], curr) => {
         acc.push(new Input({
           name: curr.name,
           label: curr.title,
@@ -151,14 +164,11 @@ export default class PageProfile extends Block {
           block: ButtonBlockType.fill,
           type: ButtonValueType.submit,
           events: {
-            click (evn: Event) {
+            async click(evn: Event) {
               evn.preventDefault();
               const formElement: HTMLFormElement = this.closest('form')!;
-              const isValidForm = Validator.validateForm(formElement);
-              if (isValidForm) {
-                const form = getFormValues(formElement);
-                ProfileController.changeUserData(form);
-              }
+              await ProfileController.changeUserProfile(formElement);
+              self.changeMode('default');
             },
           },
 
@@ -171,25 +181,20 @@ export default class PageProfile extends Block {
           variant: ButtonVariantType.secondary,
           block: ButtonBlockType.fill,
           events: {
-            click () {
+            click() {
               self.changeMode('default');
             },
           },
         },
       ),
     });
-
-    this.children.profileProperties = properties.reduce((acc: ProfilePropertyType[], curr) => {
-      acc.push(new ProfileProperty({ title: curr.title, value: curr.value }));
-      return acc;
-    }, []);
-
+    this.children.profileProperties = PageProfile.createUserProperties(this.props.user?.data);
     this.children.buttonEditData = new Button(
       {
         text: 'Редактировать профиль',
         block: ButtonBlockType.fill,
         events: {
-          click () {
+          click() {
             self.changeMode('editData');
           },
         },
@@ -202,7 +207,7 @@ export default class PageProfile extends Block {
         variant: ButtonVariantType.secondary,
         block: ButtonBlockType.fill,
         events: {
-          click () {
+          click() {
             self.changeMode('editPassword');
           },
         },
@@ -214,22 +219,41 @@ export default class PageProfile extends Block {
         text: 'Выйти',
         variant: ButtonVariantType.borderless,
         block: ButtonBlockType.fill,
-        link: '/login',
-        events: {
-          click () {
-            console.log('logout');
+        link: new RouterLink({
+          text: 'Выйти',
+          events: {
+            async click() {
+              console.log('logout');
+              await AuthController.logout();
+            },
           },
-        },
+        }),
       },
     );
+
+    Store.on(StoreEvents.Updated, () => {
+      const state = Store.getState();
+      // вызываем обновление компонента, передав данные из хранилища
+      this.children.profileProperties = PageProfile.createUserProperties(state.user.data);
+    });
   }
 
-  changeMode (currentMode: string) {
+  static createUserProperties(data) {
+    console.log(data);
+    const properties: any[] = getProperties(data);
+    console.log(properties);
+    return properties.reduce((acc: ProfilePropertyType[], curr) => {
+      acc.push(new ProfileProperty({ title: curr.title, value: curr.value }));
+      return acc;
+    }, []);
+  }
+
+  changeMode(currentMode: string) {
     this.setProps({ mode: currentMode });
     renderDOM('#root', this);
   }
 
-  render () {
+  render() {
     return this.compile(tpl, {
       mode: this.props.mode,
       avatar: this.children.avatar,
@@ -243,5 +267,10 @@ export default class PageProfile extends Block {
   }
 }
 
-export type PageProfileType = PageProfile;
-export type PageProfileTypeOf = typeof PageProfile;
+function mapUserToProps(state) {
+  return {
+    user: state.user,
+  };
+}
+
+export default withStore((state) => mapUserToProps(state))(PageProfile);

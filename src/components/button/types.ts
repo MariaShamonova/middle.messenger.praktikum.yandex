@@ -1,3 +1,6 @@
+import RouterLink from '../../router/components/RouterLink';
+import Block from '../../modules/block';
+
 export enum ButtonValueType {
   'button' = 'button',
   'submit' = 'submit',
@@ -21,8 +24,8 @@ export enum ButtonBlockType {
 }
 
 export interface ButtonPropsType {
-  text: string;
-  link?: string;
+  text: string | typeof RouterLink;
+  link?: typeof Block;
   type?: ButtonValueType;
   variant?: ButtonVariantType;
   size?: ButtonSizeType;

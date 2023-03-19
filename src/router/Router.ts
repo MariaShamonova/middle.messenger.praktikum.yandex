@@ -1,5 +1,9 @@
 import Route from './Route';
-import { RoutesType } from './routes';
+import Block from '../modules/block';
+import UserController from '../controllers/UserController';
+import Routes from './routes';
+
+export type RoutesType = typeof Block;
 
 class Router {
   private static __instance: Router;
@@ -27,8 +31,8 @@ class Router {
     Router.__instance = this;
   }
 
-  use(pathname: string, title: string, block: RoutesType) {
-    const route = new Route(pathname, title, block, { rootQuery: this._rootQuery });
+  use(pathname: string, title: string, block: RoutesType, isProtected: boolean) {
+    const route = new Route(pathname, title, block, { rootQuery: this._rootQuery }, isProtected);
     this.routes.push(route);
     return this;
   }
@@ -49,14 +53,22 @@ class Router {
     }
 
     this._currentRoute = route;
+
     if (route) {
-      route.render();
+      route?.render();
     }
   }
 
-  go(pathname: string) {
+  async go(_pathname: string) {
+    const route = this.getRoute(_pathname);
+    console.log(route);
+    const pathname = route?.isProtected ? await Router.checkPermission(_pathname) : _pathname;
     this.history.pushState({ name: pathname }, pathname, pathname);
     this._onRoute(pathname);
+  }
+
+  static checkPermission(pathname: string) {
+    return UserController.getUser().then(() => pathname).catch(() => '/login');
   }
 
   back() {

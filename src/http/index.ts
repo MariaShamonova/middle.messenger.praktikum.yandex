@@ -9,6 +9,15 @@ interface DataType {
   [key: string]: unknown;
 }
 
+function isJsonString(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
 function queryStringify(data: DataType) {
   return `?${Object.entries(data).map(([key, value]) => `${key}=${value}`).join('&')}`;
 }
@@ -18,13 +27,20 @@ interface HeadersType {
 }
 
 interface OptionsType {
-  method: string,
-  headers: HeadersType
-  data: DataType
-  timeout: number
+  method?: string,
+  headers?: HeadersType
+  data?: DataType
+  timeout?: number
 }
 
+const API_URL = 'https://ya-praktikum.tech/api/v2';
 export default class HTTPTransport {
+  public endpoint: string;
+
+  constructor(endpoint: string) {
+    this.endpoint = API_URL + endpoint;
+  }
+
   get = (url: string, options: OptionsType) => this.request(url, {
     ...options,
     method: METHODS.GET,
@@ -61,20 +77,32 @@ export default class HTTPTransport {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.timeout = timeout;
+      xhr.withCredentials = true;
 
       if (method === METHODS.GET && Object.keys(data).length !== 0) {
-        xhr.open(method, url + queryStringify(data));
+        xhr.open(method, this.endpoint + url + queryStringify(data));
       } else {
-        xhr.open(method, url);
+        xhr.open(method, this.endpoint + url);
       }
 
       if (headers) {
+        xhr.setRequestHeader('credentials', 'same-origin');
         Object.entries(headers).forEach(([key, value]) => {
           xhr.setRequestHeader(key, String(value));
         });
       }
       const handleLoad = () => {
-        resolve(xhr);
+        if (xhr.status === 401) {
+          reject(new Error('Unauthorized user'));
+        } else if (xhr.status === 200) {
+          try {
+            resolve(JSON.parse(xhr.response));
+          } catch {
+            resolve(xhr.response);
+          }
+        } else {
+          reject(new Error(xhr.response));
+        }
       };
 
       const handleError = () => {
@@ -92,6 +120,8 @@ export default class HTTPTransport {
 
       if (method === METHODS.GET || !data) {
         xhr.send();
+      } else if (data instanceof FormData) {
+        xhr.send(data);
       } else {
         xhr.send(JSON.stringify(data));
       }

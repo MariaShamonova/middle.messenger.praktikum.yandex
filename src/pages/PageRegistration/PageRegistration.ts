@@ -8,19 +8,21 @@ import Button from '../../components/button/Button';
 import { ButtonBlockType, ButtonValueType, ButtonVariantType } from '../../components/button/types';
 import Form from '../../modules/form/Form';
 import Validator from '../../utils/validator';
-import getFormValues from '../../utils/getFormValues';
-import RegistrationController from '../../controllers/RegistrationController';
+import { withStore } from '../../hoc/withStore';
+import AuthController from '../../controllers/AuthController';
+import RouterLink from '../../router/components/RouterLink';
+import Router from '../../router/Router';
 
-export default class PageRegistration extends Block {
-  constructor (props: PageRegistrationPropsType) {
+class PageRegistration extends Block {
+  constructor(props: PageRegistrationPropsType) {
     super('div', props);
     this.props.title = 'Регистрация';
     const inputEvents = {
-      input (evn: Event) {
+      input(evn: Event) {
         const target = evn.target as HTMLInputElement;
         Validator.setErrorValue(target, '');
       },
-      blur (evn: Event) {
+      blur(evn: Event) {
         const target = evn.target as HTMLInputElement;
         Validator.validateInput(target.value, null, evn);
       },
@@ -69,11 +71,11 @@ export default class PageRegistration extends Block {
           block: InputBlockType.fill,
           required: true,
           events: {
-            input (evn: Event) {
+            input(evn: Event) {
               const target = evn.target as HTMLInputElement;
               Validator.setErrorValue(target, '');
             },
-            blur (evn: Event) {
+            blur(evn: Event) {
               const target = evn.target as HTMLInputElement;
               Validator.validateInput(target.value, null, evn);
               const form = target.closest('form')!;
@@ -87,17 +89,18 @@ export default class PageRegistration extends Block {
         new Input(
           {
             id: 'confirm_password',
+            name: 'confirm_password',
             type: InputValueType.password,
             label: 'Пароль еще раз',
             placeholder: 'Введите пароль еще раз',
             block: InputBlockType.fill,
             required: true,
             events: {
-              input (evn: Event) {
+              input(evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.setErrorValue(target, '');
               },
-              blur (evn: Event) {
+              blur(evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.validateInput(target.value, null, evn);
                 const form = target.closest('form')!;
@@ -126,14 +129,10 @@ export default class PageRegistration extends Block {
           type: ButtonValueType.submit,
           block: ButtonBlockType.fill,
           events: {
-            click (evn: Event) {
+            click(evn: Event) {
               evn.preventDefault();
               const formElement: HTMLFormElement = this.closest('form')!;
-              const isValidForm = Validator.validateForm(formElement);
-              if (isValidForm) {
-                const form = getFormValues(formElement);
-                RegistrationController.registration(form);
-              }
+              AuthController.signup(formElement);
             },
           },
         },
@@ -142,19 +141,25 @@ export default class PageRegistration extends Block {
         {
           text: 'Уже есть аккаунт?',
           block: ButtonBlockType.fill,
-          link: '/login',
+          link: new RouterLink({
+            text: 'Уже есть аккаунт?',
+            events: {
+              async click() {
+                await Router.go('/login');
+              },
+            },
+          }),
           variant: ButtonVariantType.borderless,
         },
       ),
     });
   }
 
-  render () {
+  render() {
     return this.compile(tpl, {
       form: this.children.form,
     });
   }
 }
 
-export type PageRegistrationType = PageRegistration;
-export type PageRegistrationTypeOf = typeof PageRegistration;
+export default withStore(() => {})(PageRegistration);

@@ -2,18 +2,19 @@ import tpl from './notFound.hbs';
 import './notFound.less';
 import { PageNotFoundPropsType } from './types';
 import Block from '../../modules/block';
+import connect from '../../hoc/connect';
 
-export default class PageNotFound extends Block {
+class PageNotFound extends Block {
   public props: any;
 
-  constructor (props: PageNotFoundPropsType) {
+  constructor(props: PageNotFoundPropsType) {
     super('div', props);
   }
 
-  render () {
+  render() {
     return this.compile(tpl, this.props);
   }
 }
 
-export type PageNotFoundType = PageNotFound;
-export type PageNotFoundTypeOf = typeof PageNotFound;
+const withNonFound = connect(() => ({}));
+export default withNonFound(PageNotFound);

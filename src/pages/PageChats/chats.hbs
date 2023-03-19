@@ -1,41 +1,42 @@
 <div class="page chats-page">
-    <div class="chats-page__layout layout">
-        <div class="layout-sider">
-            <div class="layout-sider__header">
-                {{{buttonToProfile}}}
-                {{{inputSearchMessages}}}
-            </div>
+  <div class="chats-page__layout layout">
+    <div class="layout-sider">
+      <div class="layout-sider__header">
+        {{{buttonToProfile}}}
+        {{{inputSearchMessages}}}
+      </div>
 
-            <div>
-                {{#each lastMessage}}
-                    {{{this}}}
-                {{/each}}
-            </div>
-        </div>
-    </div>
-    <div class="layout-content">
-        <div class="conversation">
-            <div class="conversation__header chat-header">
-                <div class="chat-header__avatar"></div>
-                <div class="chat-header__actions">
-                    {{{dropdownChatActions}}}
-                </div>
-            </div>
-            <div class="conversation__body">
-                {{#if dialogs}}
-                    {{#each dialogs}}
-                        {{{this}}}
-                    {{/each}}
-                {{else}}
-                    <div class="empty-box">У вас пока нет сообщений. Начните диалог</div>
-                {{/if}}
-            </div>
-            <div class="conversation__input">
-                {{{dropdownAttachments}}}
-                {{{formMessage}}}
+      <div>
 
-            </div>
-        </div>
+        {{#each lastMessage}}
+          {{{this}}}
+        {{/each}}
+      </div>
     </div>
+  </div>
+  <div class="layout-content">
+    <div class="conversation">
+      <div class="conversation__header chat-header">
+        <div class="chat-header__avatar"></div>
+        <div class="chat-header__actions">
+          {{{dropdownChatActions}}}
+        </div>
+      </div>
+      <div class="conversation__body">
+        {{#if dialogs}}
+          {{#each dialogs}}
+            {{{this}}}
+          {{/each}}
+        {{else}}
+          <div class="empty-box">У вас пока нет сообщений. Начните диалог</div>
+        {{/if}}
+      </div>
+      <div class="conversation__input">
+        {{{dropdownAttachments}}}
+        {{{formMessage}}}
+
+      </div>
+    </div>
+  </div>
 </div>
 </div>

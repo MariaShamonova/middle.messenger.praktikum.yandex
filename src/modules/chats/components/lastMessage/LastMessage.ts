@@ -2,6 +2,7 @@ import tpl from './lastMessage.hbs';
 import './lastMessage.less';
 import Block from '../../../block';
 import { LastMessageProps } from './types';
+import formatDate from '../../../../helpers/formatDate';
 
 export default class LastMessage extends Block {
   public props: any;
@@ -11,6 +12,10 @@ export default class LastMessage extends Block {
   }
 
   render() {
+    if (this.props.message.last_message) {
+      this.props.message.last_message.time = formatDate(this.props.message.last_message.time);
+    }
+
     return this.compile(tpl, this.props);
   }
 }

@@ -2,17 +2,19 @@ import tpl from './serverError.hbs';
 import './serverError.less';
 import { PageServerErrorPropsType } from './types';
 import Block from '../../modules/block';
+import connect from '../../hoc/connect';
 
-export default class PageServerError extends Block {
+class PageServerError extends Block {
   public props: any;
 
-  constructor (props: PageServerErrorPropsType) {
+  constructor(props: PageServerErrorPropsType) {
     super('div', props);
   }
 
-  render () {
+  render() {
     return this.compile(tpl, this.props);
   }
 }
-export type PageServerErrorType = PageServerError;
-export type PageServerErrorTypeOf = typeof PageServerError;
+
+const withServerError = connect(() => ({}));
+export default withServerError(PageServerError);

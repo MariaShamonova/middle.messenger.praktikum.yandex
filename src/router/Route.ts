@@ -13,12 +13,15 @@ export default class Route {
 
   private _props: any;
 
-  constructor(pathname: string, title: string, view: RoutesType, props: { rootQuery: string }) {
+  private _isProtected: boolean;
+
+  constructor(pathname: string, title: string, view: RoutesType, props: { rootQuery: string }, isProtected = true) {
     this._pathname = pathname;
     this._blockClass = view;
     this._block = null;
     this._props = props;
     this._title = title;
+    this._isProtected = isProtected;
   }
 
   get title(): string {
@@ -27,6 +30,10 @@ export default class Route {
 
   get pathname() {
     return this._pathname;
+  }
+
+  get isProtected() {
+    return this._isProtected;
   }
 
   navigate(pathname: string) {
@@ -48,7 +55,7 @@ export default class Route {
 
   render() {
     if (!this._block) {
-      this._block = new this._blockClass();
+      this._block = new this._blockClass({});
     } else {
       this._block.show();
     }

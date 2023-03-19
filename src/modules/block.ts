@@ -187,9 +187,14 @@ export default abstract class Block {
   protected _render() {
     this._removeEvents();
 
-    const fragment = this.render().firstChild;
-    this._element = fragment as HTMLElement;
-    this._element.replaceWith(this._element.cloneNode(true));
+    const fragment = this.render();
+    const newElement = fragment.firstElementChild as HTMLElement;
+
+    if (this._element && newElement) {
+      this._element.replaceWith(newElement);
+    }
+
+    this._element = newElement;
     this._addEvents();
   }
 

@@ -6,8 +6,9 @@ import { HeaderPropsType } from './types';
 import RouterLink from '../../router/components/RouterLink';
 import Route from '../../router/Route';
 import Router from '../../router/Router';
+import { withStore } from '../../hoc/withStore';
 
-export default class Header extends Block {
+class Header extends Block {
   constructor(props: HeaderPropsType) {
     super('div', props);
 
@@ -29,4 +30,4 @@ export default class Header extends Block {
   }
 }
 
-export type HeaderType = Header;
+export default withStore(() => {})(Header);

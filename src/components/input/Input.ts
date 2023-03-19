@@ -15,7 +15,7 @@ export default class Input extends Block {
 
   constructor({
     id,
-    name,
+    name = '',
     label,
     placeholder,
 
