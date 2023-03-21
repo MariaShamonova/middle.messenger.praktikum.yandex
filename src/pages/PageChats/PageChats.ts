@@ -198,7 +198,10 @@ class PageChats extends Block {
       }
       this.children.modalCreateChat = PageChats.createModalCreateChat(state.isOpenModalCreateChat);
       this.children.modalAddUser = PageChats.createModalAddUser(state.isOpenModalAddUser);
-      this.children.modalRemoveUser = this.createModalRemoveUser(state.isOpenModalRemoveUser, state.selectedUser);
+      this.children.modalRemoveUser = this.createModalRemoveUser(
+        state.isOpenModalRemoveUser,
+        state.selectedUser,
+      );
     });
   }
 
