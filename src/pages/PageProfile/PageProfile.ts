@@ -13,32 +13,21 @@ import Form from '../../modules/form/Form';
 import renderDOM from '../../helpers/renderDOM';
 import Validator from '../../utils/validator';
 import ProfileController from '../../controllers/ProfileController';
-import { withStore } from '../../hoc/withStore';
-import Store, { StoreEvents } from '../../store/Store';
-import getProperties from './getUserProperties';
+import withStore from '../../hoc/withStore';
+import Store, { State, StoreEvents } from '../../store/Store';
+import getProperties from '../../helpers/getUserProperties';
 import AuthController from '../../controllers/AuthController';
 import RouterLink from '../../router/components/RouterLink';
+import { UserProfileType, UserResponseType } from '../../api/AuthAPI';
+import ResourseController from '../../controllers/ResourseController';
+import escapeHTML from '../../helpers/escapeHTML';
 
 class PageProfile extends Block {
-  constructor(props: PageProfilePropsType) {
-    super('div', props);
-
+  constructor(props: PageProfilePropsType, tagName = 'div') {
+    super(props, tagName);
     const self = this;
     this.props.mode = 'default';
-    this.children.avatar = new Avatar({
-      path: '',
-      events: {
-        click() {
-          const input = document.createElement('input');
-          input.type = 'file';
-          input.onchange = (_) => {
-            const files = Array.from(input.files);
-            ProfileController.changeUserAvatar(files[0]);
-          };
-          input.click();
-        },
-      },
-    });
+
     const inputEvents = {
       input(evn: Event) {
         const target = evn.target as HTMLInputElement;
@@ -50,6 +39,22 @@ class PageProfile extends Block {
       },
     };
 
+    this.children.avatar = new Avatar({
+      id: self.props.user.data.id,
+      avatar: '',
+      events: {
+        click() {
+          const input = document.createElement('input');
+          input.type = 'file';
+          input.onchange = async () => {
+            if (input.files) {
+              await ProfileController.changeUserAvatar(input.files[0]);
+            }
+          };
+          input.click();
+        },
+      },
+    });
     this.children.formPassword = new Form({
       fields: [
         new Input(
@@ -230,22 +235,35 @@ class PageProfile extends Block {
         }),
       },
     );
+    this.uploadAvatar(this.props.user.data);
 
     Store.on(StoreEvents.Updated, () => {
       const state = Store.getState();
       // вызываем обновление компонента, передав данные из хранилища
       this.children.profileProperties = PageProfile.createUserProperties(state.user.data);
+
+      if (state.user.data) {
+        this.uploadAvatar(state.user.data);
+      }
     });
   }
 
-  static createUserProperties(data) {
-    console.log(data);
-    const properties: any[] = getProperties(data);
-    console.log(properties);
+  static createUserProperties(data: UserResponseType) {
+    const properties: any[] = data ? getProperties(data) : [];
     return properties.reduce((acc: ProfilePropertyType[], curr) => {
       acc.push(new ProfileProperty({ title: curr.title, value: curr.value }));
       return acc;
     }, []);
+  }
+
+  uploadAvatar(user: UserResponseType) {
+    ResourseController.getAvatar(user.avatar).then((file) => {
+      const avatar = document.querySelector(`#avatar-${this.props.user.data.id}`);
+      const image = document.createElement('img');
+      image.src = window.URL.createObjectURL(new Blob([file as string], { type: 'image/png' }));
+
+      avatar?.appendChild(image);
+    });
   }
 
   changeMode(currentMode: string) {
@@ -267,7 +285,7 @@ class PageProfile extends Block {
   }
 }
 
-function mapUserToProps(state) {
+function mapUserToProps(state: State) {
   return {
     user: state.user,
   };

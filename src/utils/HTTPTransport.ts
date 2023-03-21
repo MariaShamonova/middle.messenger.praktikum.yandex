@@ -9,15 +9,6 @@ interface DataType {
   [key: string]: unknown;
 }
 
-function isJsonString(str) {
-  try {
-    JSON.parse(str);
-  } catch (e) {
-    return false;
-  }
-  return true;
-}
-
 function queryStringify(data: DataType) {
   return `?${Object.entries(data).map(([key, value]) => `${key}=${value}`).join('&')}`;
 }
@@ -29,7 +20,7 @@ interface HeadersType {
 interface OptionsType {
   method?: string,
   headers?: HeadersType
-  data?: DataType
+  data?: Record<string, any>
   timeout?: number
 }
 
@@ -65,13 +56,9 @@ export default class HTTPTransport {
 
   request = (url: string, options: OptionsType, timeout: number = 5000) => {
     const {
-      method,
+      method = '',
       headers = {},
       data = {},
-    }: {
-      method: string,
-      headers: HeadersType,
-      data: DataType
     } = options;
 
     return new Promise((resolve, reject) => {

@@ -10,7 +10,7 @@ export enum WSTransportEvents {
 export default class WSTransport extends EventBus {
   private socket: WebSocket | null = null;
 
-  private pingInterval: number = 0;
+  private pingInterval: number = 100000;
 
   constructor(private url: string) {
     super();
@@ -31,6 +31,7 @@ export default class WSTransport extends EventBus {
     return new Promise<void>((resolve) => {
       this.socket?.addEventListener('open', () => {
         this.emit(WSTransportEvents.Connected);
+        this.setupPing();
         return resolve();
       });
     });
@@ -44,7 +45,15 @@ export default class WSTransport extends EventBus {
     this.socket.close();
   }
 
-  public setupPing() {}
+  public setupPing() {
+    const ping = setInterval(() => {
+      this.send({ type: 'ping' });
+    }, this.pingInterval);
+
+    this.on(WSTransportEvents.Close, () => {
+      clearInterval(ping);
+    });
+  }
 
   public subscribe(socket: WebSocket) {
     if (!this.socket) {

@@ -2,11 +2,10 @@ import tpl from './routerLink.hbs';
 import './routerLink.less';
 import Block from '../../utils/block';
 import { RouterLinkPropsType } from './types';
-import { withStore } from '../../hoc/withStore';
 
-class RouterLink extends Block {
-  constructor(props: RouterLinkPropsType) {
-    super('div', props);
+export default class RouterLink extends Block {
+  constructor(props: RouterLinkPropsType, tagName = 'div') {
+    super(props, tagName);
   }
 
   render() {
@@ -14,4 +13,4 @@ class RouterLink extends Block {
   }
 }
 
-export default withStore(() => {})(RouterLink);
+export type RouterLinkType = RouterLink;

@@ -5,6 +5,7 @@ function set(object: Indexed, path: string, value: unknown): Indexed | unknown {
   if (typeof path !== 'string') {
     throw new Error('path must be string');
   }
+
   if (isObject(object)) {
     const nestedFields = path.split('.');
 

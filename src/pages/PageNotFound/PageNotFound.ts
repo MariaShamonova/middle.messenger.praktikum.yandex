@@ -2,13 +2,11 @@ import tpl from './notFound.hbs';
 import './notFound.less';
 import { PageNotFoundPropsType } from './types';
 import Block from '../../utils/block';
-import connect from '../../hoc/connect';
+import withStore from '../../hoc/withStore';
 
 class PageNotFound extends Block {
-  public props: any;
-
-  constructor(props: PageNotFoundPropsType) {
-    super('div', props);
+  constructor(props: PageNotFoundPropsType, tagName = 'div') {
+    super(props, tagName);
   }
 
   render() {
@@ -16,5 +14,4 @@ class PageNotFound extends Block {
   }
 }
 
-const withNonFound = connect(() => ({}));
-export default withNonFound(PageNotFound);
+export default withStore(() => {})(PageNotFound);

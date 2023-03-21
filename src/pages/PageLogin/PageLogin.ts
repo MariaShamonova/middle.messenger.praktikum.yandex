@@ -8,15 +8,13 @@ import { ButtonBlockType, ButtonValueType, ButtonVariantType } from '../../compo
 import { InputBlockType, InputValueType } from '../../components/input/types';
 import Form from '../../modules/form/Form';
 import Validator from '../../utils/validator';
-import LoginController from '../../controllers/AuthController';
-import { withStore } from '../../hoc/withStore';
+import withStore from '../../hoc/withStore';
 import AuthController from '../../controllers/AuthController';
 import RouterLink from '../../router/components/RouterLink';
-import Router from '../../router/Router';
 
 class PageLogin extends Block {
-  constructor(props: PageLoginPropsType) {
-    super('div', props);
+  constructor(props: PageLoginPropsType, tagName = 'div') {
+    super(props, tagName);
     this.props.title = 'Авторизация';
     this.props.form = {
       login: '',
@@ -67,10 +65,10 @@ class PageLogin extends Block {
         block: ButtonBlockType.fill,
         type: ButtonValueType.submit,
         events: {
-          click(evn: Event) {
+          async click(evn: Event) {
             evn.preventDefault();
             const formElement: HTMLFormElement = this.closest('form')!;
-            AuthController.signin(formElement);
+            await AuthController.signin(formElement);
           },
         },
       }),
@@ -80,7 +78,7 @@ class PageLogin extends Block {
           text: 'Зарегистрироваться',
           events: {
             async click() {
-              await Router.go('/registration');
+              await AuthController.goToRegistration();
             },
           },
         }),
@@ -98,9 +96,4 @@ class PageLogin extends Block {
   }
 }
 
-// const withLogin = connect(() => ({}));
-//
-// export type PageLoginType = PageLogin;
-// export type PageLoginTypeOf = typeof PageLogin;
-// export default withLogin(PageLogin);
 export default withStore(() => {})(PageLogin);

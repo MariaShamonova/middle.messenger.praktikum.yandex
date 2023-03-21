@@ -23,11 +23,45 @@ export default class ChatAPI extends BaseAPI {
 
   async getToken(id: number) {
     try {
-      return await this.http.post(`/token/${id}`, {
+      const response = await this.http.post(`/token/${id}`, {
+        headers: { accept: 'application/json', 'Content-Type': 'application/json' },
+      });
+      return (response as { token: string }).token;
+    } catch {
+      throw new Error(`Failed to get token by chat's id: ${id}`);
+    }
+  }
+
+  async addUser(data: { users: number[], chatId: number }) {
+    try {
+      console.log(data);
+      return await this.http.post('/users', {
+        data,
         headers: { accept: 'application/json', 'Content-Type': 'application/json' },
       });
     } catch {
-      throw new Error('Method getToken failed');
+      throw new Error('Failed to add user');
+    }
+  }
+
+  async getUsersSelectedChat(id: number) {
+    try {
+      return await this.http.get(`/${id}/users`, {
+        headers: { accept: 'application/json', 'Content-Type': 'application/json' },
+      });
+    } catch {
+      throw new Error(`Failed to get users for chat's id: ${id}`);
+    }
+  }
+
+  async removeUserFromChat(data: { users: number[], chatId: number }) {
+    try {
+      return await this.http.delete('/users', {
+        data,
+        headers: { accept: 'application/json', 'Content-Type': 'application/json' },
+      });
+    } catch {
+      throw new Error('Failed to delete user');
     }
   }
 

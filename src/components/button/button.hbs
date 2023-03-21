@@ -1,6 +1,8 @@
 <button class="button button--{{variant}} button-size--{{size}} {{block}}" type="{{type}}">
   {{#if link}}
     {{{link}}}
+  {{else if icon}}
+    <img src="/images/{{icon}}" alt="{{alt}}"/>
   {{else}}
     {{text}}
   {{/if}}

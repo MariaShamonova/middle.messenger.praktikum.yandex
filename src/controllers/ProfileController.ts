@@ -2,36 +2,41 @@ import ProfileAPI from '../api/ProfileAPI';
 import Store from '../store/Store';
 import Validator from '../utils/validator';
 import getFormValues from '../helpers/getFormValues';
+import escapeHTML from '../helpers/escapeHTML';
 
 const profileApi = new ProfileAPI();
 
 export default class UserController {
   public static async changeUserProfile(form: HTMLFormElement) {
     try {
-      // Запускаем крутилку
       Store.set('user.isLoading', true);
+
       const isValidForm = Validator.validateForm(form);
       if (!isValidForm) {
         throw new Error();
       }
       const data = getFormValues(form);
-      const user = await profileApi.updateProfile(data);
-      Store.set('user.data', user);
+      const user = await profileApi.updateProfile({
+        first_name: escapeHTML(data.first_name),
+        second_name: escapeHTML(data.second_name),
+        email: escapeHTML(data.email),
+        login: escapeHTML(data.login),
+        phone: escapeHTML(data.phone),
+        display_name: escapeHTML(data.display_name),
+        password: escapeHTML(data.password),
+      });
 
-      // Останавливаем крутилку
+      Store.set('user.data', user);
       Store.set('user.isLoading', false);
 
       return user;
-    } catch (error) {
-      // Логика обработки ошибок
-      // Store.set('user.error', error);
-      throw new Error(error);
+    } catch (err) {
+      throw new Error(JSON.stringify(err));
     }
   }
 
   public static async changeUserPassword(form: HTMLFormElement) {
     try {
-      // Запускаем крутилку
       Store.set('user.isLoading', true);
 
       const isValidForm = Validator.validateForm(form);
@@ -41,41 +46,35 @@ export default class UserController {
 
       const { confirmNewPassword, ...data } = getFormValues(form);
 
-      const user = await profileApi.updatePassword(data);
+      const user = await profileApi.updatePassword({
+        oldPassword: escapeHTML(data.oldPassword),
+        newPassword: escapeHTML(data.newPassword),
+      });
       Store.set('user.data', user);
 
-      // Останавливаем крутилку
       Store.set('user.isLoading', false);
 
       return user;
-    } catch (error) {
-      // Логика обработки ошибок
-      // Store.set('user.error', error);
-      throw new Error(error);
+    } catch (err) {
+      throw new Error(JSON.stringify(err));
     }
   }
 
   public static async changeUserAvatar(file: File) {
     try {
-      // Запускаем крутилку
       Store.set('user.isLoading', true);
-      console.log(file);
 
       const formData = new FormData();
-
       formData.append('avatar', file);
-      console.log(formData.get('avatar'));
-      const user = await profileApi.updateAvatar(formData);
-      // Store.set('user.data', user);
 
-      // Останавливаем крутилку
+      const user = await profileApi.updateAvatar(formData);
+      Store.set('user.data', user);
+
       Store.set('user.isLoading', false);
 
       return user;
-    } catch (error) {
-      // Логика обработки ошибок
-      // Store.set('user.error', error);
-      throw new Error(error);
+    } catch (err) {
+      throw new Error(JSON.stringify(err));
     }
   }
 }

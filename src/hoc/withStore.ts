@@ -2,30 +2,32 @@ import Block from '../utils/block';
 import isEqual from '../helpers/isEqual';
 import store, { StoreEvents, State } from '../store/Store';
 import cloneDeep from '../helpers/cloneDeep';
+import { BlockConstructable } from '../router/Route';
 
-type Indexed = {
-  [key: string]: any
-};
-export const withStore = (mapStateToProps: (state: State) => any) => function (Component: typeof Block) {
+export default (
+  mapStateToProps: (state: State) => any,
+) => function (Component: typeof Block<any>) {
   let state: any;
-  return class extends Component {
-    constructor(props: any) {
-      // сохраняем начальное состояние
-      state = cloneDeep(mapStateToProps(store.getState()));
-      super({ ...props, ...state });
-      // подписываемся на событие
-      store.on(StoreEvents.Updated, () => {
-        // при обновлении получаем новое состояние
-        const newState = mapStateToProps(store.getState());
 
-        // если что-то из используемых данных поменялось, обновляем компонент
+  type Props = typeof Component;
+
+  class WithStore extends Component {
+    protected constructor(props: Props & PropsWithStore, tagName: string) {
+      state = cloneDeep(mapStateToProps(store.getState()));
+      super({ ...props, ...state }, tagName);
+      store.on(StoreEvents.Updated, () => {
+        const newState = mapStateToProps(store.getState());
         if (!isEqual(state, newState)) {
           this.setProps({ ...newState });
         }
-
-        // не забываем сохранить новое состояние
         state = newState;
       });
     }
-  };
+  }
+
+  return WithStore as unknown as BlockConstructable;
 };
+
+export interface PropsWithStore {
+  router: typeof store;
+}

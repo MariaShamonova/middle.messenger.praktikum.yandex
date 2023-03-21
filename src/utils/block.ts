@@ -1,9 +1,7 @@
 import { v4 as makeUUID } from 'uuid';
 import EventBus, { ListenerType } from '../../event-bus';
 
-export interface ChildrenPropsType {
-  [key: string]: Block | Block[];
-}
+export type ChildrenPropsType = Record<string, Block | Block[]>;
 
 export interface PropsType {
   [key: string]: unknown;
@@ -26,8 +24,8 @@ function extractStub(child: Block, content: DocumentFragment): void {
   }
 }
 
-export default abstract class Block {
-  private readonly _meta: { tagName: string; props: {} };
+export default abstract class Block<P extends Record<string, any> = any> {
+  private readonly _meta: { props: {}, tagName: string; };
 
   private readonly listeners: ElementListenerType[];
 
@@ -37,7 +35,7 @@ export default abstract class Block {
 
   private _element: HTMLElement;
 
-  public props: PropsType;
+  public props: P;
 
   public children: ChildrenPropsType;
 
@@ -54,7 +52,7 @@ export default abstract class Block {
    *
    * @returns {void}
    */
-  protected constructor(tagName: string = 'div', propsAndChildren = {}) {
+  protected constructor(propsAndChildren: P, tagName: string) {
     const eventBus = new EventBus();
     this._element = document.createElement('div');
     this._id = makeUUID();
@@ -67,8 +65,7 @@ export default abstract class Block {
     };
 
     this.children = this._makePropsProxy(children) as ChildrenPropsType;
-
-    this.props = this._makePropsProxy({ ...props, __id: this._id });
+    this.props = this._makePropsProxy({ ...props, __id: this._id }) as P;
 
     this.listeners = [];
 
@@ -79,13 +76,13 @@ export default abstract class Block {
 
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
-    // this.getContent = this.getContent.bind(this);
     this.dispatchComponentDidMount = this.dispatchComponentDidMount.bind(this);
   }
 
-  private _getChildren(propsAndChildren: { [key: string]: unknown }) {
-    const children: ChildrenPropsType = {};
-    const props: PropsType = {};
+  // eslint-disable-next-line class-methods-use-this
+  private _getChildren(propsAndChildren: P): { props: P, children: ChildrenPropsType } {
+    const children: Record<string, Block | Block[]> = {};
+    const props: Record<string, unknown> = {};
 
     Object.entries(propsAndChildren).forEach(([key, value]) => {
       if (value instanceof Block) {
@@ -95,7 +92,7 @@ export default abstract class Block {
       }
     });
 
-    return { children, props };
+    return { children, props: props as P };
   }
 
   protected _registerEvents(eventBus: EventBus) {
@@ -184,7 +181,7 @@ export default abstract class Block {
     return fragment.content;
   }
 
-  protected _render() {
+  private _render() {
     this._removeEvents();
 
     const fragment = this.render();
@@ -228,20 +225,22 @@ export default abstract class Block {
     }
   }
 
-  abstract render(): DocumentFragment;
+  protected render(): DocumentFragment {
+    return document.createDocumentFragment();
+  }
 
   public getContent(): HTMLElement {
     return this.element;
   }
 
-  protected _makePropsProxy(props: ChildrenPropsType | PropsType) {
+  protected _makePropsProxy(props: P | ChildrenPropsType) {
     const self = this;
     const proxyData = new Proxy(props, {
       get(target: ChildrenPropsType | PropsType, prop: string) {
         const value = target[prop];
         return typeof value === 'function' ? value.bind(target) : value;
       },
-      set(target: ChildrenPropsType | PropsType, prop: string, value: unknown) {
+      set(target, prop: string, value: unknown) {
         if (Array.from(prop)[0] === '_') {
           throw new Error('Нет доступа');
         }

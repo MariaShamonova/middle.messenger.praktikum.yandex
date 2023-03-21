@@ -1,6 +1,11 @@
 import BaseAPI from './BaseAPI';
 import { UserProfileType } from './AuthAPI';
 
+export interface FormPasswordType {
+  newPassword: string;
+  oldPassword: string;
+}
+
 export default class ProfileAPI extends BaseAPI {
   constructor() {
     super('/user');
@@ -21,29 +26,29 @@ export default class ProfileAPI extends BaseAPI {
         headers: { accept: 'application/json', 'Content-Type': 'application/json' },
       });
     } catch (err) {
-      throw new Error(err);
+      throw new Error(JSON.stringify(err));
     }
   }
 
-  async updatePassword(data: UserProfileType) {
+  async updatePassword(data: FormPasswordType) {
     try {
       return await this.http.put('/password', {
         data,
         headers: { accept: 'application/json', 'Content-Type': 'application/json' },
       });
     } catch (err) {
-      throw new Error(err);
+      throw new Error(JSON.stringify(err));
     }
   }
 
-  async updateAvatar(data: UserProfileType) {
+  async updateAvatar(data: FormData) {
     try {
       console.log(data);
       return await this.http.put('/profile/avatar', {
         data,
       });
     } catch (err) {
-      throw new Error(err);
+      throw new Error(JSON.stringify(err));
     }
   }
 }

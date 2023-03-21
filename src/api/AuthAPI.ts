@@ -1,21 +1,27 @@
 import BaseAPI from './BaseAPI';
 
 interface LoginFormModel {
-  email: string;
+  login: string;
   password: string;
 }
 
-export interface UserProfileType {
+export interface UserRegistrationType {
   first_name: string;
   second_name: string;
-  display_name: string;
+  login: string;
   email: string;
   password: string;
   phone: string;
 }
 
+export interface UserProfileType extends UserRegistrationType {
+
+  display_name: string;
+}
+
 export interface UserResponseType extends UserProfileType {
-  id: number
+  id: number;
+  avatar: string;
 }
 
 export default class AuthAPI extends BaseAPI {
@@ -30,19 +36,19 @@ export default class AuthAPI extends BaseAPI {
         headers: { accept: 'application/json', 'Content-Type': 'application/json' },
       });
     } catch (err) {
-      throw new Error(err);
+      throw new Error(JSON.stringify(err));
     }
   }
 
-  async signup(data: UserProfileType) {
+  async signup(data: UserRegistrationType) {
     try {
       return await this.http.post('/signup', {
         data,
 
         headers: { accept: 'application/json', 'Content-Type': 'application/json' },
       });
-    } catch {
-      throw new Error('Method /logout failed');
+    } catch (err) {
+      throw new Error(JSON.stringify(err));
     }
   }
 
@@ -51,8 +57,8 @@ export default class AuthAPI extends BaseAPI {
       return await this.http.post('/logout', {
         headers: { accept: 'application/json', 'Content-Type': 'application/json' },
       });
-    } catch {
-      throw new Error('Method /logout failed');
+    } catch (err) {
+      throw new Error(JSON.stringify(err));
     }
   }
 

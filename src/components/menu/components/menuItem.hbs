@@ -1,0 +1,10 @@
+<div class="menu-item row">
+  {{#if option.icon}}
+    <div class="menu-item__icon">
+
+      <img src="/images/{{option.icon}}" :alt="{{option.id}}">
+    </div>
+  {{/if}}
+
+  <div class="menu-item__text">{{option.title}}</div>
+</div>

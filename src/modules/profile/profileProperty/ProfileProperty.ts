@@ -4,8 +4,8 @@ import { ProfilePropertyPropsType } from './types';
 import Block from '../../../utils/block';
 
 export default class ProfileProperty extends Block {
-  constructor(props: ProfilePropertyPropsType) {
-    super('div', props);
+  constructor(props: ProfilePropertyPropsType, tagName = 'div') {
+    super(props, tagName);
   }
 
   render() {

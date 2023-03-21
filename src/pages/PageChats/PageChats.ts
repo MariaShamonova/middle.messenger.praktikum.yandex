@@ -1,63 +1,68 @@
 import Block from '../../utils/block';
 import tpl from './chats.hbs';
 import './chats.less';
-import { PageChatsPropsType } from './types';
+import { PageChatsPropsType, UsersSelectedChatType } from './types';
 import Input from '../../components/input/Input';
 import { InputBlockType, InputSizeType } from '../../components/input/types';
 import LastMessage,
-{ LastMessageType } from '../../modules/chats/components/lastMessage/LastMessage';
+{ LastMessageType }
+  from '../../modules/chats/components/lastMessage/LastMessage';
 import Dropdown from '../../components/dropdown/Dropdown';
 import Button from '../../components/button/Button';
-import { ButtonValueType, ButtonVariantType } from '../../components/button/types';
+import { ButtonBlockType, ButtonValueType, ButtonVariantType } from '../../components/button/types';
 import Form from '../../modules/form/Form';
 import ChatController from '../../controllers/ChatController';
 import { ChatType, StatusMessage } from '../../modules/chats/components/lastMessage/types';
-import renderDOM from '../../helpers/renderDOM';
 import Message, { MessageType } from '../../modules/chats/components/message/Message';
 import { MessageByUserType } from '../../modules/chats/components/message/types';
 import Validator from '../../utils/validator';
-import getFormValues from '../../helpers/getFormValues';
-import { ChatByUserId } from '../../types/ChatTypes';
-import { withStore } from '../../hoc/withStore';
-import Store, { MessageResponseType, StoreEvents } from '../../store/Store';
+import withStore from '../../hoc/withStore';
+import Store, { MessageResponseType, StoreEvents, State } from '../../store/Store';
 import RouterLink from '../../router/components/RouterLink';
 import Router from '../../router/Router';
 import formatDate from '../../helpers/formatDate';
-
-interface MessagesType {
-  id: number;
-  user: string;
-  text: string;
-  date: string;
-  unreadMessage: number;
-}
+import Modal from '../../components/modal/Modal';
+import Autocomplete from '../../components/autocomplete/Autocomplete';
+import ChatUsersController from '../../controllers/ChatUsersController';
+import UserItem, { UserItemType } from '../../modules/chats/components/userItem/UserItem';
 
 class PageChats extends Block {
-  public props: any;
-
   public activeChat: number | null;
 
-  constructor(props: PageChatsPropsType) {
-    super('div', props);
-
+  constructor(props: PageChatsPropsType, tagName = 'div') {
+    super(props, tagName);
+    this.props = props;
     this.activeChat = null;
     this.props.dialogs = [];
 
     this.children.lastMessage = PageChats.createChatsList(this.props.chats.data);
     const { selectedChat } = this.props;
-    this.children.dialogs = PageChats.createMessagesList(selectedChat ? this.props.chats[selectedChat] : []);
+    this.children.dialogs = PageChats.createMessagesList(selectedChat
+      ? this.props.chats[selectedChat]
+      : []);
 
     this.children.dropdownChatActions = new Dropdown(
       {
-        buttonIcon: 'more.png',
+        id: 'chat-actions',
+
+        button: {
+          icon: 'more.png',
+          alt: 'Многоточие',
+        },
         options: [{
           id: 'add-user',
           title: 'Добавить пользователя',
           icon: 'plus-circle.png',
+          click() {
+            ChatController.toggleModalAddUser(true);
+          },
         }, {
           id: 'remove-user',
           title: 'Удалить пользователя',
           icon: 'close-circle.png',
+          click() {
+            ChatController.toggleModalRemoveUser(true);
+          },
         }],
         size: 32,
         position: 'bottom',
@@ -65,21 +70,28 @@ class PageChats extends Block {
     );
     this.children.dropdownAttachments = new Dropdown(
       {
-        buttonIcon: 'paperclip.png',
+        id: 'attachments',
+        button: {
+          icon: 'paperclip.png',
+          alt: 'Скрепка',
+        },
         options: [{
           id: 'иконка файла',
           title: 'Файл',
           icon: 'file.png',
+          click() {},
         },
         {
           id: 'иконка фото',
           title: 'Фото и видео',
           icon: 'image.png',
+          click() {},
         },
         {
           id: 'иконка локации',
           title: 'Локация',
           icon: 'location.png',
+          click() {},
         }],
       },
     );
@@ -105,13 +117,17 @@ class PageChats extends Block {
           text: 'Создать',
           events: {
             async click() {
-              ChatController.createChat();
+              ChatController.toggleModalCreateChat(true);
             },
           },
         }),
         variant: ButtonVariantType.borderless,
       },
     );
+
+    this.children.modalCreateChat = PageChats.createModalCreateChat(false);
+    this.children.modalAddUser = PageChats.createModalAddUser(false);
+    this.children.modalRemoveUser = this.createModalRemoveUser(false, this.props.selectedUser);
 
     this.children.inputSearchMessages = new Input({
       label: '',
@@ -173,6 +189,9 @@ class PageChats extends Block {
           state.messages[state.selectedChat]?.data,
         );
       }
+      this.children.modalCreateChat = PageChats.createModalCreateChat(state.isOpenModalCreateChat);
+      this.children.modalAddUser = PageChats.createModalAddUser(state.isOpenModalAddUser);
+      this.children.modalRemoveUser = this.createModalRemoveUser(state.isOpenModalRemoveUser, state.selectedUser);
     });
   }
 
@@ -187,6 +206,7 @@ class PageChats extends Block {
         events: {
           click() {
             ChatController.selectChat(curr.id);
+            ChatController.getUsersSelectedChat(curr.id);
           },
         },
       }));
@@ -208,6 +228,167 @@ class PageChats extends Block {
     }, [] as MessageType[]);
   }
 
+  static createModalCreateChat(value: boolean) {
+    return new Modal({
+      isOpen: value ? 'show' : 'hide',
+      title: 'Создать чат',
+      body: new Form({
+        fields: [
+          new Input({
+            id: 'title',
+            name: 'title',
+            placeholder: 'Введите название чата',
+            block: InputBlockType.fill,
+            events: {
+              input(evn: Event) {
+                const target = evn.target as HTMLInputElement;
+                Validator.setErrorValue(target, '');
+              },
+              blur(evn: Event) {
+                const target = evn.target as HTMLInputElement;
+                Validator.validateInput(target.value, null, evn);
+              },
+            },
+          }),
+        ],
+        submitButton: new Button(
+          {
+            text: 'Создать',
+            block: ButtonBlockType.fill,
+            type: ButtonValueType.submit,
+            events: {
+              async click(evn: Event) {
+                evn.preventDefault();
+                const formElement: HTMLFormElement = this.closest('form')!;
+                await ChatController.createChat(formElement);
+                ChatController.toggleModalCreateChat(false);
+              },
+            },
+          },
+        ),
+        secondaryButton: new Button(
+          {
+            text: 'Отменить',
+            type: ButtonValueType.reset,
+            variant: ButtonVariantType.secondary,
+            block: ButtonBlockType.fill,
+            events: {
+              click() {
+                ChatController.toggleModalCreateChat(false);
+              },
+            },
+          },
+        ),
+      }),
+    });
+  }
+
+  static createModalAddUser(value: boolean) {
+    return new Modal({
+      isOpen: value ? 'show' : 'hide',
+      title: 'Добавить пользователя',
+      body: new Form({
+        fields: [new Autocomplete({
+          id: 'add-user',
+
+          async getData(login: string) {
+            const data = await ChatUsersController.getUserByLogin(login);
+
+            return data.map((user) => ({ ...user, title: user.login }));
+          },
+        })],
+        submitButton: new Button(
+          {
+            text: 'Добавить',
+            block: ButtonBlockType.fill,
+            type: ButtonValueType.submit,
+            events: {
+              async click(evn: Event) {
+                evn.preventDefault();
+                const formElement: HTMLFormElement = this.closest('form')!;
+                await ChatController.addUserToChat(formElement);
+                ChatController.toggleModalAddUser(false);
+              },
+            },
+          },
+        ),
+        secondaryButton: new Button(
+          {
+            text: 'Отменить',
+            type: ButtonValueType.reset,
+            variant: ButtonVariantType.secondary,
+            block: ButtonBlockType.fill,
+            events: {
+              click() {
+                ChatController.toggleModalAddUser(false);
+              },
+            },
+          },
+        ),
+      }),
+    });
+  }
+
+  createModalRemoveUser(value: boolean, selectedUser: number | null) {
+    const users = this.props.usersSelectedChat;
+    return new Modal({
+      isOpen: value ? 'show' : 'hide',
+      title: ' Удалить пользователя',
+      body: new Form({
+        fields: [...PageChats.createUsersList(users, selectedUser)],
+        submitButton: new Button(
+          {
+            text: 'Удалить',
+            block: ButtonBlockType.fill,
+            type: ButtonValueType.submit,
+            events: {
+              async click(evn: Event) {
+                evn.preventDefault();
+                await ChatController.removeUserFromChat();
+                ChatController.toggleModalRemoveUser(false);
+              },
+            },
+          },
+        ),
+        secondaryButton: new Button(
+          {
+            text: 'Отменить',
+            type: ButtonValueType.reset,
+            variant: ButtonVariantType.secondary,
+            block: ButtonBlockType.fill,
+            events: {
+              click() {
+                ChatController.toggleModalRemoveUser(false);
+                ChatController.selectUser(null);
+              },
+            },
+          },
+        ),
+      }),
+    });
+  }
+
+  static createUsersList(data: UsersSelectedChatType[], selectedUser: number | null) {
+    return data.reduce((acc: UserItemType[], curr) => {
+      acc.push(new UserItem({
+        first_name: curr.first_name,
+        second_name: curr.second_name,
+        id: curr.id,
+        role: curr.role,
+        selected: selectedUser === curr.id
+          ? 'list-users__item--selected'
+          : '',
+
+        events: {
+          click() {
+            ChatController.selectUser(curr.id);
+          },
+        },
+      }, 'div'));
+      return acc;
+    }, [] as UserItemType[]);
+  }
+
   render() {
     return this.compile(tpl, {
       lastMessage: this.children.lastMessage,
@@ -217,14 +398,22 @@ class PageChats extends Block {
       inputSearchMessages: this.children.inputSearchMessages,
       formMessage: this.children.formMessage,
       dialogs: this.children.dialogs,
+      modalCreateChat: this.children.modalCreateChat,
+      modalAddUser: this.children.modalAddUser,
+      modalRemoveUser: this.children.modalRemoveUser,
+      isSelectedChat: this.props.selectedChat !== null,
     });
   }
 }
 
-function mapUserToProps(state) {
+function mapUserToProps(state: State) {
   return {
     chats: state.chats,
     messages: state.messanges,
+    selectedChat: state.selectedChat,
+    usersSelectedChat: state.usersSelectedChat,
+    selectedUser: state.selectedUser,
+    isOpenModalCreateChat: state.isOpenModalCreateChat,
   };
 }
 

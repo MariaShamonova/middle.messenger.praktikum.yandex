@@ -2,13 +2,11 @@ import tpl from './serverError.hbs';
 import './serverError.less';
 import { PageServerErrorPropsType } from './types';
 import Block from '../../utils/block';
-import connect from '../../hoc/connect';
+import withStore from '../../hoc/withStore';
 
 class PageServerError extends Block {
-  public props: any;
-
-  constructor(props: PageServerErrorPropsType) {
-    super('div', props);
+  constructor(props: PageServerErrorPropsType, tagName = 'div') {
+    super(props, tagName);
   }
 
   render() {
@@ -16,5 +14,4 @@ class PageServerError extends Block {
   }
 }
 
-const withServerError = connect(() => ({}));
-export default withServerError(PageServerError);
+export default withStore(() => {})(PageServerError);

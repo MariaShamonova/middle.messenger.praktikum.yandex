@@ -3,64 +3,67 @@ import Router from '../router/Router';
 import Validator from '../utils/validator';
 import getFormValues from '../helpers/getFormValues';
 import Store from '../store/Store';
+import escapeHTML from '../helpers/escapeHTML';
 
 const authApi = new AuthAPI();
 
 export default class AuthController {
   public static async signin(formElement: HTMLFormElement) {
     try {
-      // Запускаем крутилку
-
       const isValidForm = Validator.validateForm(formElement);
       if (!isValidForm) {
         throw new Error();
       }
       const data = getFormValues(formElement);
-      await authApi.signin(data);
-      await Router.go('/');
 
-      // Останавливаем крутилку
+      await authApi.signin({
+        login: escapeHTML(data.login),
+        password: escapeHTML(data.password),
+      });
+      await Router.go('/');
     } catch (error) {
-      // Логика обработки ошибок
       console.log(error);
     }
   }
 
   public static async signup(formElement: HTMLFormElement) {
     try {
-      // Запускаем крутилку
-
       const isValidForm = Validator.validateForm(formElement);
       if (!isValidForm) {
         throw new Error();
       }
-      const { confirm_password, ...data } = getFormValues(formElement);
-
-      await authApi.signup(data);
+      const data = getFormValues(formElement);
+      // data.first_name
+      await authApi.signup({
+        first_name: escapeHTML(data.first_name),
+        second_name: escapeHTML(data.second_name),
+        login: escapeHTML(data.login),
+        email: escapeHTML(data.email),
+        password: escapeHTML(data.password),
+        phone: escapeHTML(data.phone),
+      });
       await Router.go('/');
-
-      // Останавливаем крутилку
     } catch (error) {
-      // Логика обработки ошибок
       console.log(error);
     }
   }
 
   public static async logout() {
     try {
-      // Запускаем крутилку
       Store.set('user.isLoading', true);
 
       await authApi.logout();
-      Store.set('user.data', undefined);
-      Store.set('user.error', '');
-      await Router.go('/login');
 
-      // Останавливаем крутилку
+      await Router.go('/login');
+      Store.set('user.data', {});
+      Store.set('user.error', '');
       Store.set('user.isLoading', false);
     } catch (error) {
-      // Логика обработки ошибок
       console.log(error);
     }
+  }
+
+  static async goToRegistration() {
+    await Router.go('/registration');
   }
 }

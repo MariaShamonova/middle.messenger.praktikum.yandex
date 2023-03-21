@@ -12,8 +12,8 @@ export default class Form extends Block {
 
   public inputs: NodeListOf<HTMLInputElement>;
 
-  constructor(props: FormPropsType) {
-    super('form', props);
+  constructor(props: FormPropsType, tagName = 'form') {
+    super(props, tagName);
     this.children.submitButton = props.submitButton;
     this.children.fields = props.fields;
     this.submitButton = this.children.submitButton.element;

@@ -1,6 +1,10 @@
 import isEqual from '../helpers/isEqual';
 import renderDOM from '../helpers/renderDOM';
-import { RoutesType } from './routes';
+import Block from '../utils/block';
+
+export interface BlockConstructable<P extends Record<string, any> = any> {
+  new (props: P): Block;
+}
 
 export default class Route {
   private readonly _title: string;
@@ -9,13 +13,20 @@ export default class Route {
 
   private _block: any;
 
-  private _blockClass: unknown;
+  private _blockClass: BlockConstructable;
 
   private _props: any;
 
   private _isProtected: boolean;
 
-  constructor(pathname: string, title: string, view: RoutesType, props: { rootQuery: string }, isProtected = true) {
+  constructor(
+    pathname: string,
+    title: string,
+    view: BlockConstructable,
+    props:
+    { rootQuery: string },
+    isProtected = true,
+  ) {
     this._pathname = pathname;
     this._blockClass = view;
     this._block = null;
@@ -59,6 +70,7 @@ export default class Route {
     } else {
       this._block.show();
     }
+    // debugger;
     renderDOM(this._props.rootQuery, this._block);
   }
 }

@@ -8,15 +8,17 @@ import Button from '../../components/button/Button';
 import { ButtonBlockType, ButtonValueType, ButtonVariantType } from '../../components/button/types';
 import Form from '../../modules/form/Form';
 import Validator from '../../utils/validator';
-import { withStore } from '../../hoc/withStore';
+import withStore from '../../hoc/withStore';
 import AuthController from '../../controllers/AuthController';
 import RouterLink from '../../router/components/RouterLink';
 import Router from '../../router/Router';
 
 class PageRegistration extends Block {
-  constructor(props: PageRegistrationPropsType) {
-    super('div', props);
+  constructor(props: PageRegistrationPropsType, tagName = 'div') {
+    super(props, tagName);
+
     this.props.title = 'Регистрация';
+
     const inputEvents = {
       input(evn: Event) {
         const target = evn.target as HTMLInputElement;

@@ -1,9 +1,5 @@
-import Route from './Route';
-import Block from '../utils/block';
+import Route, { BlockConstructable } from './Route';
 import UserController from '../controllers/UserController';
-import Routes from './routes';
-
-export type RoutesType = typeof Block;
 
 class Router {
   private static __instance: Router;
@@ -15,7 +11,7 @@ class Router {
 
   private history: any;
 
-  public routes: Route[];
+  public routes: Route[] = [];
 
   constructor(rootQuery: string) {
     if (Router.__instance) {
@@ -26,12 +22,12 @@ class Router {
     this.history = window.history;
     this._currentRoute = null;
     this._rootQuery = rootQuery;
-    this.routes = [];
+    this.routes = [] as Route[];
 
     Router.__instance = this;
   }
 
-  use(pathname: string, title: string, block: RoutesType, isProtected: boolean) {
+  use(pathname: string, title: string, block: BlockConstructable, isProtected?: boolean) {
     const route = new Route(pathname, title, block, { rootQuery: this._rootQuery }, isProtected);
     this.routes.push(route);
     return this;
@@ -60,9 +56,10 @@ class Router {
   }
 
   async go(_pathname: string) {
+    console.log(_pathname);
     const route = this.getRoute(_pathname);
-    console.log(route);
     const pathname = route?.isProtected ? await Router.checkPermission(_pathname) : _pathname;
+    // const pathname = _pathname;
     this.history.pushState({ name: pathname }, pathname, pathname);
     this._onRoute(pathname);
   }

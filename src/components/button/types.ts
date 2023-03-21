@@ -24,8 +24,10 @@ export enum ButtonBlockType {
 }
 
 export interface ButtonPropsType {
-  text: string | typeof RouterLink;
-  link?: typeof Block;
+  text?: string | typeof RouterLink;
+  link?: Block;
+  icon?: string;
+  alt?: string;
   type?: ButtonValueType;
   variant?: ButtonVariantType;
   size?: ButtonSizeType;

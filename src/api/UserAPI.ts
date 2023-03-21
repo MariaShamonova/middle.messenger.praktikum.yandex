@@ -11,7 +11,7 @@ export default class UserAPI extends BaseAPI {
         headers: { accept: 'application/json', 'Content-Type': 'application/json' },
       });
     } catch (err) {
-      throw new Error(err);
+      throw new Error(JSON.stringify(err));
     }
   }
 

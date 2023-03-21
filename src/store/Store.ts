@@ -2,7 +2,7 @@ import EventBus from '../../event-bus';
 import set from '../helpers/set';
 import { ChatType } from '../modules/chats/components/lastMessage/types';
 import { UserProfileType, UserResponseType } from '../api/AuthAPI';
-import { MessageType } from '../modules/chats/components/message/Message';
+import { Indexed } from '../types/ComponentType';
 
 export interface MessageResponseType {
   id: number;
@@ -21,7 +21,7 @@ export interface MessageResponseType {
   };
 }
 
-export interface State {
+export interface State extends Indexed {
   user: {
     isLoading: boolean
     data: UserResponseType
@@ -33,11 +33,16 @@ export interface State {
     error: string
   };
   selectedChat: number | null;
+  isOpenModalCreateChat: boolean;
+  isOpenModalAddUser: boolean;
+  isOpenModalRemoveUser: boolean;
   messages: Record<string, {
     idLoading: boolean
     data: MessageResponseType[]
     error: string
   }>;
+  usersSelectedChat: UserProfileType[];
+  selectedUser: number | null;
 }
 
 export enum StoreEvents {
@@ -57,14 +62,19 @@ class Store extends EventBus {
       isLoading: false,
     },
     messages: {},
+    usersSelectedChat: [],
+    selectedUser: null,
     selectedChat: null,
+    isOpenModalAddUser: false,
+    isOpenModalCreateChat: false,
+    isOpenModalRemoveUser: false,
   };
 
   public getState() {
     return this.state;
   }
 
-  public set<K extends keyof State>(path: string, value: State[K]) {
+  public set(path: string, value: unknown) {
     set(this.state, path, value);
 
     this.emit(StoreEvents.Updated, this.state);

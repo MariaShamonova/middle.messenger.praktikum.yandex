@@ -4,8 +4,8 @@ import Block from '../../../../utils/block';
 import { MessageProps } from './types';
 
 export default class Message extends Block {
-  constructor(props: MessageProps) {
-    super('div', props);
+  constructor(props: MessageProps, tagName = 'div') {
+    super(props, tagName);
   }
 
   render() {

@@ -11,7 +11,9 @@ class MessagesController {
       throw new Error('Unauthorized user');
     }
 
-    const transport = new WSTransport(`wss://ya-praktikum.tech/ws/chats/${user.data.id}/${id}/${token}`);
+    const transport = new WSTransport(
+      `wss://ya-praktikum.tech/ws/chats/${user.data.id}/${id}/${token}`,
+    );
     await transport.connect();
 
     this.sockets.set(id, transport);
@@ -35,16 +37,19 @@ class MessagesController {
     transport.send({ content: '0', type: 'get old' });
   }
 
-  closeAll() {}
+  closeAll() {
+    Array.from(this.sockets.values()).forEach((socket: WSTransport) => socket.close());
+  }
 
-  private onMessage(id: number, messages: MessageResponseType | MessageResponseType[]) {
+  private static onMessage(id: number, messages: MessageResponseType | MessageResponseType[]) {
     const key = `messages.${id}.data`;
-    console.log('create masseges');
+
     if (isArray(messages)) {
       Store.set(key, messages);
-      console.log(Store);
       return;
     }
+
+    if ((messages as MessageResponseType).type === 'ping') return;
 
     const oldMessage = Store.getState().messages[id].data;
 
@@ -55,13 +60,18 @@ class MessagesController {
     }
   }
 
-  private onClose() {}
+  onClose(id: number) {
+    this.sockets.delete(id);
+  }
 
   private subscribe(transport: WSTransport, id: number) {
     transport.on(
       WSTransportEvents.Message,
-      (messages: MessageResponseType | MessageResponseType[]) => this.onMessage(id, messages),
+      (messages: MessageResponseType |
+      MessageResponseType[]) => MessagesController.onMessage(id, messages),
     );
+
+    transport.on(WSTransportEvents.Close, () => this.onClose(id));
   }
 }
 

@@ -5,10 +5,8 @@ import { LastMessageProps } from './types';
 import formatDate from '../../../../helpers/formatDate';
 
 export default class LastMessage extends Block {
-  public props: any;
-
-  constructor(props: LastMessageProps) {
-    super('div', props);
+  constructor(props: LastMessageProps, tagName = 'div') {
+    super(props, tagName);
   }
 
   render() {

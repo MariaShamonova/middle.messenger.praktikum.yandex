@@ -1,11 +1,10 @@
-import dialog from './dialog';
 import ChatAPI from '../api/ChatAPI';
-import { ChatByUserId } from '../types/ChatTypes';
 import Store from '../store/Store';
 import { ChatType } from '../modules/chats/components/lastMessage/types';
 import MessagesController from './MessagesController';
 import Validator from '../utils/validator';
 import getFormValues from '../helpers/getFormValues';
+import escapeHTML from '../helpers/escapeHTML';
 
 const chatApi = new ChatAPI();
 export default class ChatController {
@@ -22,7 +21,10 @@ export default class ChatController {
         }
 
         chats.forEach(async (chat: ChatType) => {
-          const { token } = await this.getToken(chat.id);
+          const token = await this.getToken(chat.id);
+          if (!token) {
+            throw new Error('Token is undefined');
+          }
           await MessagesController.connect(chat.id, token);
         });
       });
@@ -38,11 +40,21 @@ export default class ChatController {
     Store.set('selectedChat', id);
   }
 
+  static selectUser(id: number | null) {
+    Store.set('selectedUser', id);
+  }
+
+  static async getUsersSelectedChat(id: number) {
+    const data = await chatApi.getUsersSelectedChat(id);
+    Store.set('usersSelectedChat', data);
+  }
+
   static sendMessage(formElement: HTMLFormElement) {
     const isValidForm = Validator.validateForm(formElement);
     if (!isValidForm) {
       throw new Error('Invalid form');
     }
+
     const { message } = getFormValues(formElement);
     const { selectedChat } = Store.getState();
     if (!selectedChat) {
@@ -51,8 +63,50 @@ export default class ChatController {
     MessagesController.sendMessage(selectedChat, message);
   }
 
-  static createChat(title: string) {
-    // Сначала функция должна создать модальное окно
-    // chatApi.create({ title });
+  static async createChat(formElement: HTMLFormElement) {
+    const isValidForm = Validator.validateForm(formElement);
+    if (!isValidForm) {
+      throw new Error();
+    }
+    const { title } = getFormValues(formElement);
+    await chatApi.create({ title: escapeHTML(title) });
+
+    await this.getChats();
+  }
+
+  static toggleModalCreateChat(value: boolean) {
+    Store.set('isOpenModalCreateChat', value);
+  }
+
+  static toggleModalAddUser(value: boolean) {
+    Store.set('isOpenModalAddUser', value);
+  }
+
+  static toggleModalRemoveUser(value: boolean) {
+    Store.set('isOpenModalRemoveUser', value);
+  }
+
+  public static async addUserToChat(formElement: HTMLFormElement) {
+    const input = formElement.querySelector('#autocomplete-add-user > label > input');
+
+    const id: number = Number((input as HTMLInputElement).name);
+
+    const chatId = Store.getState().selectedChat;
+
+    if (chatId === null) {
+      throw new Error('Chat not selected');
+    }
+    await chatApi.addUser({ users: [id], chatId });
+  }
+
+  static removeUserFromChat() {
+    const { selectedChat, selectedUser } = Store.getState();
+    if (selectedChat === null) {
+      throw new Error('Chat not selected');
+    }
+    if (selectedUser === null) {
+      throw new Error('User not selected');
+    }
+    chatApi.removeUserFromChat({ users: [selectedUser], chatId: selectedChat });
   }
 }

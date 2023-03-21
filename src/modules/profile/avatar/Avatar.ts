@@ -4,13 +4,15 @@ import Block from '../../../utils/block';
 import { AvatarProps } from './types';
 
 export default class Avatar extends Block {
-  constructor(props: AvatarProps) {
-    super('div', props);
+  constructor(props: AvatarProps, tagName = 'div') {
+    super(props, tagName);
   }
 
   render() {
+    console.log(this.props);
     return this.compile(tpl, {
-      path: this.props.path,
+      id: this.props.id,
+      avatar: this.props.avatar,
     });
   }
 }
