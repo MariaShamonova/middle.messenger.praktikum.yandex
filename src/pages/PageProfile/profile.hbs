@@ -1,38 +1,38 @@
 <div class="page profile-page">
-    <div class="profile-page__return-button ">
-        <div class="return-button">
-            <a href="/">
-                <img src="/images/arrow-right.png" alt="стрелка влево" style="transform: rotate(180deg)">
-            </a>
-        </div>
+  <div class="profile-page__return-button ">
+    <div class="return-button">
+      <a href="/">
+        <img src="{{IconArrowRight}}" alt="стрелка влево" style="transform: rotate(180deg)">
+      </a>
     </div>
-    <div class="profile-page__content">
-        <div class="profile-page__avatar avatar-container">
-            {{{avatar}}}
-            <p class="avatar-container__name">
-                {{name}}
-            </p>
-        </div>
+  </div>
+  <div class="profile-page__content">
+    <div class="profile-page__avatar avatar-container">
+      {{{avatar}}}
+      <p class="avatar-container__name">
+        {{name}}
+      </p>
+    </div>
 
-        {{#if (eq mode "default")}}
-            <form class="profile-form">
-                <div class="profile-form__fields">
-                    {{#each profileProperties}}
-                        {{{this}}}
-                    {{/each}}
-                </div>
-                <div class="profile-form__actions ">
-                    <div class="d-flex row">
-                        {{{buttonEditPassword}}}
-                        {{{buttonEditData}}}
-                    </div>
-                    {{{buttonExit}}}
-                </div>
-            </form>
-        {{else if (eq mode "editData")}}
-            {{{formUser}}}
-        {{else}}
-            {{{formPassword}}}
-        {{/if}}
-    </div>
+    {{#if (eq mode "default")}}
+      <form class="profile-form">
+        <div class="profile-form__fields">
+          {{#each profileProperties}}
+            {{{this}}}
+          {{/each}}
+        </div>
+        <div class="profile-form__actions ">
+          <div class="d-flex row">
+            {{{buttonEditPassword}}}
+            {{{buttonEditData}}}
+          </div>
+          {{{buttonExit}}}
+        </div>
+      </form>
+    {{else if (eq mode "editData")}}
+      {{{formUser}}}
+    {{else}}
+      {{{formPassword}}}
+    {{/if}}
+  </div>
 </div>

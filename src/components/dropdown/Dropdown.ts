@@ -17,6 +17,7 @@ export default class Dropdown extends Block {
     this.props.position = this.props.position || 'top';
 
     const self = this;
+    console.log(this.props.button.icon);
     this.children.dropdownButton = new Button({
       icon: this.props.button.icon,
       alt: this.props.button.alt,

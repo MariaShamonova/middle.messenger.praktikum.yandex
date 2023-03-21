@@ -18,9 +18,9 @@ import Store, { State, StoreEvents } from '../../store/Store';
 import getProperties from '../../helpers/getUserProperties';
 import AuthController from '../../controllers/AuthController';
 import RouterLink from '../../router/components/RouterLink';
-import { UserProfileType, UserResponseType } from '../../api/AuthAPI';
+import { UserResponseType } from '../../api/AuthAPI';
 import ResourseController from '../../controllers/ResourseController';
-import escapeHTML from '../../helpers/escapeHTML';
+import IconArrowRight from '../../../static/images/arrow-right.png';
 
 class PageProfile extends Block {
   constructor(props: PageProfilePropsType, tagName = 'div') {
@@ -281,6 +281,7 @@ class PageProfile extends Block {
       buttonExit: this.children.buttonExit,
       formPassword: this.children.formPassword,
       formUser: this.children.formUser,
+      IconArrowRight,
     });
   }
 }

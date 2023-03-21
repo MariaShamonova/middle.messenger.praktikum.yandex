@@ -25,6 +25,13 @@ import Modal from '../../components/modal/Modal';
 import Autocomplete from '../../components/autocomplete/Autocomplete';
 import ChatUsersController from '../../controllers/ChatUsersController';
 import UserItem, { UserItemType } from '../../modules/chats/components/userItem/UserItem';
+import IconDots from '../../../static/images/more.png';
+import IconPaperclip from '../../../static/images/paperclip.png';
+import IconFile from '../../../static/images/file.png';
+import IconImage from '../../../static/images/image.png';
+import IconLocation from '../../../static/images/location.png';
+import IconPlus from '../../../static/images/plus-circle.png';
+import IconClose from '../../../static/images/close-circle.png';
 
 class PageChats extends Block {
   public activeChat: number | null;
@@ -46,20 +53,20 @@ class PageChats extends Block {
         id: 'chat-actions',
 
         button: {
-          icon: 'more.png',
+          icon: IconDots,
           alt: 'Многоточие',
         },
         options: [{
           id: 'add-user',
           title: 'Добавить пользователя',
-          icon: 'plus-circle.png',
+          icon: IconPlus,
           click() {
             ChatController.toggleModalAddUser(true);
           },
         }, {
           id: 'remove-user',
           title: 'Удалить пользователя',
-          icon: 'close-circle.png',
+          icon: IconClose,
           click() {
             ChatController.toggleModalRemoveUser(true);
           },
@@ -72,25 +79,25 @@ class PageChats extends Block {
       {
         id: 'attachments',
         button: {
-          icon: 'paperclip.png',
+          icon: IconPaperclip,
           alt: 'Скрепка',
         },
         options: [{
           id: 'иконка файла',
           title: 'Файл',
-          icon: 'file.png',
+          icon: IconFile,
           click() {},
         },
         {
           id: 'иконка фото',
           title: 'Фото и видео',
-          icon: 'image.png',
+          icon: IconImage,
           click() {},
         },
         {
           id: 'иконка локации',
           title: 'Локация',
-          icon: 'location.png',
+          icon: IconLocation,
           click() {},
         }],
       },
@@ -414,6 +421,7 @@ function mapUserToProps(state: State) {
     usersSelectedChat: state.usersSelectedChat,
     selectedUser: state.selectedUser,
     isOpenModalCreateChat: state.isOpenModalCreateChat,
+
   };
 }
 
