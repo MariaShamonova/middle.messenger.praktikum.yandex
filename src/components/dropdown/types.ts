@@ -1,6 +1,7 @@
 interface OptionIconType {
   id: string;
   icon: (context: any) => any;
+  type?: string
   title: string;
   click: () => void;
 }
@@ -12,6 +13,7 @@ export interface DropdownPropsType {
     text?: string
     alt: string
   }
+
   options: OptionIconType[],
   size?: number,
   position?: string,

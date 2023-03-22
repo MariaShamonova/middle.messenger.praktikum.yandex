@@ -25,23 +25,28 @@ import Modal from '../../components/modal/Modal';
 import Autocomplete from '../../components/autocomplete/Autocomplete';
 import ChatUsersController from '../../controllers/ChatUsersController';
 import UserItem, { UserItemType } from '../../modules/chats/components/userItem/UserItem';
-import IconDots from '../../../static/images/more.png';
-import IconPaperclip from '../../../static/images/paperclip.png';
-import IconFile from '../../../static/images/file.png';
-import IconImage from '../../../static/images/image.png';
-import IconLocation from '../../../static/images/location.png';
-import IconPlus from '../../../static/images/plus-circle.png';
-import IconClose from '../../../static/images/close-circle.png';
+import IconDots from '../../../static/images/dots-three-vertical.svg';
+import IconPaperclip from '../../../static/images/paperclip.svg';
+import IconFile from '../../../static/images/file.svg';
+import IconImage from '../../../static/images/image.svg';
+import IconLocation from '../../../static/images/map-pin.svg';
+import IconPlus from '../../../static/images/user-plus.svg';
+import IconClose from '../../../static/images/user-minus.svg';
+import IconRemove from '../../../static/images/x.svg';
+import IconPlane from '../../../static/images/paper-plane-right.svg';
+import Notification from '../../components/notification/Notification';
+import { NotificationPropsType } from '../../components/notification/types';
 
 class PageChats extends Block {
   public activeChat: number | null;
 
-  constructor(props: PageChatsPropsType, tagName = 'div') {
+  constructor (props: PageChatsPropsType, tagName = 'div') {
     super(props, tagName);
     this.props = props;
     this.activeChat = null;
     this.props.dialogs = [];
 
+    this.children.notification = PageChats.createNotification(this.props.notification);
     this.children.lastMessage = PageChats.createChatsList(this.props.chats.data);
     const { selectedChat } = this.props;
     this.children.dialogs = PageChats.createMessagesList(selectedChat
@@ -51,26 +56,35 @@ class PageChats extends Block {
     this.children.dropdownChatActions = new Dropdown(
       {
         id: 'chat-actions',
-
         button: {
           icon: IconDots,
           alt: 'Многоточие',
         },
-        options: [{
-          id: 'add-user',
-          title: 'Добавить пользователя',
-          icon: IconPlus,
-          click() {
-            ChatController.toggleModalAddUser(true);
+        options: [
+          {
+            id: 'add-user',
+            title: 'Добавить пользователя',
+            icon: IconPlus,
+            click () {
+              ChatController.toggleModalAddUser(true);
+            },
           },
-        }, {
-          id: 'remove-user',
-          title: 'Удалить пользователя',
-          icon: IconClose,
-          click() {
-            ChatController.toggleModalRemoveUser(true);
-          },
-        }],
+          {
+            id: 'remove-user',
+            title: 'Удалить пользователя',
+            icon: IconClose,
+            click () {
+              ChatController.toggleModalRemoveUser(true);
+            },
+          }, {
+            id: 'remove-chat',
+            title: 'Удалить чат',
+            type: 'error',
+            icon: IconRemove,
+            click () {
+              ChatController.toggleModalRemoveChat(true);
+            },
+          }],
         size: 32,
         position: 'bottom',
       },
@@ -82,24 +96,25 @@ class PageChats extends Block {
           icon: IconPaperclip,
           alt: 'Скрепка',
         },
-        options: [{
-          id: 'иконка файла',
-          title: 'Файл',
-          icon: IconFile,
-          click() {},
-        },
-        {
-          id: 'иконка фото',
-          title: 'Фото и видео',
-          icon: IconImage,
-          click() {},
-        },
-        {
-          id: 'иконка локации',
-          title: 'Локация',
-          icon: IconLocation,
-          click() {},
-        }],
+        options: [
+          {
+            id: 'иконка файла',
+            title: 'Файл',
+            icon: IconFile,
+            click () {},
+          },
+          {
+            id: 'иконка фото',
+            title: 'Фото и видео',
+            icon: IconImage,
+            click () {},
+          },
+          {
+            id: 'иконка локации',
+            title: 'Локация',
+            icon: IconLocation,
+            click () {},
+          }],
       },
     );
 
@@ -109,7 +124,7 @@ class PageChats extends Block {
         link: new RouterLink({
           text: 'Профиль',
           events: {
-            async click() {
+            async click () {
               await Router.go('/profile');
             },
           },
@@ -123,7 +138,7 @@ class PageChats extends Block {
         link: new RouterLink({
           text: 'Создать',
           events: {
-            async click() {
+            async click () {
               ChatController.toggleModalCreateChat(true);
             },
           },
@@ -133,6 +148,7 @@ class PageChats extends Block {
     );
 
     this.children.modalCreateChat = PageChats.createModalCreateChat(false);
+    this.children.modalRemoveChat = PageChats.createModalRemoveChat(false);
     this.children.modalAddUser = PageChats.createModalAddUser(false);
     this.children.modalRemoveUser = this.createModalRemoveUser(false, this.props.selectedUser);
 
@@ -153,7 +169,7 @@ class PageChats extends Block {
           block: InputBlockType.fill,
           required: true,
           events: {
-            input(evn: Event) {
+            input (evn: Event) {
               const target = evn.target as HTMLInputElement;
               Validator.setErrorValue(target, '');
               const form = target.closest('form')!;
@@ -169,14 +185,15 @@ class PageChats extends Block {
       ],
       submitButton: new Button(
         {
-          text: '→',
+          icon: IconPlane,
           type: ButtonValueType.submit,
-          variant: ButtonVariantType.secondary,
+          variant: ButtonVariantType.borderless,
           events: {
-            click(evn: Event) {
+            click (evn: Event) {
               evn.preventDefault();
               const formElement: HTMLFormElement = this.closest('form')!;
               ChatController.sendMessage(formElement);
+              ChatController.resetForm(formElement);
             },
           },
         },
@@ -197,7 +214,9 @@ class PageChats extends Block {
         );
       }
       this.children.modalCreateChat = PageChats.createModalCreateChat(state.isOpenModalCreateChat);
+      this.children.modalRemoveChat = PageChats.createModalRemoveChat(state.isOpenModalRemoveChat);
       this.children.modalAddUser = PageChats.createModalAddUser(state.isOpenModalAddUser);
+      this.children.notification = PageChats.createNotification(this.props.notification);
       this.children.modalRemoveUser = this.createModalRemoveUser(
         state.isOpenModalRemoveUser,
         state.selectedUser,
@@ -205,7 +224,7 @@ class PageChats extends Block {
     });
   }
 
-  static createChatsList(data: ChatType[], activeId: number | null = null) {
+  static createChatsList (data: ChatType[], activeId: number | null = null) {
     return data.reduce((
       acc: LastMessageType[],
       curr: ChatType,
@@ -214,7 +233,7 @@ class PageChats extends Block {
         active: curr.id === activeId ? StatusMessage.active : StatusMessage.default,
         message: curr,
         events: {
-          click() {
+          click () {
             ChatController.selectChat(curr.id);
             ChatController.getUsersSelectedChat(curr.id);
           },
@@ -224,7 +243,7 @@ class PageChats extends Block {
     }, [] as LastMessageType[]);
   }
 
-  static createMessagesList(dialogs: MessageResponseType[]) {
+  static createMessagesList (dialogs: MessageResponseType[]) {
     const state = Store.getState();
     return dialogs.reduce((acc, curr) => {
       acc.push(new Message({
@@ -238,7 +257,7 @@ class PageChats extends Block {
     }, [] as MessageType[]);
   }
 
-  static createModalCreateChat(value: boolean) {
+  static createModalCreateChat (value: boolean) {
     return new Modal({
       isOpen: value ? 'show' : 'hide',
       title: 'Создать чат',
@@ -250,11 +269,11 @@ class PageChats extends Block {
             placeholder: 'Введите название чата',
             block: InputBlockType.fill,
             events: {
-              input(evn: Event) {
+              input (evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.setErrorValue(target, '');
               },
-              blur(evn: Event) {
+              blur (evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.validateInput(target.value, null, evn);
               },
@@ -267,11 +286,10 @@ class PageChats extends Block {
             block: ButtonBlockType.fill,
             type: ButtonValueType.submit,
             events: {
-              async click(evn: Event) {
+              async click (evn: Event) {
                 evn.preventDefault();
                 const formElement: HTMLFormElement = this.closest('form')!;
                 await ChatController.createChat(formElement);
-                ChatController.toggleModalCreateChat(false);
               },
             },
           },
@@ -283,7 +301,7 @@ class PageChats extends Block {
             variant: ButtonVariantType.secondary,
             block: ButtonBlockType.fill,
             events: {
-              click() {
+              click () {
                 ChatController.toggleModalCreateChat(false);
               },
             },
@@ -293,7 +311,47 @@ class PageChats extends Block {
     });
   }
 
-  static createModalAddUser(value: boolean) {
+  static createModalRemoveChat (value: boolean) {
+    return new Modal({
+      isOpen: value ? 'show' : 'hide',
+      title: 'Удалить чат',
+      body: new Form({
+        fields: [],
+        confirmMessage: 'Вы уверены, что хотите удалить чат?',
+        submitButton: new Button(
+          {
+            text: 'Удалить',
+            block: ButtonBlockType.fill,
+            type: ButtonValueType.submit,
+            events: {
+              async click (evn: Event) {
+                evn.preventDefault();
+
+                await ChatController.removeChat();
+                ChatController.toggleModalRemoveChat(false);
+                await ChatController.getChats();
+              },
+            },
+          },
+        ),
+        secondaryButton: new Button(
+          {
+            text: 'Отменить',
+            type: ButtonValueType.reset,
+            variant: ButtonVariantType.secondary,
+            block: ButtonBlockType.fill,
+            events: {
+              click () {
+                ChatController.toggleModalRemoveChat(false);
+              },
+            },
+          },
+        ),
+      }),
+    });
+  }
+
+  static createModalAddUser (value: boolean) {
     return new Modal({
       isOpen: value ? 'show' : 'hide',
       title: 'Добавить пользователя',
@@ -301,10 +359,13 @@ class PageChats extends Block {
         fields: [new Autocomplete({
           id: 'add-user',
 
-          async getData(login: string) {
+          async getData (login: string) {
             const data = await ChatUsersController.getUserByLogin(login);
-
-            return data.map((user) => ({ ...user, title: user.login }));
+            console.log(data);
+            return data.map((user) => ({
+              ...user,
+              title: user.login,
+            }));
           },
         })],
         submitButton: new Button(
@@ -313,8 +374,9 @@ class PageChats extends Block {
             block: ButtonBlockType.fill,
             type: ButtonValueType.submit,
             events: {
-              async click(evn: Event) {
+              async click (evn: Event) {
                 evn.preventDefault();
+                if (evn.defaultPrevented && (evn as PointerEvent).pointerType !== 'mouse') return;
                 const formElement: HTMLFormElement = this.closest('form')!;
                 await ChatController.addUserToChat(formElement);
                 ChatController.toggleModalAddUser(false);
@@ -329,7 +391,7 @@ class PageChats extends Block {
             variant: ButtonVariantType.secondary,
             block: ButtonBlockType.fill,
             events: {
-              click() {
+              click () {
                 ChatController.toggleModalAddUser(false);
               },
             },
@@ -339,7 +401,7 @@ class PageChats extends Block {
     });
   }
 
-  createModalRemoveUser(value: boolean, selectedUser: number | null) {
+  createModalRemoveUser (value: boolean, selectedUser: number | null) {
     const users = this.props.usersSelectedChat;
     return new Modal({
       isOpen: value ? 'show' : 'hide',
@@ -352,7 +414,7 @@ class PageChats extends Block {
             block: ButtonBlockType.fill,
             type: ButtonValueType.submit,
             events: {
-              async click(evn: Event) {
+              async click (evn: Event) {
                 evn.preventDefault();
                 await ChatController.removeUserFromChat();
                 ChatController.toggleModalRemoveUser(false);
@@ -367,7 +429,7 @@ class PageChats extends Block {
             variant: ButtonVariantType.secondary,
             block: ButtonBlockType.fill,
             events: {
-              click() {
+              click () {
                 ChatController.toggleModalRemoveUser(false);
                 ChatController.selectUser(null);
               },
@@ -378,7 +440,7 @@ class PageChats extends Block {
     });
   }
 
-  static createUsersList(data: UsersSelectedChatType[], selectedUser: number | null) {
+  static createUsersList (data: UsersSelectedChatType[], selectedUser: number | null) {
     return data.reduce((acc: UserItemType[], curr) => {
       acc.push(new UserItem({
         first_name: curr.first_name,
@@ -390,7 +452,7 @@ class PageChats extends Block {
           : '',
 
         events: {
-          click() {
+          click () {
             ChatController.selectUser(curr.id);
           },
         },
@@ -399,7 +461,16 @@ class PageChats extends Block {
     }, [] as UserItemType[]);
   }
 
-  render() {
+  static createNotification (notification: NotificationPropsType) {
+    return new Notification({
+      title: notification.title,
+      message: notification.message,
+      isOpen: notification.isOpen,
+      type: notification.type,
+    });
+  }
+
+  render () {
     return this.compile(tpl, {
       lastMessage: this.children.lastMessage,
       dropdownChatActions: this.children.dropdownChatActions,
@@ -411,15 +482,17 @@ class PageChats extends Block {
       modalCreateChat: this.children.modalCreateChat,
       modalAddUser: this.children.modalAddUser,
       modalRemoveUser: this.children.modalRemoveUser,
+      modalRemoveChat: this.children.modalRemoveChat,
       isSelectedChat: this.props.selectedChat !== null,
     });
   }
 }
 
-function mapUserToProps(state: State) {
+function mapUserToProps (state: State) {
   return {
     chats: state.chats,
     messages: state.messanges,
+    notification: state.notification,
     selectedChat: state.selectedChat,
     usersSelectedChat: state.usersSelectedChat,
     selectedUser: state.selectedUser,

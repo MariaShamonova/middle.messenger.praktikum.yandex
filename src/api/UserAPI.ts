@@ -8,10 +8,13 @@ export default class UserAPI extends BaseAPI {
   async request() {
     try {
       return await this.http.get('/user', {
-        headers: { accept: 'application/json', 'Content-Type': 'application/json' },
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
       });
     } catch (err) {
-      throw new Error(JSON.stringify(err));
+      throw new Error('Failed get user');
     }
   }
 

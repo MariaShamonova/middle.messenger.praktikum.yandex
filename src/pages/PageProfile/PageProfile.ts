@@ -19,8 +19,9 @@ import getProperties from '../../helpers/getUserProperties';
 import AuthController from '../../controllers/AuthController';
 import RouterLink from '../../router/components/RouterLink';
 import { UserResponseType } from '../../api/AuthAPI';
-import ResourseController from '../../controllers/ResourseController';
-import IconArrowRight from '../../../static/images/arrow-right.png';
+import IconArrowRight from '../../../static/images/arrow-left.svg';
+import Notification from '../../components/notification/Notification';
+import { NotificationPropsType } from '../../components/notification/types';
 
 class PageProfile extends Block {
   constructor(props: PageProfilePropsType, tagName = 'div') {
@@ -39,22 +40,10 @@ class PageProfile extends Block {
       },
     };
 
-    this.children.avatar = new Avatar({
-      id: self.props.user.data.id,
-      avatar: '',
-      events: {
-        click() {
-          const input = document.createElement('input');
-          input.type = 'file';
-          input.onchange = async () => {
-            if (input.files) {
-              await ProfileController.changeUserAvatar(input.files[0]);
-            }
-          };
-          input.click();
-        },
-      },
-    });
+    this.children.avatar = this.createAvatar();
+
+    this.children.notification = PageProfile.createNotification(this.props.notification);
+
     this.children.formPassword = new Form({
       fields: [
         new Input(
@@ -152,17 +141,18 @@ class PageProfile extends Block {
     });
 
     this.children.formUser = new Form({
-      fields: getProperties(this.props.user.data).reduce((acc: InputType[], curr) => {
-        acc.push(new Input({
-          name: curr.name,
-          label: curr.title,
-          placeholder: curr.placeholder,
-          value: curr.value,
-          block: InputBlockType.fill,
-          events: inputEvents,
-        }));
-        return acc;
-      }, [] as InputType[]),
+      fields: getProperties(this.props.user.data)
+        .reduce((acc: InputType[], curr) => {
+          acc.push(new Input({
+            name: curr.name,
+            label: curr.title,
+            placeholder: curr.placeholder,
+            value: curr.value,
+            block: InputBlockType.fill,
+            events: inputEvents,
+          }));
+          return acc;
+        }, [] as InputType[]),
       submitButton: new Button(
         {
           text: 'Сохранить',
@@ -228,47 +218,65 @@ class PageProfile extends Block {
           text: 'Выйти',
           events: {
             async click() {
-              console.log('logout');
               await AuthController.logout();
             },
           },
         }),
       },
     );
-    this.uploadAvatar(this.props.user.data);
 
     Store.on(StoreEvents.Updated, () => {
       const state = Store.getState();
       // вызываем обновление компонента, передав данные из хранилища
+      this.children.notification = PageProfile.createNotification(this.props.notification);
       this.children.profileProperties = PageProfile.createUserProperties(state.user.data);
-
-      if (state.user.data) {
-        this.uploadAvatar(state.user.data);
-      }
+      this.children.avatar = this.createAvatar();
     });
   }
 
   static createUserProperties(data: UserResponseType) {
     const properties: any[] = data ? getProperties(data) : [];
     return properties.reduce((acc: ProfilePropertyType[], curr) => {
-      acc.push(new ProfileProperty({ title: curr.title, value: curr.value }));
+      acc.push(new ProfileProperty({
+        title: curr.title,
+        value: curr.value,
+      }));
       return acc;
     }, []);
-  }
-
-  uploadAvatar(user: UserResponseType) {
-    ResourseController.getAvatar(user.avatar).then((file) => {
-      const avatar = document.querySelector(`#avatar-${this.props.user.data.id}`);
-      const image = document.createElement('img');
-      image.src = window.URL.createObjectURL(new Blob([file as string], { type: 'image/png' }));
-
-      avatar?.appendChild(image);
-    });
   }
 
   changeMode(currentMode: string) {
     this.setProps({ mode: currentMode });
     renderDOM('#root', this);
+  }
+
+  createAvatar() {
+    const self = this;
+    return new Avatar({
+      id: self.props.user.data.id,
+      avatar: self.props.user.data.avatar,
+      events: {
+        click() {
+          const input = document.createElement('input');
+          input.type = 'file';
+          input.onchange = async () => {
+            if (input.files) {
+              await ProfileController.changeUserAvatar(input.files[0]);
+            }
+          };
+          input.click();
+        },
+      },
+    });
+  }
+
+  static createNotification(notification: NotificationPropsType) {
+    return new Notification({
+      title: notification.title,
+      message: notification.message,
+      isOpen: notification.isOpen,
+      type: notification.type,
+    });
   }
 
   render() {
@@ -281,6 +289,7 @@ class PageProfile extends Block {
       buttonExit: this.children.buttonExit,
       formPassword: this.children.formPassword,
       formUser: this.children.formUser,
+      notification: this.children.notification,
       IconArrowRight,
     });
   }
@@ -289,6 +298,7 @@ class PageProfile extends Block {
 function mapUserToProps(state: State) {
   return {
     user: state.user,
+    notification: state.notification,
   };
 }
 

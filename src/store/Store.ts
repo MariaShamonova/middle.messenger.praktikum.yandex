@@ -3,6 +3,7 @@ import set from '../helpers/set';
 import { ChatType } from '../modules/chats/components/lastMessage/types';
 import { UserProfileType, UserResponseType } from '../api/AuthAPI';
 import { Indexed } from '../types/ComponentType';
+import { NotificationPropsType, NotificationTypeEnum } from '../components/notification/types';
 
 export interface MessageResponseType {
   id: number;
@@ -36,6 +37,7 @@ export interface State extends Indexed {
   isOpenModalCreateChat: boolean;
   isOpenModalAddUser: boolean;
   isOpenModalRemoveUser: boolean;
+  isOpenModalRemoveChat: boolean;
   messages: Record<string, {
     idLoading: boolean
     data: MessageResponseType[]
@@ -43,6 +45,7 @@ export interface State extends Indexed {
   }>;
   usersSelectedChat: UserProfileType[];
   selectedUser: number | null;
+  notification: NotificationPropsType;
 }
 
 export enum StoreEvents {
@@ -68,6 +71,13 @@ class Store extends EventBus {
     isOpenModalAddUser: false,
     isOpenModalCreateChat: false,
     isOpenModalRemoveUser: false,
+    isOpenModalRemoveChat: false,
+    notification: {
+      isOpen: false,
+      type: NotificationTypeEnum.Info,
+      title: '',
+      message: '',
+    },
   };
 
   public getState() {

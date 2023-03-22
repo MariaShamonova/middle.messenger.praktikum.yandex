@@ -1,7 +1,8 @@
 <div class="last-message row {{active}}">
   <div class="last-message__avatar">
-    {{#if avatarPath}}
-      <img src="{{avatarPath}}" alt="изображение пользователя" class="avatar">
+    {{#if message.avatar}}
+      <img src="{{API_URL}}/resources{{message.avatar}}" alt="изображение пользователя"
+           class="avatar">
     {{else}}
       <img src="{{IconUser}}" alt="изображение отсутствует">
     {{/if}}

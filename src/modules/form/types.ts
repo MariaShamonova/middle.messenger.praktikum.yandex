@@ -6,6 +6,7 @@ import { UserItemType } from '../chats/components/userItem/UserItem';
 export interface FormPropsType {
   title?: string;
   fields: InputType[] | Autocomplete[] | UserItemType[];
+  confirmMessage?: string;
   submitButton: ButtonType;
   secondaryButton?: ButtonType;
   borderlessButton?: ButtonType;

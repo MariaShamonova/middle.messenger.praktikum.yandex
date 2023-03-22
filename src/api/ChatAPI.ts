@@ -1,30 +1,43 @@
 import BaseAPI from './BaseAPI';
 
 export default class ChatAPI extends BaseAPI {
-  constructor() {
+  constructor () {
     super('/chats');
   }
 
-  async create(data: { title: string }) {
+  async create (data: { title: string }) {
     try {
       return await this.http.post('', {
         data,
-        headers: { accept: 'application/json', 'Content-Type': 'application/json' },
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
       });
     } catch {
       throw new Error('Failed to create chat');
+      // return false
     }
   }
 
-  async request() {
+  async request () {
     // Здесь уже не нужно писать полный путь /api/v1/chats/
-    return this.http.get('', {});
+
+    try {
+      return await this.http.get('', {});
+    } catch {
+      throw new Error('Failed to get chats');
+      // return false
+    }
   }
 
-  async getToken(id: number) {
+  async getToken (id: number) {
     try {
       const response = await this.http.post(`/token/${id}`, {
-        headers: { accept: 'application/json', 'Content-Type': 'application/json' },
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
       });
       return (response as { token: string }).token;
     } catch {
@@ -32,36 +45,59 @@ export default class ChatAPI extends BaseAPI {
     }
   }
 
-  async addUser(data: { users: number[], chatId: number }) {
+  async addUser (data: { users: number[], chatId: number }) {
     try {
-      console.log(data);
-      return await this.http.post('/users', {
+      return await this.http.put('/users', {
         data,
-        headers: { accept: 'application/json', 'Content-Type': 'application/json' },
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
       });
     } catch {
       throw new Error('Failed to add user');
     }
   }
 
-  async getUsersSelectedChat(id: number) {
+  async getUsersSelectedChat (id: number) {
     try {
       return await this.http.get(`/${id}/users`, {
-        headers: { accept: 'application/json', 'Content-Type': 'application/json' },
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
       });
     } catch {
       throw new Error(`Failed to get users for chat's id: ${id}`);
     }
   }
 
-  async removeUserFromChat(data: { users: number[], chatId: number }) {
+  async removeUserFromChat (data: { users: number[], chatId: number }) {
     try {
       return await this.http.delete('/users', {
         data,
-        headers: { accept: 'application/json', 'Content-Type': 'application/json' },
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
       });
     } catch {
       throw new Error('Failed to delete user');
+    }
+  }
+
+  async removeChat (chatId: number) {
+    const data = { chatId };
+    try {
+      return await this.http.delete('', {
+        data,
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch {
+      throw new Error('Failed to remove chat');
     }
   }
 

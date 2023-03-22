@@ -11,13 +11,11 @@ import { MenuOptionType } from '../menu/types';
 export default class Dropdown extends Block {
   constructor(props: DropdownPropsType, tagName = 'div') {
     super(props, tagName);
-
+    const self = this;
     this.props.isOpen = false;
     this.props.size = this.props.size || 32;
     this.props.position = this.props.position || 'top';
 
-    const self = this;
-    console.log(this.props.button.icon);
     this.children.dropdownButton = new Button({
       icon: this.props.button.icon,
       alt: this.props.button.alt,
@@ -41,6 +39,7 @@ export default class Dropdown extends Block {
           events: {
             click() {
               curr.click();
+              self.props.isOpen = !self.props.isOpen;
             },
           },
         }));

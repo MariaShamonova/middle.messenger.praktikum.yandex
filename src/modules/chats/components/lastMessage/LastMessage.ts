@@ -4,6 +4,7 @@ import Block from '../../../../utils/block';
 import { LastMessageProps } from './types';
 import formatDate from '../../../../helpers/formatDate';
 import IconUser from '../../../../../static/images/icon-user.png';
+import { API_URL } from '../../../../utils/HTTPTransport';
 
 export default class LastMessage extends Block {
   constructor(props: LastMessageProps, tagName = 'div') {
@@ -15,7 +16,11 @@ export default class LastMessage extends Block {
       this.props.message.last_message.time = formatDate(this.props.message.last_message.time);
     }
 
-    return this.compile(tpl, { ...this.props, IconUser });
+    return this.compile(tpl, {
+      ...this.props,
+      API_URL,
+      IconUser,
+    });
   }
 }
 

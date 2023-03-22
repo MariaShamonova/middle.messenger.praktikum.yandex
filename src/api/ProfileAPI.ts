@@ -6,6 +6,9 @@ export interface FormPasswordType {
   oldPassword: string;
 }
 
+export interface FormUserDataType extends Omit<UserProfileType, 'password'> {
+}
+
 export default class ProfileAPI extends BaseAPI {
   constructor() {
     super('/user');
@@ -19,14 +22,17 @@ export default class ProfileAPI extends BaseAPI {
 
   update = undefined;
 
-  async updateProfile(data: UserProfileType) {
+  async updateProfile(data: FormUserDataType) {
     try {
       return await this.http.put('/profile', {
         data,
-        headers: { accept: 'application/json', 'Content-Type': 'application/json' },
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
       });
     } catch (err) {
-      throw new Error(JSON.stringify(err));
+      throw new Error('Failed update profile data');
     }
   }
 
@@ -34,7 +40,10 @@ export default class ProfileAPI extends BaseAPI {
     try {
       return await this.http.put('/password', {
         data,
-        headers: { accept: 'application/json', 'Content-Type': 'application/json' },
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
       });
     } catch (err) {
       throw new Error(JSON.stringify(err));

@@ -60,7 +60,13 @@ export default class WSTransport extends EventBus {
       throw new Error('Socket is not connected');
     }
     socket.addEventListener('message', (message) => {
-      const data = JSON.parse(message.data);
+      let data;
+      try {
+        data = JSON.parse(message.data);
+      } catch {
+        data = message.data;
+      }
+
       this.emit(WSTransportEvents.Message, data);
     });
   }

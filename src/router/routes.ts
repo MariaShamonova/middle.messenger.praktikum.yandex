@@ -9,10 +9,10 @@ import registerHelpers from '../helpers/registerHelpers';
 
 registerHelpers();
 
-Router.use('/', 'Chats', PageChats)
-  .use('/login', 'Login', PageLogin, false)
-  .use('/registration', 'Registration', PageRegistration, false)
-  .use('/profile', 'Profile', PageProfile)
+Router.use('/messenger', 'Chats', PageChats)
+  .use('/', 'Login', PageLogin, false)
+  .use('/sign-up', 'Registration', PageRegistration, false)
+  .use('/settings', 'Profile', PageProfile)
   .use('/404', 'NotFound', PageNotFound)
   .use('/500', 'ServerError', PageServerError)
   .start();

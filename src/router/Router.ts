@@ -56,16 +56,16 @@ class Router {
   }
 
   async go(_pathname: string) {
-    console.log(_pathname);
     const route = this.getRoute(_pathname);
     const pathname = route?.isProtected ? await Router.checkPermission(_pathname) : _pathname;
-    // const pathname = _pathname;
     this.history.pushState({ name: pathname }, pathname, pathname);
     this._onRoute(pathname);
   }
 
   static checkPermission(pathname: string) {
-    return UserController.getUser().then(() => pathname).catch(() => '/login');
+    return UserController.getUser()
+      .then(() => pathname)
+      .catch(() => '/');
   }
 
   back() {

@@ -73,14 +73,14 @@ function setErrorMessage(label: HTMLLabelElement, text: string) {
 
 export default class Validator {
   static validateForm(form: HTMLFormElement): boolean {
-    const isValid: boolean = true;
+    let isValid: boolean = true;
 
     const inputs = form.querySelectorAll('input');
     const buttonSubmit = form.querySelector('button[type="submit"]');
     if (inputs) {
       for (let index = 0; index < inputs.length; index += 1) {
-        const isValidInput = this.validateInput(inputs[index].value, inputs[index]);
-        if (index === inputs.length - 1 && isValidInput) {
+        isValid = this.validateInput(inputs[index].value, inputs[index]);
+        if (index === inputs.length - 1 && isValid) {
           buttonSubmit?.classList.remove('disabled');
         } else {
           buttonSubmit?.classList.add('disabled');

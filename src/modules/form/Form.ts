@@ -38,6 +38,7 @@ export default class Form extends Block {
       secondaryButton: this.props.secondaryButton,
       borderlessButton: this.props.borderlessButton,
       action: this.props.action,
+      confirmMessage: this.props.confirmMessage,
     });
   }
 }

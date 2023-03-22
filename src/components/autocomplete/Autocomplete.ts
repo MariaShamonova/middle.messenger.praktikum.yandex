@@ -17,7 +17,7 @@ export default class Autocomplete extends Block {
       block: InputBlockType.fill,
       placeholder: 'Введите логин пользователя',
       events: {
-        async input(evn: Event) {
+        async change(evn: Event) {
           const target = evn.target as HTMLInputElement;
           if (target.value) {
             const data = await self.props.getData(target.value);

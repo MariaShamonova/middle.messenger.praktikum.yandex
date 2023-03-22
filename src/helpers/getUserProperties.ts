@@ -1,7 +1,6 @@
 import { UserResponseType } from '../api/AuthAPI';
 
 export default function getProperties(data: UserResponseType) {
-  console.log(data);
   return [
     {
       name: 'email',

@@ -1,11 +1,19 @@
-import ResourseAPI from '../api/ResourseAPI';
+import ResourceAPI from '../api/ResourceAPI';
+import NotificationController from './NotificationController';
+import { NotificationTypeEnum } from '../components/notification/types';
 
-const resourseApi = new ResourseAPI();
+const resourceApi = new ResourceAPI();
 
-export default class ResourseController {
+export default class ResourceController {
   public static async getAvatar(path: string) {
     try {
-      return await resourseApi.request(path);
+      return await resourceApi.request(path)
+        .catch((err) => {
+          NotificationController.createNotification({
+            type: NotificationTypeEnum.Error,
+            message: err,
+          });
+        });
     } catch (err) {
       throw new Error(JSON.stringify(err));
     }

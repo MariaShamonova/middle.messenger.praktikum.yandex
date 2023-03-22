@@ -1,0 +1,38 @@
+.notification {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 25px;
+
+  &.show {
+    display: block;
+  }
+
+  &.hide {
+    display: none;
+  }
+
+  &__title, &__message {
+
+    display: flex;
+    align-items: center;
+  }
+
+  &__title {
+    height: 30px;
+    font-weight: 600;
+    font-size: 20px;
+  }
+
+  &__message {
+    min-height: 50px;
+    max-height: 300px;
+    overflow-y: auto;
+    font-weight: 400;
+  }
+
+  &.error {
+    background: var(--error-color__base);
+    border-radius: 12px;
+  }
+}

@@ -4,11 +4,13 @@ import Validator from '../utils/validator';
 import getFormValues from '../helpers/getFormValues';
 import Store from '../store/Store';
 import escapeHTML from '../helpers/escapeHTML';
+import NotificationController from './NotificationController';
+import { NotificationTypeEnum } from '../components/notification/types';
 
 const authApi = new AuthAPI();
 
 export default class AuthController {
-  public static async signin(formElement: HTMLFormElement) {
+  public static async signin (formElement: HTMLFormElement) {
     try {
       const isValidForm = Validator.validateForm(formElement);
       if (!isValidForm) {
@@ -19,21 +21,27 @@ export default class AuthController {
       await authApi.signin({
         login: escapeHTML(data.login),
         password: escapeHTML(data.password),
-      });
-      await Router.go('/');
+      })
+        .catch((err) => {
+          NotificationController.createNotification({
+            type: NotificationTypeEnum.Error,
+            message: err,
+          });
+        });
+      await Router.go('/messenger');
     } catch (error) {
       console.log(error);
     }
   }
 
-  public static async signup(formElement: HTMLFormElement) {
+  public static async signup (formElement: HTMLFormElement) {
     try {
       const isValidForm = Validator.validateForm(formElement);
       if (!isValidForm) {
         throw new Error();
       }
       const data = getFormValues(formElement);
-      // data.first_name
+
       await authApi.signup({
         first_name: escapeHTML(data.first_name),
         second_name: escapeHTML(data.second_name),
@@ -41,20 +49,32 @@ export default class AuthController {
         email: escapeHTML(data.email),
         password: escapeHTML(data.password),
         phone: escapeHTML(data.phone),
-      });
-      await Router.go('/');
+      })
+        .catch((err) => {
+          NotificationController.createNotification({
+            type: NotificationTypeEnum.Error,
+            message: err,
+          });
+        });
+      await Router.go('/messenger');
     } catch (error) {
       console.log(error);
     }
   }
 
-  public static async logout() {
+  public static async logout () {
     try {
       Store.set('user.isLoading', true);
 
-      await authApi.logout();
+      await authApi.logout()
+        .catch((err) => {
+          NotificationController.createNotification({
+            type: NotificationTypeEnum.Error,
+            message: err,
+          });
+        });
 
-      await Router.go('/login');
+      await Router.go('/');
       Store.set('user.data', {});
       Store.set('user.error', '');
       Store.set('user.isLoading', false);
@@ -63,7 +83,7 @@ export default class AuthController {
     }
   }
 
-  static async goToRegistration() {
-    await Router.go('/registration');
+  static async goToRegistration () {
+    await Router.go('/sign-up');
   }
 }

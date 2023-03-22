@@ -2,6 +2,8 @@
   {{{modalCreateChat}}}
   {{{modalAddUser}}}
   {{{modalRemoveUser}}}
+  {{{modalRemoveChat}}}
+  {{{notification}}}
   <div class="chats-page__layout layout">
     <div class="layout-sider">
       <div class="layout-sider__header">
@@ -12,8 +14,7 @@
         {{{inputSearchMessages}}}
       </div>
 
-      <div>
-
+      <div class="last-messages-wrapper">
         {{#each lastMessage}}
           {{{this}}}
         {{/each}}

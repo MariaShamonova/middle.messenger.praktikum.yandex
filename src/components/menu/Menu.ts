@@ -17,6 +17,7 @@ export default class Menu extends Block {
       position: this.props.position,
       options: this.children.options,
       block: this.props.block,
+      type: this.props.type,
     });
   }
 }

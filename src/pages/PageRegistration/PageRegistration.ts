@@ -147,7 +147,7 @@ class PageRegistration extends Block {
             text: 'Уже есть аккаунт?',
             events: {
               async click() {
-                await Router.go('/login');
+                await Router.go('/');
               },
             },
           }),

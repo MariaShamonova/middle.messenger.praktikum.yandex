@@ -17,7 +17,6 @@ export default class Button extends Block {
   }
 
   render() {
-    console.log(this.props.icon);
     return this.compile(tpl, this.props);
   }
 }

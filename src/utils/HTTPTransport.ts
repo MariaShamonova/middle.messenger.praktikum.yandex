@@ -10,7 +10,9 @@ interface DataType {
 }
 
 function queryStringify(data: DataType) {
-  return `?${Object.entries(data).map(([key, value]) => `${key}=${value}`).join('&')}`;
+  return `?${Object.entries(data)
+    .map(([key, value]) => `${key}=${value}`)
+    .join('&')}`;
 }
 
 interface HeadersType {
@@ -24,7 +26,9 @@ interface OptionsType {
   timeout?: number
 }
 
-const API_URL = 'https://ya-praktikum.tech/api/v2';
+export const API_URL = 'https://ya-praktikum.tech/api/v2';
+type HTTPMethod = (url: string, options?: OptionsType) => Promise<unknown>;
+
 export default class HTTPTransport {
   public endpoint: string;
 
@@ -32,27 +36,25 @@ export default class HTTPTransport {
     this.endpoint = API_URL + endpoint;
   }
 
-  get = (url: string, options: OptionsType) => this.request(url, {
+  get: HTTPMethod = (url, options = {}) => this.request(url, {
     ...options,
     method: METHODS.GET,
   }, options.timeout);
 
-  put = (url: string, options: OptionsType) => this.request(url, {
+  put: HTTPMethod = (url, options = {}) => this.request(url, {
     ...options,
     method: METHODS.PUT,
   }, options.timeout);
 
-  post = (url: string, options: OptionsType) => this.request(url, {
+  post: HTTPMethod = (url, options = {}) => this.request(url, {
     ...options,
     method: METHODS.POST,
   }, options.timeout);
 
-  delete = (url: string, options: OptionsType) => this.request(url, {
+  delete: HTTPMethod = (url, options = {}) => this.request(url, {
     ...options,
     method: METHODS.DELETE,
   }, options.timeout);
-
-  // PUT, POST, DELETE
 
   request = (url: string, options: OptionsType, timeout: number = 5000) => {
     const {
@@ -74,9 +76,10 @@ export default class HTTPTransport {
 
       if (headers) {
         xhr.setRequestHeader('credentials', 'same-origin');
-        Object.entries(headers).forEach(([key, value]) => {
-          xhr.setRequestHeader(key, String(value));
-        });
+        Object.entries(headers)
+          .forEach(([key, value]) => {
+            xhr.setRequestHeader(key, String(value));
+          });
       }
       const handleLoad = () => {
         if (xhr.status === 401) {
