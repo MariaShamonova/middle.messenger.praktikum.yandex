@@ -1,7 +1,7 @@
 import tpl from './profile.hbs';
 import './profile.less';
 import { PageProfilePropsType } from './types';
-import Block from '../../modules/block';
+import Block from '../../utils/block';
 import Avatar from '../../modules/profile/avatar/Avatar';
 import ProfileProperty,
 { ProfilePropertyType } from '../../modules/profile/profileProperty/ProfileProperty';
@@ -10,18 +10,25 @@ import { InputBlockType, InputValueType } from '../../components/input/types';
 import Button from '../../components/button/Button';
 import { ButtonBlockType, ButtonValueType, ButtonVariantType } from '../../components/button/types';
 import Form from '../../modules/form/Form';
-import properties from './const';
-import renderDOM from '../../utils/renderDOM';
+import renderDOM from '../../helpers/renderDOM';
 import Validator from '../../utils/validator';
-import getFormValues from '../../utils/getFormValues';
 import ProfileController from '../../controllers/ProfileController';
+import withStore from '../../hoc/withStore';
+import Store, { State, StoreEvents } from '../../store/Store';
+import getProperties from '../../helpers/getUserProperties';
+import AuthController from '../../controllers/AuthController';
+import RouterLink from '../../router/components/RouterLink';
+import { UserResponseType } from '../../api/AuthAPI';
+import IconArrowRight from '../../../static/images/arrow-left.svg';
+import Notification from '../../components/notification/Notification';
+import { NotificationPropsType } from '../../components/notification/types';
 
-export default class PageProfile extends Block {
-  constructor(props: PageProfilePropsType) {
-    super('div', props);
-
+class PageProfile extends Block {
+  constructor(props: PageProfilePropsType, tagName = 'div') {
+    super(props, tagName);
     const self = this;
-    this.children.avatar = new Avatar({ path: '' });
+    this.props.mode = 'default';
+
     const inputEvents = {
       input(evn: Event) {
         const target = evn.target as HTMLInputElement;
@@ -32,6 +39,10 @@ export default class PageProfile extends Block {
         Validator.validateInput(target.value, null, evn);
       },
     };
+
+    this.children.avatar = this.createAvatar();
+
+    this.children.notification = PageProfile.createNotification(this.props.notification);
 
     this.children.formPassword = new Form({
       fields: [
@@ -105,14 +116,11 @@ export default class PageProfile extends Block {
           block: ButtonBlockType.fill,
           type: ButtonValueType.submit,
           events: {
-            click(evn: Event) {
+            async click(evn: Event) {
               evn.preventDefault();
               const formElement: HTMLFormElement = this.closest('form')!;
-              const isValidForm = Validator.validateForm(formElement);
-              if (isValidForm) {
-                const form = getFormValues(formElement);
-                ProfileController.changePassword(form);
-              }
+              await ProfileController.changeUserPassword(formElement);
+              self.changeMode('default');
             },
           },
         },
@@ -133,31 +141,29 @@ export default class PageProfile extends Block {
     });
 
     this.children.formUser = new Form({
-      fields: properties.reduce((acc: InputType[], curr) => {
-        acc.push(new Input({
-          name: curr.name,
-          label: curr.title,
-          placeholder: curr.placeholder,
-          value: curr.value,
-          block: InputBlockType.fill,
-          events: inputEvents,
-        }));
-        return acc;
-      }, [] as InputType[]),
+      fields: getProperties(this.props.user.data)
+        .reduce((acc: InputType[], curr) => {
+          acc.push(new Input({
+            name: curr.name,
+            label: curr.title,
+            placeholder: curr.placeholder,
+            value: curr.value,
+            block: InputBlockType.fill,
+            events: inputEvents,
+          }));
+          return acc;
+        }, [] as InputType[]),
       submitButton: new Button(
         {
           text: 'Сохранить',
           block: ButtonBlockType.fill,
           type: ButtonValueType.submit,
           events: {
-            click(evn: Event) {
+            async click(evn: Event) {
               evn.preventDefault();
               const formElement: HTMLFormElement = this.closest('form')!;
-              const isValidForm = Validator.validateForm(formElement);
-              if (isValidForm) {
-                const form = getFormValues(formElement);
-                ProfileController.changeUserData(form);
-              }
+              await ProfileController.changeUserProfile(formElement);
+              self.changeMode('default');
             },
           },
 
@@ -177,12 +183,7 @@ export default class PageProfile extends Block {
         },
       ),
     });
-
-    this.children.profileProperties = properties.reduce((acc: ProfilePropertyType[], curr) => {
-      acc.push(new ProfileProperty({ title: curr.title, value: curr.value }));
-      return acc;
-    }, []);
-
+    this.children.profileProperties = PageProfile.createUserProperties(this.props.user?.data);
     this.children.buttonEditData = new Button(
       {
         text: 'Редактировать профиль',
@@ -213,19 +214,69 @@ export default class PageProfile extends Block {
         text: 'Выйти',
         variant: ButtonVariantType.borderless,
         block: ButtonBlockType.fill,
-        link: '/login',
-        events: {
-          click() {
-            console.log('logout');
+        link: new RouterLink({
+          text: 'Выйти',
+          events: {
+            async click() {
+              await AuthController.logout();
+            },
           },
-        },
+        }),
       },
     );
+
+    Store.on(StoreEvents.Updated, () => {
+      const state = Store.getState();
+      // вызываем обновление компонента, передав данные из хранилища
+      this.children.notification = PageProfile.createNotification(this.props.notification);
+      this.children.profileProperties = PageProfile.createUserProperties(state.user.data);
+      this.children.avatar = this.createAvatar();
+    });
+  }
+
+  static createUserProperties(data: UserResponseType) {
+    const properties: any[] = data ? getProperties(data) : [];
+    return properties.reduce((acc: ProfilePropertyType[], curr) => {
+      acc.push(new ProfileProperty({
+        title: curr.title,
+        value: curr.value,
+      }));
+      return acc;
+    }, []);
   }
 
   changeMode(currentMode: string) {
     this.setProps({ mode: currentMode });
     renderDOM('#root', this);
+  }
+
+  createAvatar() {
+    const self = this;
+    return new Avatar({
+      id: self.props.user.data.id,
+      avatar: self.props.user.data.avatar,
+      events: {
+        click() {
+          const input = document.createElement('input');
+          input.type = 'file';
+          input.onchange = async () => {
+            if (input.files) {
+              await ProfileController.changeUserAvatar(input.files[0]);
+            }
+          };
+          input.click();
+        },
+      },
+    });
+  }
+
+  static createNotification(notification: NotificationPropsType) {
+    return new Notification({
+      title: notification.title,
+      message: notification.message,
+      isOpen: notification.isOpen,
+      type: notification.type,
+    });
   }
 
   render() {
@@ -238,8 +289,17 @@ export default class PageProfile extends Block {
       buttonExit: this.children.buttonExit,
       formPassword: this.children.formPassword,
       formUser: this.children.formUser,
+      notification: this.children.notification,
+      IconArrowRight,
     });
   }
 }
 
-export type PageProfileType = PageProfile;
+function mapUserToProps(state: State) {
+  return {
+    user: state.user,
+    notification: state.notification,
+  };
+}
+
+export default withStore((state) => mapUserToProps(state))(PageProfile);

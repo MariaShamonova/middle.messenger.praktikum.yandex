@@ -5,6 +5,7 @@
 #root {
   height: calc(100% - 51px);
 }
+
 body, html {
   margin: 0 auto;
   min-height: 100vh;
@@ -29,4 +30,10 @@ p {
 
 button {
   background-color: transparent;
+}
+
+.page {
+  display: flex;
+  justify-content: center;
+  height: 100%;
 }

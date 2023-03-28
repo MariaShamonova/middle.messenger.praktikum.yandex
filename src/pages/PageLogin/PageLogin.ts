@@ -1,6 +1,6 @@
 import tpl from './login.hbs';
 import './login.less';
-import Block from '../../modules/block';
+import Block from '../../utils/block';
 import Button from '../../components/button/Button';
 import Input from '../../components/input/Input';
 import { PageLoginPropsType } from './types';
@@ -8,13 +8,18 @@ import { ButtonBlockType, ButtonValueType, ButtonVariantType } from '../../compo
 import { InputBlockType, InputValueType } from '../../components/input/types';
 import Form from '../../modules/form/Form';
 import Validator from '../../utils/validator';
-import getFormValues from '../../utils/getFormValues';
-import LoginController from '../../controllers/LoginController';
+import withStore from '../../hoc/withStore';
+import AuthController from '../../controllers/AuthController';
+import RouterLink from '../../router/components/RouterLink';
 
-export default class PageLogin extends Block {
-  constructor(props: PageLoginPropsType) {
-    super('div', props);
-
+class PageLogin extends Block {
+  constructor(props: PageLoginPropsType, tagName = 'div') {
+    super(props, tagName);
+    this.props.title = 'Авторизация';
+    this.props.form = {
+      login: '',
+      password: '',
+    };
     this.children.form = new Form({
       title: 'Авторизоваться',
       fields: [
@@ -60,20 +65,23 @@ export default class PageLogin extends Block {
         block: ButtonBlockType.fill,
         type: ButtonValueType.submit,
         events: {
-          click(evn: Event) {
+          async click(evn: Event) {
             evn.preventDefault();
             const formElement: HTMLFormElement = this.closest('form')!;
-            const isValidForm = Validator.validateForm(formElement);
-            if (isValidForm) {
-              const form = getFormValues(formElement);
-              LoginController.login(form);
-            }
+            await AuthController.signin(formElement);
           },
         },
       }),
       borderlessButton: new Button({
         text: 'Зарегистрироваться',
-        link: '/registration',
+        link: new RouterLink({
+          text: 'Зарегистрироваться',
+          events: {
+            async click() {
+              await AuthController.goToRegistration();
+            },
+          },
+        }),
         type: ButtonValueType.button,
         variant: ButtonVariantType.borderless,
         block: ButtonBlockType.fill,
@@ -88,4 +96,4 @@ export default class PageLogin extends Block {
   }
 }
 
-export type PageLoginType = PageLogin;
+export default withStore(() => {})(PageLogin);

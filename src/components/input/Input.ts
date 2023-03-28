@@ -3,7 +3,7 @@ import './input.less';
 import {
   InputPropsType, InputBlockType, InputSizeType, InputValueType,
 } from './types';
-import Block from '../../modules/block';
+import Block from '../../utils/block';
 import { validator } from '../../utils/validator';
 
 export default class Input extends Block {
@@ -15,7 +15,7 @@ export default class Input extends Block {
 
   constructor({
     id,
-    name,
+    name = '',
     label,
     placeholder,
 
@@ -25,11 +25,11 @@ export default class Input extends Block {
     block = InputBlockType.fit,
     required = false,
     events = {},
-  }: InputPropsType) {
+  }: InputPropsType, tagName = 'div') {
     const props = {
       id, name, label, placeholder, value, type, size, block, required, events,
     };
-    super('input', props);
+    super(props, tagName);
 
     [this.span, this.input, this.error] = this.element.children;
     this._addLocalEvents();

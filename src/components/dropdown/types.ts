@@ -1,11 +1,19 @@
 interface OptionIconType {
   id: string;
-  icon: string;
+  icon: (context: any) => any;
+  type?: string
   title: string;
+  click: () => void;
 }
 
 export interface DropdownPropsType {
-  buttonIcon: string,
+  id: string
+  button: {
+    icon?: (context: any) => any
+    text?: string
+    alt: string
+  }
+
   options: OptionIconType[],
   size?: number,
   position?: string,

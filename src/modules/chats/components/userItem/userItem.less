@@ -1,0 +1,20 @@
+.list-users {
+  width: 100%;
+
+  &__item {
+    min-height: 40px;
+    border-radius: 12px;
+    padding: 5px 20px;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      background-color: var(--main-background__base);
+      cursor: pointer;
+    }
+
+    &--selected {
+      border: 1px solid var(--typography-color__base);
+    }
+  }
+}

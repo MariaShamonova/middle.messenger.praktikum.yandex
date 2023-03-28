@@ -1,3 +1,5 @@
 export interface AvatarProps {
-  path: string;
+  id: string | number;
+  avatar: string;
+  events?: { [key: string]: Function };
 }

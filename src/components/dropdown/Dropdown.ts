@@ -1,46 +1,63 @@
 import tpl from './dropdown.hbs';
 import './dropdown.less';
-// import uploadFile from '../../utils/uploadFile';
-// import handlerButtonClick from '../../utils/handlerButtonClick';
 import { DropdownPropsType } from './types';
-import Block from '../../modules/block';
-
-// const isOpen = false;
-
-// function toggleDropdownMenu(evn: Event, props: DropdownPropsType) {
-//   evn.preventDefault();
-//
-//   isOpen = !isOpen;
-//   const dropdown = document.getElementById(props.id)!;
-//   dropdown.innerHTML = tpl({ ...props, isOpen });
-// }
-//
-// function selectOption(evn: Event, props: DropdownPropsType) {
-//   evn.preventDefault();
-//
-//   handlerButtonClick(props.id, uploadFile, (file: File) => {
-//     console.log('upload file', file);
-//   });
-// }
+import Block from '../../utils/block';
+import Button from '../button/Button';
+import { ButtonVariantType } from '../button/types';
+import Menu from '../menu/Menu';
+import MenuItem from '../menu/components/MenuItem';
+import { MenuOptionType } from '../menu/types';
 
 export default class Dropdown extends Block {
-  public props: any;
+  constructor(props: DropdownPropsType, tagName = 'div') {
+    super(props, tagName);
+    const self = this;
+    this.props.isOpen = false;
+    this.props.size = this.props.size || 32;
+    this.props.position = this.props.position || 'top';
 
-  constructor({
-    buttonIcon, options, size = 32, position = 'bottom',
-  }: DropdownPropsType) {
-    const props = {
-      buttonIcon, options, size, position,
-    };
-    // Создаём враппер DOM-элемент button
-    super('div', props);
+    this.children.dropdownButton = new Button({
+      icon: this.props.button.icon,
+      alt: this.props.button.alt,
+      variant: ButtonVariantType.borderless,
+      events: {
+        click() {
+          self.props.isOpen = !self.props.isOpen;
+        },
+      },
+    });
+
+    this.children.optionList = new Menu({
+      id: this.props.id,
+      position: this.props.position,
+      options: this.props.options.reduce((
+        acc: MenuItem[],
+        curr: MenuOptionType,
+      ) => {
+        acc.push(new MenuItem({
+          option: curr,
+          events: {
+            click() {
+              curr.click();
+              self.props.isOpen = !self.props.isOpen;
+            },
+          },
+        }));
+        return acc;
+      }, [] as MenuItem[]),
+    });
   }
 
   render() {
-    // handlerButtonClick(`#${id}-button`, toggleDropdownMenu, this.props);
-    // handlerButtonClick(`#${id}-list>.dropdown-list__item`, selectOption, { id: `${id}-button` });
+    return this.compile(tpl, {
+      id: this.props.id,
+      isOpen: this.props.isOpen,
+      size: this.props.size,
+      optionList: this.children.optionList,
+      position: this.props.position,
+      dropdownButton: this.children.dropdownButton,
 
-    return this.compile(tpl, this.props);
+    });
   }
 }
 

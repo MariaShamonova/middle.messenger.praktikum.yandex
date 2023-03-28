@@ -1,19 +1,24 @@
 import tpl from './registration.hbs';
 import './registration.less';
 import { PageRegistrationPropsType } from './types';
-import Block from '../../modules/block';
+import Block from '../../utils/block';
 import Input from '../../components/input/Input';
 import { InputBlockType, InputValueType } from '../../components/input/types';
 import Button from '../../components/button/Button';
 import { ButtonBlockType, ButtonValueType, ButtonVariantType } from '../../components/button/types';
 import Form from '../../modules/form/Form';
 import Validator from '../../utils/validator';
-import getFormValues from '../../utils/getFormValues';
-import RegistrationController from '../../controllers/RegistrationController';
+import withStore from '../../hoc/withStore';
+import AuthController from '../../controllers/AuthController';
+import RouterLink from '../../router/components/RouterLink';
+import Router from '../../router/Router';
 
-export default class PageRegistration extends Block {
-  constructor(props: PageRegistrationPropsType) {
-    super('div', props);
+class PageRegistration extends Block {
+  constructor(props: PageRegistrationPropsType, tagName = 'div') {
+    super(props, tagName);
+
+    this.props.title = 'Регистрация';
+
     const inputEvents = {
       input(evn: Event) {
         const target = evn.target as HTMLInputElement;
@@ -86,6 +91,7 @@ export default class PageRegistration extends Block {
         new Input(
           {
             id: 'confirm_password',
+            name: 'confirm_password',
             type: InputValueType.password,
             label: 'Пароль еще раз',
             placeholder: 'Введите пароль еще раз',
@@ -128,11 +134,7 @@ export default class PageRegistration extends Block {
             click(evn: Event) {
               evn.preventDefault();
               const formElement: HTMLFormElement = this.closest('form')!;
-              const isValidForm = Validator.validateForm(formElement);
-              if (isValidForm) {
-                const form = getFormValues(formElement);
-                RegistrationController.registration(form);
-              }
+              AuthController.signup(formElement);
             },
           },
         },
@@ -141,7 +143,14 @@ export default class PageRegistration extends Block {
         {
           text: 'Уже есть аккаунт?',
           block: ButtonBlockType.fill,
-          link: '/login',
+          link: new RouterLink({
+            text: 'Уже есть аккаунт?',
+            events: {
+              async click() {
+                await Router.go('/');
+              },
+            },
+          }),
           variant: ButtonVariantType.borderless,
         },
       ),
@@ -155,4 +164,4 @@ export default class PageRegistration extends Block {
   }
 }
 
-export type PageRegistrationType = PageRegistration;
+export default withStore(() => {})(PageRegistration);

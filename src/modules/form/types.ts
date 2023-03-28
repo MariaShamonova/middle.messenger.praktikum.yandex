@@ -1,9 +1,12 @@
 import { InputType } from '../../components/input/Input';
 import { ButtonType } from '../../components/button/Button';
+import Autocomplete from '../../components/autocomplete/Autocomplete';
+import { UserItemType } from '../chats/components/userItem/UserItem';
 
 export interface FormPropsType {
   title?: string;
-  fields: InputType[];
+  fields: InputType[] | Autocomplete[] | UserItemType[];
+  confirmMessage?: string;
   submitButton: ButtonType;
   secondaryButton?: ButtonType;
   borderlessButton?: ButtonType;

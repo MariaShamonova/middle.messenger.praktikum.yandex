@@ -1,82 +1,20 @@
-import PageLogin, { PageLoginType } from '../pages/PageLogin/PageLogin';
-import PageRegistration, { PageRegistrationType } from '../pages/PageRegistration/PageRegistration';
-import PageProfile, { PageProfileType } from '../pages/PageProfile/PageProfile';
-import PageNotFound, { PageNotFoundType } from '../pages/PageNotFound/PageNotFound';
-import PageServerError, { PageServerErrorType } from '../pages/PageServerError/PageServerError';
-import PageChats, { PageChatsType } from '../pages/PageChats/PageChats';
+import PageLogin from '../pages/PageLogin/PageLogin';
+import PageRegistration from '../pages/PageRegistration/PageRegistration';
+import PageProfile from '../pages/PageProfile/PageProfile';
+import PageNotFound from '../pages/PageNotFound/PageNotFound';
+import PageServerError from '../pages/PageServerError/PageServerError';
+import PageChats from '../pages/PageChats/PageChats';
+import Router from './Router';
+import registerHelpers from '../helpers/registerHelpers';
 
-function LoginPage() {
-  return new PageLogin({
-    title: 'Авторизация',
-    form: {
-      login: '',
-      password: '',
-    },
-  });
-}
+registerHelpers();
 
-function ChatsPage() {
-  return new PageChats({});
-}
+Router.use('/messenger', 'Chats', PageChats)
+  .use('/', 'Login', PageLogin, false)
+  .use('/sign-up', 'Registration', PageRegistration, false)
+  .use('/settings', 'Profile', PageProfile)
+  .use('/404', 'NotFound', PageNotFound)
+  .use('/500', 'ServerError', PageServerError)
+  .start();
 
-function RegistrationPage() {
-  return new PageRegistration({
-    title: 'Регистрация',
-  });
-}
-
-function ProfilePage() {
-  const mode = 'default';
-  return new PageProfile({
-    mode,
-  });
-}
-
-function NotFoundPage() {
-  return new PageNotFound({});
-}
-
-function ServerErrorPage() {
-  return new PageServerError({});
-}
-
-export interface RoutesType {
-  [key: string]: {
-    template: () => PageProfileType |
-    PageChatsType |
-    PageLoginType |
-    PageNotFoundType |
-    PageRegistrationType |
-    PageServerErrorType
-    title: string
-  };
-}
-
-const routes: RoutesType = {
-  '/': {
-    template: ChatsPage,
-    title: 'Chats',
-  },
-  '/login': {
-    template: LoginPage,
-    title: 'Login',
-  },
-  '/registration': {
-    template: RegistrationPage,
-    title: 'Registration',
-  },
-  '/profile': {
-    template: ProfilePage,
-    title: 'Profile',
-  },
-  '/404': {
-    template: NotFoundPage,
-    title: '404',
-  },
-  '/500': {
-    template: ServerErrorPage,
-    title: '500',
-  },
-};
-
-export default routes;
+export default Router;

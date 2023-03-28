@@ -4,8 +4,16 @@
   width: 130px;
   height: 130px;
   position: relative;
+  overflow: hidden;
+
+  img {
+    height: 100%;
+    width: 100%
+  }
+
   &:hover {
     cursor: pointer;
+
     &::before {
       content: 'Поменять аватар';
       background-color: rgba(#000, 0.4);
