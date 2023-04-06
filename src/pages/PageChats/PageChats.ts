@@ -1,4 +1,4 @@
-import Block from '../../utils/block';
+import Block from '../../utils/Block';
 import tpl from './chats.hbs';
 import './chats.less';
 import { PageChatsPropsType, UsersSelectedChatType } from './types';

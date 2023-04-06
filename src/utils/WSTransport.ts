@@ -1,4 +1,4 @@
-import EventBus from '../../event-bus';
+import EventBus from './EventBus';
 
 export enum WSTransportEvents {
   Connected = 'connected',
@@ -12,18 +12,18 @@ export default class WSTransport extends EventBus {
 
   private pingInterval: number = 100000;
 
-  constructor(private url: string) {
+  constructor (private url: string) {
     super();
   }
 
-  public send(data: unknown) {
+  public send (data: unknown) {
     if (!this.socket) {
       throw new Error('Socket is not connected');
     }
     this.socket.send(JSON.stringify(data));
   }
 
-  public connect(): Promise<void> {
+  public connect (): Promise<void> {
     this.socket = new WebSocket(this.url);
 
     this.subscribe(this.socket);
@@ -37,7 +37,7 @@ export default class WSTransport extends EventBus {
     });
   }
 
-  public close() {
+  public close () {
     if (!this.socket) {
       throw new Error('Socket is not connected');
     }
@@ -45,7 +45,7 @@ export default class WSTransport extends EventBus {
     this.socket.close();
   }
 
-  public setupPing() {
+  public setupPing () {
     const ping = setInterval(() => {
       this.send({ type: 'ping' });
     }, this.pingInterval);
@@ -55,7 +55,7 @@ export default class WSTransport extends EventBus {
     });
   }
 
-  public subscribe(socket: WebSocket) {
+  public subscribe (socket: WebSocket) {
     if (!this.socket) {
       throw new Error('Socket is not connected');
     }

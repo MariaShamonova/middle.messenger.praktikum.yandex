@@ -1,7 +1,7 @@
 import tpl from './dropdown.hbs';
 import './dropdown.less';
 import { DropdownPropsType } from './types';
-import Block from '../../utils/block';
+import Block from '../../utils/Block';
 import Button from '../button/Button';
 import { ButtonVariantType } from '../button/types';
 import Menu from '../menu/Menu';
@@ -9,7 +9,7 @@ import MenuItem from '../menu/components/MenuItem';
 import { MenuOptionType } from '../menu/types';
 
 export default class Dropdown extends Block {
-  constructor(props: DropdownPropsType, tagName = 'div') {
+  constructor (props: DropdownPropsType, tagName = 'div') {
     super(props, tagName);
     const self = this;
     this.props.isOpen = false;
@@ -21,7 +21,7 @@ export default class Dropdown extends Block {
       alt: this.props.button.alt,
       variant: ButtonVariantType.borderless,
       events: {
-        click() {
+        click () {
           self.props.isOpen = !self.props.isOpen;
         },
       },
@@ -37,7 +37,7 @@ export default class Dropdown extends Block {
         acc.push(new MenuItem({
           option: curr,
           events: {
-            click() {
+            click () {
               curr.click();
               self.props.isOpen = !self.props.isOpen;
             },
@@ -48,7 +48,7 @@ export default class Dropdown extends Block {
     });
   }
 
-  render() {
+  render () {
     return this.compile(tpl, {
       id: this.props.id,
       isOpen: this.props.isOpen,

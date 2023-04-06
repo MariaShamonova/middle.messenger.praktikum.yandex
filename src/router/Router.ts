@@ -13,7 +13,7 @@ class Router {
 
   public routes: Route[] = [];
 
-  constructor(rootQuery: string) {
+  constructor (rootQuery: string) {
     if (Router.__instance) {
       // eslint-disable-next-line no-constructor-return
       return Router.__instance;
@@ -27,13 +27,13 @@ class Router {
     Router.__instance = this;
   }
 
-  use(pathname: string, title: string, block: BlockConstructable, isProtected?: boolean) {
+  use (pathname: string, title: string, block: BlockConstructable, isProtected?: boolean) {
     const route = new Route(pathname, title, block, { rootQuery: this._rootQuery }, isProtected);
     this.routes.push(route);
     return this;
   }
 
-  start() {
+  start () {
     window.onpopstate = () => {
       this._onRoute(window.location.pathname);
     };
@@ -41,7 +41,7 @@ class Router {
     this.go(window.location.pathname);
   }
 
-  _onRoute(pathname: string) {
+  _onRoute (pathname: string) {
     const route = this.getRoute(pathname);
 
     if (this._currentRoute) {
@@ -55,28 +55,29 @@ class Router {
     }
   }
 
-  async go(_pathname: string) {
+  async go (_pathname: string) {
     const route = this.getRoute(_pathname);
     const pathname = route?.isProtected ? await Router.checkPermission(_pathname) : _pathname;
+
     this.history.pushState({ name: pathname }, pathname, pathname);
     this._onRoute(pathname);
   }
 
-  static checkPermission(pathname: string) {
+  static checkPermission (pathname: string) {
     return UserController.getUser()
       .then(() => pathname)
       .catch(() => '/');
   }
 
-  back() {
+  back () {
     this.history.back();
   }
 
-  forward() {
+  forward () {
     this.history.forward();
   }
 
-  getRoute(pathname: string) {
+  getRoute (pathname: string) {
     return this.routes.find((route) => route.match(pathname));
   }
 }

@@ -1,14 +1,14 @@
 import tpl from './message.hbs';
 import './message.less';
-import Block from '../../../../utils/block';
+import Block from '../../../../utils/Block';
 import { MessageProps } from './types';
 
 export default class Message extends Block {
-  constructor(props: MessageProps, tagName = 'div') {
+  constructor (props: MessageProps, tagName = 'div') {
     super(props, tagName);
   }
 
-  render() {
+  render () {
     return this.compile(tpl, this.props);
   }
 }

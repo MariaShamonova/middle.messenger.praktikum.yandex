@@ -1,4 +1,4 @@
-import EventBus from '../../event-bus';
+import EventBus from '../utils/EventBus';
 import set from '../helpers/set';
 import { ChatType } from '../modules/chats/components/lastMessage/types';
 import { UserProfileType, UserResponseType } from '../api/AuthAPI';
@@ -80,11 +80,11 @@ class Store extends EventBus {
     },
   };
 
-  public getState() {
+  public getState () {
     return this.state;
   }
 
-  public set(path: string, value: unknown) {
+  public set (path: string, value: unknown) {
     set(this.state, path, value);
 
     this.emit(StoreEvents.Updated, this.state);

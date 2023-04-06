@@ -1,4 +1,4 @@
-import Block from '../utils/block';
+import Block from '../utils/Block';
 import isEqual from '../helpers/isEqual';
 import store, { StoreEvents, State } from '../store/Store';
 import cloneDeep from '../helpers/cloneDeep';
@@ -12,7 +12,7 @@ export default (
   type Props = typeof Component;
 
   class WithStore extends Component {
-    protected constructor(props: Props & PropsWithStore, tagName: string) {
+    protected constructor (props: Props & PropsWithStore, tagName: string) {
       state = cloneDeep(mapStateToProps(store.getState()));
       super({ ...props, ...state }, tagName);
       store.on(StoreEvents.Updated, () => {

@@ -1,7 +1,7 @@
 import tpl from './autocomplete.hbs';
 import './autocomplete.less';
 import { AutocompletePropsType, AutocompleteBlockType } from './types';
-import Block from '../../utils/block';
+import Block from '../../utils/Block';
 import Input from '../input/Input';
 import Menu from '../menu/Menu';
 import MenuItem from '../menu/components/MenuItem';
@@ -9,7 +9,7 @@ import { MenuOptionType } from '../menu/types';
 import { InputBlockType } from '../input/types';
 
 export default class Autocomplete extends Block {
-  constructor(props: AutocompletePropsType, tagName = 'div') {
+  constructor (props: AutocompletePropsType, tagName = 'div') {
     super(props, tagName);
     const self = this;
 
@@ -17,7 +17,7 @@ export default class Autocomplete extends Block {
       block: InputBlockType.fill,
       placeholder: 'Введите логин пользователя',
       events: {
-        async change(evn: Event) {
+        async change (evn: Event) {
           const target = evn.target as HTMLInputElement;
           if (target.value) {
             const data = await self.props.getData(target.value);
@@ -31,7 +31,7 @@ export default class Autocomplete extends Block {
     });
   }
 
-  createList(data: MenuOptionType[]) {
+  createList (data: MenuOptionType[]) {
     const self = this;
     return new Menu({
       id: this.props.id,
@@ -44,7 +44,7 @@ export default class Autocomplete extends Block {
         acc.push(new MenuItem({
           option: curr,
           events: {
-            click() {
+            click () {
               const input = document.querySelector(
                 `#autocomplete-${self.props.id} > label > input`,
               );
@@ -59,7 +59,7 @@ export default class Autocomplete extends Block {
     });
   }
 
-  render() {
+  render () {
     return this.compile(tpl, {
       id: this.props.id,
       input: this.children.input,

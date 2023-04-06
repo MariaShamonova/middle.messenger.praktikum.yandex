@@ -3,10 +3,10 @@ import './button.less';
 import {
   ButtonPropsType, ButtonValueType, ButtonVariantType, ButtonSizeType, ButtonBlockType,
 } from './types';
-import Block from '../../utils/block';
+import Block from '../../utils/Block';
 
 export default class Button extends Block {
-  constructor(props: ButtonPropsType, tagName = 'button') {
+  constructor (props: ButtonPropsType, tagName = 'button') {
     super(props, tagName);
     this.props.text = this.props.text || '';
     this.props.link = this.props.link || '';
@@ -16,7 +16,7 @@ export default class Button extends Block {
     this.props.block = this.props.block || ButtonBlockType.fit;
   }
 
-  render() {
+  render () {
     return this.compile(tpl, this.props);
   }
 }

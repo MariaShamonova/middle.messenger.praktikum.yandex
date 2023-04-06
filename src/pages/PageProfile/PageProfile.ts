@@ -1,7 +1,7 @@
 import tpl from './profile.hbs';
 import './profile.less';
 import { PageProfilePropsType } from './types';
-import Block from '../../utils/block';
+import Block from '../../utils/Block';
 import Avatar from '../../modules/profile/avatar/Avatar';
 import ProfileProperty,
 { ProfilePropertyType } from '../../modules/profile/profileProperty/ProfileProperty';
@@ -24,17 +24,17 @@ import Notification from '../../components/notification/Notification';
 import { NotificationPropsType } from '../../components/notification/types';
 
 class PageProfile extends Block {
-  constructor(props: PageProfilePropsType, tagName = 'div') {
+  constructor (props: PageProfilePropsType, tagName = 'div') {
     super(props, tagName);
     const self = this;
     this.props.mode = 'default';
 
     const inputEvents = {
-      input(evn: Event) {
+      input (evn: Event) {
         const target = evn.target as HTMLInputElement;
         Validator.setErrorValue(target, '');
       },
-      blur(evn: Event) {
+      blur (evn: Event) {
         const target = evn.target as HTMLInputElement;
         Validator.validateInput(target.value, null, evn);
       },
@@ -67,11 +67,11 @@ class PageProfile extends Block {
             placeholder: 'Введите новый пароль',
             block: InputBlockType.fill,
             events: {
-              input(evn: Event) {
+              input (evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.setErrorValue(target, '');
               },
-              blur(evn: Event) {
+              blur (evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.validateInput(target.value, null, evn);
                 const form = target.closest('form')!;
@@ -93,11 +93,11 @@ class PageProfile extends Block {
             placeholder: 'Введите новый пароль еще раз',
             block: InputBlockType.fill,
             events: {
-              input(evn: Event) {
+              input (evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.setErrorValue(target, '');
               },
-              blur(evn: Event) {
+              blur (evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.validateInput(target.value, null, evn);
                 const form = target.closest('form')!;
@@ -116,7 +116,7 @@ class PageProfile extends Block {
           block: ButtonBlockType.fill,
           type: ButtonValueType.submit,
           events: {
-            async click(evn: Event) {
+            async click (evn: Event) {
               evn.preventDefault();
               const formElement: HTMLFormElement = this.closest('form')!;
               await ProfileController.changeUserPassword(formElement);
@@ -132,7 +132,7 @@ class PageProfile extends Block {
           variant: ButtonVariantType.secondary,
           block: ButtonBlockType.fill,
           events: {
-            click() {
+            click () {
               self.changeMode('default');
             },
           },
@@ -159,7 +159,7 @@ class PageProfile extends Block {
           block: ButtonBlockType.fill,
           type: ButtonValueType.submit,
           events: {
-            async click(evn: Event) {
+            async click (evn: Event) {
               evn.preventDefault();
               const formElement: HTMLFormElement = this.closest('form')!;
               await ProfileController.changeUserProfile(formElement);
@@ -176,7 +176,7 @@ class PageProfile extends Block {
           variant: ButtonVariantType.secondary,
           block: ButtonBlockType.fill,
           events: {
-            click() {
+            click () {
               self.changeMode('default');
             },
           },
@@ -189,7 +189,7 @@ class PageProfile extends Block {
         text: 'Редактировать профиль',
         block: ButtonBlockType.fill,
         events: {
-          click() {
+          click () {
             self.changeMode('editData');
           },
         },
@@ -202,7 +202,7 @@ class PageProfile extends Block {
         variant: ButtonVariantType.secondary,
         block: ButtonBlockType.fill,
         events: {
-          click() {
+          click () {
             self.changeMode('editPassword');
           },
         },
@@ -217,7 +217,7 @@ class PageProfile extends Block {
         link: new RouterLink({
           text: 'Выйти',
           events: {
-            async click() {
+            async click () {
               await AuthController.logout();
             },
           },
@@ -234,7 +234,7 @@ class PageProfile extends Block {
     });
   }
 
-  static createUserProperties(data: UserResponseType) {
+  static createUserProperties (data: UserResponseType) {
     const properties: any[] = data ? getProperties(data) : [];
     return properties.reduce((acc: ProfilePropertyType[], curr) => {
       acc.push(new ProfileProperty({
@@ -245,22 +245,23 @@ class PageProfile extends Block {
     }, []);
   }
 
-  changeMode(currentMode: string) {
+  changeMode (currentMode: string) {
     this.setProps({ mode: currentMode });
     renderDOM('#root', this);
   }
 
-  createAvatar() {
+  createAvatar () {
     const self = this;
     return new Avatar({
       id: self.props.user.data.id,
       avatar: self.props.user.data.avatar,
       events: {
-        click() {
+        click () {
           const input = document.createElement('input');
           input.type = 'file';
           input.onchange = async () => {
             if (input.files) {
+              console.log(input.files[0]);
               await ProfileController.changeUserAvatar(input.files[0]);
             }
           };
@@ -270,7 +271,7 @@ class PageProfile extends Block {
     });
   }
 
-  static createNotification(notification: NotificationPropsType) {
+  static createNotification (notification: NotificationPropsType) {
     return new Notification({
       title: notification.title,
       message: notification.message,
@@ -279,7 +280,7 @@ class PageProfile extends Block {
     });
   }
 
-  render() {
+  render () {
     return this.compile(tpl, {
       mode: this.props.mode,
       avatar: this.children.avatar,
@@ -295,7 +296,7 @@ class PageProfile extends Block {
   }
 }
 
-function mapUserToProps(state: State) {
+function mapUserToProps (state: State) {
   return {
     user: state.user,
     notification: state.notification,
