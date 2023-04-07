@@ -37,7 +37,7 @@ class Router {
     window.onpopstate = () => {
       this._onRoute(window.location.pathname);
     };
-
+    console.log(window.location.pathname)
     this.go(window.location.pathname);
   }
 

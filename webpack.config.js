@@ -10,6 +10,7 @@ module.exports = {
     port: 3001,
     compress: true,
     hot: true,
+    historyApiFallback: true,
   },
   entry: './index.ts',
   output: {

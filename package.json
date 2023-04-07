@@ -23,7 +23,6 @@
   "devDependencies": {
     "@babel/preset-env": "7.21.4",
     "@babel/register": "7.21.0",
-    "@parcel/transformer-less": "2.8.2",
     "@types/chai": "4.3.4",
     "@types/hbs": "4.0.1",
     "@types/mocha": "10.0.1",
