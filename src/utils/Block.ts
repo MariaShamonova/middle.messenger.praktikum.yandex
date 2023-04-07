@@ -16,7 +16,7 @@ export interface EventType {
   events: ListenerType;
 }
 
-function extractStub (child: Block, content: DocumentFragment): void {
+function extractStub(child: Block, content: DocumentFragment): void {
   const stub = content.querySelector(`[data-id="${child.id}"]`);
 
   if (stub) {
@@ -52,14 +52,14 @@ export default abstract class Block<P extends Record<string, any> = any> {
    *
    * @returns {void}
    */
-  constructor (propsAndChildren: P, tagName: string) {
+  constructor(propsAndChildren: P, tagName: string) {
     const eventBus = new EventBus();
     this._element = document.createElement('div');
     this._id = makeUUID();
 
     const {
       children,
-      props
+      props,
     } = this._getChildren(propsAndChildren);
 
     this._meta = {
@@ -70,7 +70,7 @@ export default abstract class Block<P extends Record<string, any> = any> {
     this.children = this._makePropsProxy(children) as ChildrenPropsType;
     this.props = this._makePropsProxy({
       ...props,
-      __id: this._id
+      __id: this._id,
     }) as P;
 
     this.listeners = [];
@@ -84,11 +84,10 @@ export default abstract class Block<P extends Record<string, any> = any> {
     this.hide = this.hide.bind(this);
     this.dispatchComponentDidMount = this.dispatchComponentDidMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
-
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private _getChildren (propsAndChildren: P): { props: P, children: ChildrenPropsType } {
+  private _getChildren(propsAndChildren: P): { props: P, children: ChildrenPropsType } {
     const children: Record<string, Block | Block[]> = {};
     const props: Record<string, unknown> = {};
 
@@ -103,52 +102,51 @@ export default abstract class Block<P extends Record<string, any> = any> {
 
     return {
       children,
-      props: props as P
+      props: props as P,
     };
   }
 
-  protected _registerEvents (eventBus: EventBus) {
+  protected _registerEvents(eventBus: EventBus) {
     eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
     eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
     eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
     eventBus.on(Block.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
   }
 
-  protected _createResources () {
+  protected _createResources() {
     const { tagName } = this._meta;
 
     this._element = this._createDocumentElement(tagName);
   }
 
-  init () {
+  init() {
     this._createResources();
     this.eventBus()
       .emit(Block.EVENTS.FLOW_CDM);
   }
 
-  _componentDidMount () {
+  _componentDidMount() {
     this.componentDidMount();
   }
 
   // Может переопределять пользователь, необязательно трогать
-  componentDidMount () {
+  componentDidMount() {
     this.eventBus()
       .emit(Block.EVENTS.FLOW_RENDER);
   }
 
-  protected _componentDidUpdate<T> (oldProps: T, newProps: T): void {
+  protected _componentDidUpdate<T>(oldProps: T, newProps: T): void {
     this.componentDidUpdate(oldProps, newProps);
   }
 
   // Может переопределять пользователь, необязательно трогать
-  componentDidUpdate<T> (oldProps: T, newProps: T): boolean {
-
+  componentDidUpdate<T>(oldProps: T, newProps: T): boolean {
     this.eventBus()
       .emit(Block.EVENTS.FLOW_RENDER);
     return oldProps !== newProps;
   }
 
-  dispatchComponentDidMount (): void {
+  dispatchComponentDidMount(): void {
     this.eventBus()
       .emit(Block.EVENTS.FLOW_CDM);
   }
@@ -161,15 +159,15 @@ export default abstract class Block<P extends Record<string, any> = any> {
     Object.assign(this.props, nextProps);
   };
 
-  get element (): HTMLElement {
+  get element(): HTMLElement {
     return this._element;
   }
 
-  get id (): string {
+  get id(): string {
     return this._id;
   }
 
-  compile (template: (context: any) => string, props: any) {
+  compile(template: (context: any) => string, props: any) {
     const propsAndStubs = { ...props };
 
     Object.entries(this.children)
@@ -200,7 +198,7 @@ export default abstract class Block<P extends Record<string, any> = any> {
     return fragment.content;
   }
 
-  private _render () {
+  private _render() {
     this._removeEvents();
 
     const fragment = this.render();
@@ -214,11 +212,11 @@ export default abstract class Block<P extends Record<string, any> = any> {
     this._addEvents();
   }
 
-  protected _removeEvents () {
+  protected _removeEvents() {
     this.listeners.forEach(({
-                              eventName,
-                              fn
-                            }: {
+      eventName,
+      fn,
+    }: {
       eventName: string,
       fn: (evn: Event) => void
     }) => {
@@ -231,7 +229,7 @@ export default abstract class Block<P extends Record<string, any> = any> {
     });
   }
 
-  protected _addEvents () {
+  protected _addEvents() {
     const events = this.props.events as EventType;
 
     if (events) {
@@ -244,29 +242,29 @@ export default abstract class Block<P extends Record<string, any> = any> {
             this._element.addEventListener(eventName, event);
             this.listeners.push({
               eventName,
-              fn: event
+              fn: event,
             });
           }
         });
     }
   }
 
-  protected render (): DocumentFragment {
+  protected render(): DocumentFragment {
     return document.createDocumentFragment();
   }
 
-  public getContent (): HTMLElement {
+  public getContent(): HTMLElement {
     return this.element;
   }
 
-  protected _makePropsProxy (props: P | ChildrenPropsType) {
+  protected _makePropsProxy(props: P | ChildrenPropsType) {
     const self = this;
     const proxyData = new Proxy(props, {
-      get (target: ChildrenPropsType | PropsType, prop: string) {
+      get(target: ChildrenPropsType | PropsType, prop: string) {
         const value = target[prop];
         return typeof value === 'function' ? value.bind(target) : value;
       },
-      set (target, prop: string, value: unknown) {
+      set(target, prop: string, value: unknown) {
         if (Array.from(prop)[0] === '_') {
           throw new Error('Нет доступа');
         }
@@ -279,24 +277,24 @@ export default abstract class Block<P extends Record<string, any> = any> {
           .emit(Block.EVENTS.FLOW_CDU, oldValue, value);
         return true;
       },
-      deleteProperty () {
+      deleteProperty() {
         throw new Error('Нет доступа');
       },
     });
     return proxyData;
   }
 
-  protected _createDocumentElement (tagName: string): HTMLElement {
+  protected _createDocumentElement(tagName: string): HTMLElement {
     const element = document.createElement(tagName);
     element.setAttribute('data-id', this._id);
     return element;
   }
 
-  show () {
+  show() {
     this._element.style.display = '';
   }
 
-  hide () {
+  hide() {
     this._element.style.display = 'none';
   }
 }
