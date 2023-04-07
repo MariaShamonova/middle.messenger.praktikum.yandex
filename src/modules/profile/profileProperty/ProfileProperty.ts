@@ -4,11 +4,11 @@ import { ProfilePropertyPropsType } from './types';
 import Block from '../../../utils/Block';
 
 export default class ProfileProperty extends Block {
-  constructor (props: ProfilePropertyPropsType, tagName = 'div') {
+  constructor(props: ProfilePropertyPropsType, tagName = 'div') {
     super(props, tagName);
   }
 
-  render () {
+  render() {
     return this.compile(tpl, this.props);
   }
 }

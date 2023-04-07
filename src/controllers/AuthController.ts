@@ -10,7 +10,7 @@ import { NotificationTypeEnum } from '../components/notification/types';
 const authApi = new AuthAPI();
 
 export default class AuthController {
-  public static async signin (formElement: HTMLFormElement) {
+  public static async signin(formElement: HTMLFormElement) {
     try {
       const isValidForm = Validator.validateForm(formElement);
       if (!isValidForm) {
@@ -34,7 +34,7 @@ export default class AuthController {
     }
   }
 
-  public static async signup (formElement: HTMLFormElement) {
+  public static async signup(formElement: HTMLFormElement) {
     try {
       const isValidForm = Validator.validateForm(formElement);
       if (!isValidForm) {
@@ -62,7 +62,7 @@ export default class AuthController {
     }
   }
 
-  public static async logout () {
+  public static async logout() {
     try {
       Store.set('user.isLoading', true);
 
@@ -83,7 +83,7 @@ export default class AuthController {
     }
   }
 
-  static async goToRegistration () {
+  static async goToRegistration() {
     await Router.go('/sign-up');
   }
 }

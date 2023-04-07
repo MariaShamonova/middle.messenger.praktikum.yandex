@@ -30,7 +30,6 @@ describe('HTTPTransport class', () => {
         .to
         .eq('GET');
     });
-
   });
 
   describe('put method', () => {
@@ -67,7 +66,6 @@ describe('HTTPTransport class', () => {
         .to
         .eq('POST');
     });
-
   });
 
   describe('request method', () => {
@@ -85,7 +83,6 @@ describe('HTTPTransport class', () => {
     });
 
     it('should call method with body', () => {
-
       const transport = new HTTPTransport('/');
       transport.post('', { data });
 

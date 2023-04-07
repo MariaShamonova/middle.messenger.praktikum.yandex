@@ -5,11 +5,11 @@ import Block from '../../utils/Block';
 import withStore from '../../hoc/withStore';
 
 class PageNotFound extends Block {
-  constructor (props: PageNotFoundPropsType, tagName = 'div') {
+  constructor(props: PageNotFoundPropsType, tagName = 'div') {
     super(props, tagName);
   }
 
-  render () {
+  render() {
     return this.compile(tpl, this.props);
   }
 }

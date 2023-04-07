@@ -6,16 +6,18 @@ import { HeaderPropsType } from './types';
 import RouterLink, { RouterLinkType } from '../../router/components/RouterLink';
 import Route from '../../router/Route';
 import Router from '../../router/Router';
-
+// import registerHelpers from '../../helpers/registerHelpers';
+//
+// registerHelpers();
 export default class Header extends Block {
-  constructor (props: HeaderPropsType, tagName = 'div') {
+  constructor(props: HeaderPropsType, tagName = 'div') {
     super(props, tagName);
 
     this.children.links = router.routes.reduce((acc: RouterLinkType[], curr: Route) => {
       acc.push(new RouterLink({
         text: curr.title,
         events: {
-          click () {
+          click() {
             Router.go(curr.pathname);
           },
         },
@@ -24,7 +26,7 @@ export default class Header extends Block {
     }, [] as RouterLinkType[]);
   }
 
-  render () {
+  render() {
     return this.compile(tpl, this.props);
   }
 }

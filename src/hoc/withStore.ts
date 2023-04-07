@@ -12,7 +12,7 @@ export default (
   type Props = typeof Component;
 
   class WithStore extends Component {
-    protected constructor (props: Props & PropsWithStore, tagName: string) {
+    protected constructor(props: Props & PropsWithStore, tagName: string) {
       state = cloneDeep(mapStateToProps(store.getState()));
       super({ ...props, ...state }, tagName);
       store.on(StoreEvents.Updated, () => {

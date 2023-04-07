@@ -19,12 +19,12 @@ export default class Route {
 
   private _isProtected: boolean;
 
-  constructor (
+  constructor(
     pathname: string,
     title: string,
     view: BlockConstructable,
     props:
-      { rootQuery: string },
+    { rootQuery: string },
     isProtected = true,
   ) {
     this._pathname = pathname;
@@ -35,36 +35,36 @@ export default class Route {
     this._isProtected = isProtected;
   }
 
-  get title (): string {
+  get title(): string {
     return this._title;
   }
 
-  get pathname () {
+  get pathname() {
     return this._pathname;
   }
 
-  get isProtected () {
+  get isProtected() {
     return this._isProtected;
   }
 
-  navigate (pathname: string) {
+  navigate(pathname: string) {
     if (this.match(pathname)) {
       this._pathname = pathname;
       this.render();
     }
   }
 
-  leave () {
+  leave() {
     if (this._block) {
       this._block.hide();
     }
   }
 
-  match (pathname: string) {
+  match(pathname: string) {
     return isEqual(pathname, this._pathname);
   }
 
-  render () {
+  render() {
     if (!this._block) {
       this._block = new this._blockClass({});
     } else {

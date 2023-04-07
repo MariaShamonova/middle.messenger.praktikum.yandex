@@ -5,7 +5,6 @@ export default abstract class BaseAPI {
 
   protected constructor(endpoint: string) {
     this.http = new HTTPTransport(endpoint);
-    console.log(this.http);
   }
 
   public abstract create?(data?: unknown): Promise<unknown>;

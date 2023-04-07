@@ -10,7 +10,7 @@ import NotificationController from './NotificationController';
 
 const chatApi = new ChatAPI();
 export default class ChatController {
-  public static async getChats () {
+  public static async getChats() {
     Store.set('chats.isLoading', true);
 
     await chatApi.request()
@@ -40,7 +40,7 @@ export default class ChatController {
     Store.set('chats.isLoading', true);
   }
 
-  static getToken (id: number) {
+  static getToken(id: number) {
     return chatApi.getToken(id)
       .catch((err) => {
         NotificationController.createNotification({
@@ -50,15 +50,15 @@ export default class ChatController {
       });
   }
 
-  static selectChat (id: number) {
+  static selectChat(id: number) {
     Store.set('selectedChat', id);
   }
 
-  static selectUser (id: number | null) {
+  static selectUser(id: number | null) {
     Store.set('selectedUser', id);
   }
 
-  static async getUsersSelectedChat (id: number) {
+  static async getUsersSelectedChat(id: number) {
     const data = await chatApi.getUsersSelectedChat(id)
       .catch((err) => {
         NotificationController.createNotification({
@@ -69,7 +69,7 @@ export default class ChatController {
     Store.set('usersSelectedChat', data);
   }
 
-  static sendMessage (formElement: HTMLFormElement) {
+  static sendMessage(formElement: HTMLFormElement) {
     const isValidForm = Validator.validateForm(formElement);
     if (!isValidForm) return;
 
@@ -81,11 +81,11 @@ export default class ChatController {
     MessagesController.sendMessage(selectedChat, message);
   }
 
-  static resetForm (formElement: HTMLFormElement) {
+  static resetForm(formElement: HTMLFormElement) {
     formElement.reset();
   }
 
-  static async createChat (formElement: HTMLFormElement) {
+  static async createChat(formElement: HTMLFormElement) {
     const isValidForm = Validator.validateForm(formElement);
     if (!isValidForm) {
       throw new Error();
@@ -105,23 +105,23 @@ export default class ChatController {
       });
   }
 
-  static toggleModalCreateChat (value: boolean) {
+  static toggleModalCreateChat(value: boolean) {
     Store.set('isOpenModalCreateChat', value);
   }
 
-  static toggleModalAddUser (value: boolean) {
+  static toggleModalAddUser(value: boolean) {
     Store.set('isOpenModalAddUser', value);
   }
 
-  static toggleModalRemoveUser (value: boolean) {
+  static toggleModalRemoveUser(value: boolean) {
     Store.set('isOpenModalRemoveUser', value);
   }
 
-  static toggleModalRemoveChat (value: boolean) {
+  static toggleModalRemoveChat(value: boolean) {
     Store.set('isOpenModalRemoveChat', value);
   }
 
-  public static async addUserToChat (formElement: HTMLFormElement) {
+  public static async addUserToChat(formElement: HTMLFormElement) {
     const input = formElement.querySelector('#autocomplete-add-user > label > input');
 
     const id: number = Number((input as HTMLInputElement).name);
@@ -146,7 +146,7 @@ export default class ChatController {
       });
   }
 
-  static async removeUserFromChat () {
+  static async removeUserFromChat() {
     const {
       selectedChat,
       selectedUser,
@@ -172,7 +172,7 @@ export default class ChatController {
       });
   }
 
-  static async removeChat () {
+  static async removeChat() {
     const { selectedChat } = Store.getState();
     if (!selectedChat) {
       throw new Error('Chat not selected');

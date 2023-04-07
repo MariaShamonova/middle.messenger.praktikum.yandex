@@ -14,17 +14,17 @@ import RouterLink from '../../router/components/RouterLink';
 import Router from '../../router/Router';
 
 class PageRegistration extends Block {
-  constructor (props: PageRegistrationPropsType, tagName = 'div') {
+  constructor(props: PageRegistrationPropsType, tagName = 'div') {
     super(props, tagName);
 
     this.props.title = 'Регистрация';
 
     const inputEvents = {
-      input (evn: Event) {
+      input(evn: Event) {
         const target = evn.target as HTMLInputElement;
         Validator.setErrorValue(target, '');
       },
-      blur (evn: Event) {
+      blur(evn: Event) {
         const target = evn.target as HTMLInputElement;
         Validator.validateInput(target.value, null, evn);
       },
@@ -73,11 +73,11 @@ class PageRegistration extends Block {
           block: InputBlockType.fill,
           required: true,
           events: {
-            input (evn: Event) {
+            input(evn: Event) {
               const target = evn.target as HTMLInputElement;
               Validator.setErrorValue(target, '');
             },
-            blur (evn: Event) {
+            blur(evn: Event) {
               const target = evn.target as HTMLInputElement;
               Validator.validateInput(target.value, null, evn);
               const form = target.closest('form')!;
@@ -98,11 +98,11 @@ class PageRegistration extends Block {
             block: InputBlockType.fill,
             required: true,
             events: {
-              input (evn: Event) {
+              input(evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.setErrorValue(target, '');
               },
-              blur (evn: Event) {
+              blur(evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.validateInput(target.value, null, evn);
                 const form = target.closest('form')!;
@@ -131,7 +131,7 @@ class PageRegistration extends Block {
           type: ButtonValueType.submit,
           block: ButtonBlockType.fill,
           events: {
-            click (evn: Event) {
+            click(evn: Event) {
               evn.preventDefault();
               const formElement: HTMLFormElement = this.closest('form')!;
               AuthController.signup(formElement);
@@ -146,7 +146,7 @@ class PageRegistration extends Block {
           link: new RouterLink({
             text: 'Уже есть аккаунт?',
             events: {
-              async click () {
+              async click() {
                 await Router.go('/');
               },
             },
@@ -157,7 +157,7 @@ class PageRegistration extends Block {
     });
   }
 
-  render () {
+  render() {
     return this.compile(tpl, {
       form: this.children.form,
     });

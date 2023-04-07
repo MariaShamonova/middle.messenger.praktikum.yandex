@@ -13,7 +13,7 @@ import AuthController from '../../controllers/AuthController';
 import RouterLink from '../../router/components/RouterLink';
 
 class PageLogin extends Block {
-  constructor (props: PageLoginPropsType, tagName = 'div') {
+  constructor(props: PageLoginPropsType, tagName = 'div') {
     super(props, tagName);
     this.props.title = 'Авторизация';
     this.props.form = {
@@ -30,11 +30,11 @@ class PageLogin extends Block {
           placeholder: 'Введите логин',
           block: InputBlockType.fill,
           events: {
-            input (evn: Event) {
+            input(evn: Event) {
               const target = evn.target as HTMLInputElement;
               Validator.setErrorValue(target, '');
             },
-            blur (evn: Event) {
+            blur(evn: Event) {
               const target = evn.target as HTMLInputElement;
               Validator.validateInput(target.value, null, evn);
             },
@@ -48,11 +48,11 @@ class PageLogin extends Block {
           placeholder: 'Введите пароль',
           block: InputBlockType.fill,
           events: {
-            input (evn: Event) {
+            input(evn: Event) {
               const target = evn.target as HTMLInputElement;
               Validator.setErrorValue(target, '');
             },
-            blur (evn: Event) {
+            blur(evn: Event) {
               const target = evn.target as HTMLInputElement;
               Validator.validateInput(target.value, null, evn);
             },
@@ -65,7 +65,7 @@ class PageLogin extends Block {
         block: ButtonBlockType.fill,
         type: ButtonValueType.submit,
         events: {
-          async click (evn: Event) {
+          async click(evn: Event) {
             evn.preventDefault();
             const formElement: HTMLFormElement = this.closest('form')!;
             await AuthController.signin(formElement);
@@ -77,7 +77,7 @@ class PageLogin extends Block {
         link: new RouterLink({
           text: 'Зарегистрироваться',
           events: {
-            async click () {
+            async click() {
               await AuthController.goToRegistration();
             },
           },
@@ -89,7 +89,7 @@ class PageLogin extends Block {
     });
   }
 
-  render () {
+  render() {
     const button = new Button({ text: 'click' });
     button.dispatchComponentDidMount();
     return this.compile(tpl, {

@@ -1,6 +1,6 @@
-import Button from './Button';
 import sinon from 'sinon';
 import { assert } from 'chai';
+import Button from './Button';
 
 describe('Button Component', () => {
   it('should render', () => {

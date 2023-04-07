@@ -1,6 +1,6 @@
-import Router from './Router';
 import sinon from 'sinon';
 import { expect } from 'chai';
+import Router from './Router';
 import { BlockConstructable } from './Route';
 
 describe.only('Router', () => {
@@ -37,7 +37,6 @@ describe.only('Router', () => {
   });
 
   it('method back redirect on previous page in History API', () => {
-
     Router.use(pathname, 'AnyPage', BlockMock)
       .start();
 
@@ -49,7 +48,6 @@ describe.only('Router', () => {
   });
 
   it('method getRoute should instance Route by pathname', () => {
-
     const router = Router.use(pathname, 'AnyPage', BlockMock);
     const route = router.routes[0];
     expect(Router.getRoute(pathname))

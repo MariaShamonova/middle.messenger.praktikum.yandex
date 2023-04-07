@@ -7,11 +7,11 @@ import IconUser from '../../../../../static/images/icon-user.png';
 import { API_URL } from '../../../../utils/HTTPTransport';
 
 export default class LastMessage extends Block {
-  constructor (props: LastMessageProps, tagName = 'div') {
+  constructor(props: LastMessageProps, tagName = 'div') {
     super(props, tagName);
   }
 
-  render () {
+  render() {
     if (this.props.message.last_message) {
       this.props.message.last_message.time = formatDate(this.props.message.last_message.time);
     }

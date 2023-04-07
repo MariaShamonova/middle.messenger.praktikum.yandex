@@ -5,15 +5,15 @@ import { AvatarProps } from './types';
 import { API_URL } from '../../../utils/HTTPTransport';
 
 export default class Avatar extends Block {
-  constructor (props: AvatarProps, tagName = 'div') {
+  constructor(props: AvatarProps, tagName = 'div') {
     super(props, tagName);
   }
 
-  render () {
+  render() {
     return this.compile(tpl, {
       id: this.props.id,
       API_URL,
-      avatar: this.props.avatar,
+      path: this.props.avatar,
     });
   }
 }

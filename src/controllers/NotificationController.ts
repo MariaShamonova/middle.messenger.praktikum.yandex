@@ -2,7 +2,7 @@ import { CreateNotificationType, NotificationTypeEnum } from '../components/noti
 import Store from '../store/Store';
 
 export default class NotificationController {
-  public static createNotification (props: CreateNotificationType) {
+  public static createNotification(props: CreateNotificationType) {
     console.log(props.message);
     switch (props.type) {
       case NotificationTypeEnum.Error:

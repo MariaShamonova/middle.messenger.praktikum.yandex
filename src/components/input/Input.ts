@@ -13,19 +13,19 @@ export default class Input extends Block {
 
   public span: Element;
 
-  constructor ({
-                 id,
-                 name = '',
-                 label,
-                 placeholder,
+  constructor({
+    id,
+    name = '',
+    label,
+    placeholder,
 
-                 value = '',
-                 type = InputValueType.text,
-                 size = InputSizeType.m,
-                 block = InputBlockType.fit,
-                 required = false,
-                 events = {},
-               }: InputPropsType, tagName = 'div') {
+    value = '',
+    type = InputValueType.text,
+    size = InputSizeType.m,
+    block = InputBlockType.fit,
+    required = false,
+    events = {},
+  }: InputPropsType, tagName = 'div') {
     const props = {
       id,
       name,
@@ -44,7 +44,7 @@ export default class Input extends Block {
     this._addLocalEvents();
   }
 
-  private _addLocalEvents () {
+  private _addLocalEvents() {
     const self = this;
     if (this.element) {
       const { name }: { name: string } = this.input as HTMLInputElement;
@@ -67,14 +67,14 @@ export default class Input extends Block {
     }
   }
 
-  _setError (text: string) {
+  _setError(text: string) {
     const errorBlock: HTMLElement | null = this.element.querySelector('.error-message');
     if (errorBlock) {
       errorBlock.textContent = text;
     }
   }
 
-  render () {
+  render() {
     return this.compile(tpl, this.props);
   }
 }

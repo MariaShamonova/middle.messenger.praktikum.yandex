@@ -53,7 +53,7 @@ describe('Block', () => {
   describe('method setProps', () => {
     it('should assign newProps', () => {
       const props = {
-        name: 'Maria'
+        name: 'Maria',
       };
 
       class ComponentMock extends Block {

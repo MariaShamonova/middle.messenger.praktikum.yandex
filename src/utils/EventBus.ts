@@ -5,11 +5,11 @@ export interface ListenerType {
 export default class EventBus {
   private readonly listeners: ListenerType;
 
-  constructor () {
+  constructor() {
     this.listeners = {};
   }
 
-  on (event: string, callback: Function) {
+  on(event: string, callback: Function) {
     if (!this.listeners[event]) {
       this.listeners[event] = [];
     }
@@ -17,7 +17,7 @@ export default class EventBus {
     this.listeners[event].push(callback);
   }
 
-  off (event: string, callback: Function) {
+  off(event: string, callback: Function) {
     if (!this.listeners[event]) {
       throw new Error(`Нет события: ${event}`);
     }
@@ -27,11 +27,11 @@ export default class EventBus {
     );
   }
 
-  emit (event: string, ...args: unknown[]) {
+  emit(event: string, ...args: unknown[]) {
     if (!this.listeners[event]) {
       return;
     }
-  
+
     this.listeners[event].forEach((listener) => {
       listener(...args);
     });
