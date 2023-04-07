@@ -67,4 +67,4 @@ npm run test
 
 
 
-Ссылка на [Netlify](https://fabulous-cupcake-990783.netlify.app)
+Ссылка на [Yandex Cloud](https://bbahak1e1p19ss2frfoe.containers.yandexcloud.net/)
