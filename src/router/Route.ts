@@ -11,11 +11,11 @@ export default class Route {
 
   private _pathname: string;
 
-  private _block: any;
+  private _block: Block | null;
 
   private _blockClass: BlockConstructable;
 
-  private _props: any;
+  private _props: { rootQuery: string };
 
   private _isProtected: boolean;
 

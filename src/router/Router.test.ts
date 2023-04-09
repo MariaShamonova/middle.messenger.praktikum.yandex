@@ -3,27 +3,38 @@ import { expect } from 'chai';
 import Router from './Router';
 import { BlockConstructable } from './Route';
 
-describe.only('Router', () => {
-  global.window.history.back = () => {
-    if (typeof window.onpopstate === 'function') {
-      window.onpopstate({ currentTarget: window } as unknown as PopStateEvent);
-    }
-  };
+describe('Router', () => {
+  const originalBack = global.window.history.back;
+  const originalForward = global.window.history.forward;
 
-  global.window.history.forward = () => {
-    if (typeof window.onpopstate === 'function') {
-      window.onpopstate({ currentTarget: window } as unknown as PopStateEvent);
-    }
-  };
+  before(() => {
+    global.window.history.back = () => {
+      if (typeof window.onpopstate === 'function') {
+        window.onpopstate({ currentTarget: window } as unknown as PopStateEvent);
+      }
+    };
 
-  beforeEach(() => {
-    global.window.history.go(-(global.window.history.length - 1));
+    global.window.history.forward = () => {
+      if (typeof window.onpopstate === 'function') {
+        window.onpopstate({ currentTarget: window } as unknown as PopStateEvent);
+      }
+    };
+  });
+
+  after(() => {
+    global.window.history.back = originalBack;
+    global.window.history.forward = originalForward;
   });
 
   const getContentFake = sinon.fake.returns(document.createElement('div'));
+  const callback = sinon.stub();
 
   const BlockMock = class {
     getContent = getContentFake;
+
+    hide = callback;
+
+    show = callback;
   } as unknown as BlockConstructable;
 
   const pathname = '/';
@@ -47,7 +58,7 @@ describe.only('Router', () => {
       .eq(1);
   });
 
-  it('method getRoute should instance Route by pathname', () => {
+  it('method getRoute should instanmce Route by pathname', () => {
     const router = Router.use(pathname, 'AnyPage', BlockMock);
     const route = router.routes[0];
     expect(Router.getRoute(pathname))
@@ -56,11 +67,11 @@ describe.only('Router', () => {
   });
 
   it('method go push route in History API', async () => {
+    const spy = sinon.spy(window.history, 'pushState');
     Router.use(pathname, 'AnyPage', BlockMock);
+
     await Router.go(pathname);
 
-    expect(window.history.length)
-      .to
-      .eq(2);
+    expect(spy.called).to.eq(true);
   });
 });

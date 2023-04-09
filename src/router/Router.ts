@@ -4,12 +4,11 @@ import UserController from '../controllers/UserController';
 class Router {
   private static __instance: Router;
 
-  private readonly _rootQuery: any;
+  private readonly _rootQuery: string = '';
 
-  // private _routes: Route[];
-  private _currentRoute: any;
+  private _currentRoute: Route | null = null;
 
-  private history: any;
+  public history: History = window.history;
 
   public routes: Route[] = [];
 
@@ -19,10 +18,8 @@ class Router {
       return Router.__instance;
     }
 
-    this.history = window.history;
-    this._currentRoute = null;
     this._rootQuery = rootQuery;
-    this.routes = [] as Route[];
+    // this.routes = [] as Route[];
 
     Router.__instance = this;
   }
@@ -37,7 +34,7 @@ class Router {
     window.onpopstate = () => {
       this._onRoute(window.location.pathname);
     };
-    console.log(window.location.pathname)
+
     this.go(window.location.pathname);
   }
 
@@ -46,6 +43,10 @@ class Router {
 
     if (this._currentRoute) {
       this._currentRoute.leave();
+    }
+
+    if (!route) {
+      throw new Error('Route is undefined');
     }
 
     this._currentRoute = route;
@@ -58,7 +59,6 @@ class Router {
   async go(_pathname: string) {
     const route = this.getRoute(_pathname);
     const pathname = route?.isProtected ? await Router.checkPermission(_pathname) : _pathname;
-
     this.history.pushState({ name: pathname }, pathname, pathname);
     this._onRoute(pathname);
   }
