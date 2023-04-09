@@ -1,6 +1,6 @@
 import tpl from './message.hbs';
 import './message.less';
-import Block from '../../../../utils/block';
+import Block from '../../../../utils/Block';
 import { MessageProps } from './types';
 
 export default class Message extends Block {

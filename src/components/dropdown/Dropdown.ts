@@ -1,7 +1,7 @@
 import tpl from './dropdown.hbs';
 import './dropdown.less';
 import { DropdownPropsType } from './types';
-import Block from '../../utils/block';
+import Block from '../../utils/Block';
 import Button from '../button/Button';
 import { ButtonVariantType } from '../button/types';
 import Menu from '../menu/Menu';

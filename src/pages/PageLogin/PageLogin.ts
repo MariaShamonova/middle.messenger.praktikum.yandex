@@ -1,6 +1,6 @@
 import tpl from './login.hbs';
 import './login.less';
-import Block from '../../utils/block';
+import Block from '../../utils/Block';
 import Button from '../../components/button/Button';
 import Input from '../../components/input/Input';
 import { PageLoginPropsType } from './types';
@@ -90,6 +90,8 @@ class PageLogin extends Block {
   }
 
   render() {
+    const button = new Button({ text: 'click' });
+    button.dispatchComponentDidMount();
     return this.compile(tpl, {
       form: this.children.form,
     });

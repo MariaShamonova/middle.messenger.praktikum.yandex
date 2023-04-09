@@ -1,7 +1,7 @@
 import tpl from './autocomplete.hbs';
 import './autocomplete.less';
 import { AutocompletePropsType, AutocompleteBlockType } from './types';
-import Block from '../../utils/block';
+import Block from '../../utils/Block';
 import Input from '../input/Input';
 import Menu from '../menu/Menu';
 import MenuItem from '../menu/components/MenuItem';

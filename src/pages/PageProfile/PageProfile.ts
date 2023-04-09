@@ -1,7 +1,7 @@
 import tpl from './profile.hbs';
 import './profile.less';
 import { PageProfilePropsType } from './types';
-import Block from '../../utils/block';
+import Block from '../../utils/Block';
 import Avatar from '../../modules/profile/avatar/Avatar';
 import ProfileProperty,
 { ProfilePropertyType } from '../../modules/profile/profileProperty/ProfileProperty';
@@ -261,6 +261,7 @@ class PageProfile extends Block {
           input.type = 'file';
           input.onchange = async () => {
             if (input.files) {
+              console.log(input.files[0]);
               await ProfileController.changeUserAvatar(input.files[0]);
             }
           };

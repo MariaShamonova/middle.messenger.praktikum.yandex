@@ -1,34 +1,48 @@
 <h1 >Веб-мессенджер</h2>
 
-Установка зависимостей
+### Установка зависимостей
 
 ```bash
 npm install
 ```
 
-Сборка проекта
+### Сборка проекта
 
 ```bash
 npm run build
 ```
 
-Запуск собранного проекта
+Для сборки проекта используется [Webpack](https://webpack.js.org/) версии 5.78.0.
+
+
+### Запуск собранного проекта
 
 ```bash
 npm run start
 ```
+Для запуска проекта в режиме hot reload используется [webpack-dev-server](https://www.npmjs.com/package/webpack-dev-server) версии 4.13.2.
 
-Запуск линтинга Typescript
+### Запуск линтинга Typescript
 
 ```bash
 npm run lint
 ```
 
-Запуск линтинга стилей Less
+### Запуск линтинга стилей Less
 
 ```bash
 npm run stylelint
 ```
+
+### Запуск тестов
+
+```bash
+npm run test
+```
+Для тестирования приложения используются
+*  [Mocha 10.2.0](https://mochajs.org/) ,
+* [Chai 4.3.7](https://www.chaijs.com/),
+* [Sinon 15.0.3](https://sinonjs.org/)
 
 <h2 align="center">Описание</h2>
 
@@ -51,4 +65,6 @@ npm run stylelint
 
 Для API запросов к серверу используется встроенный в браузер XMLHttpRequest.
 
-Ссылка на [Netlify](https://fabulous-cupcake-990783.netlify.app)
+
+
+Ссылка на [Yandex Cloud](https://bbahak1e1p19ss2frfoe.containers.yandexcloud.net/)

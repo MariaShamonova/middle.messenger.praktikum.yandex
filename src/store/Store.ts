@@ -1,4 +1,4 @@
-import EventBus from '../../event-bus';
+import EventBus from '../utils/EventBus';
 import set from '../helpers/set';
 import { ChatType } from '../modules/chats/components/lastMessage/types';
 import { UserProfileType, UserResponseType } from '../api/AuthAPI';

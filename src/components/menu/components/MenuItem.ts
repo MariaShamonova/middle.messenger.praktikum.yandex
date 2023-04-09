@@ -1,6 +1,6 @@
 import tpl from './menuItem.hbs';
 import './menuItem.less';
-import Block from '../../../utils/block';
+import Block from '../../../utils/Block';
 import { MenuItemPropsType } from './types';
 
 export default class MenuItem extends Block {

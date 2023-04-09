@@ -1,4 +1,4 @@
-import Block from '../utils/block';
+import Block from '../utils/Block';
 import isEqual from '../helpers/isEqual';
 import store, { StoreEvents, State } from '../store/Store';
 import cloneDeep from '../helpers/cloneDeep';

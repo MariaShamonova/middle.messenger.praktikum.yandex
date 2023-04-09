@@ -1,6 +1,6 @@
 import tpl from './userItem.hbs';
 import './userItem.less';
-import Block from '../../../../utils/block';
+import Block from '../../../../utils/Block';
 import { ListUsersPropsType } from './types';
 
 export default class UserItem extends Block {

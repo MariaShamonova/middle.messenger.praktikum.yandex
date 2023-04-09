@@ -1,4 +1,4 @@
-import Block from '../../utils/block';
+import Block from '../../utils/Block';
 import tpl from './chats.hbs';
 import './chats.less';
 import { PageChatsPropsType, UsersSelectedChatType } from './types';
@@ -40,7 +40,7 @@ import { NotificationPropsType } from '../../components/notification/types';
 class PageChats extends Block {
   public activeChat: number | null;
 
-  constructor (props: PageChatsPropsType, tagName = 'div') {
+  constructor(props: PageChatsPropsType, tagName = 'div') {
     super(props, tagName);
     this.props = props;
     this.activeChat = null;
@@ -65,7 +65,7 @@ class PageChats extends Block {
             id: 'add-user',
             title: 'Добавить пользователя',
             icon: IconPlus,
-            click () {
+            click() {
               ChatController.toggleModalAddUser(true);
             },
           },
@@ -73,7 +73,7 @@ class PageChats extends Block {
             id: 'remove-user',
             title: 'Удалить пользователя',
             icon: IconClose,
-            click () {
+            click() {
               ChatController.toggleModalRemoveUser(true);
             },
           }, {
@@ -81,7 +81,7 @@ class PageChats extends Block {
             title: 'Удалить чат',
             type: 'error',
             icon: IconRemove,
-            click () {
+            click() {
               ChatController.toggleModalRemoveChat(true);
             },
           }],
@@ -101,19 +101,19 @@ class PageChats extends Block {
             id: 'иконка файла',
             title: 'Файл',
             icon: IconFile,
-            click () {},
+            click() {},
           },
           {
             id: 'иконка фото',
             title: 'Фото и видео',
             icon: IconImage,
-            click () {},
+            click() {},
           },
           {
             id: 'иконка локации',
             title: 'Локация',
             icon: IconLocation,
-            click () {},
+            click() {},
           }],
       },
     );
@@ -124,7 +124,7 @@ class PageChats extends Block {
         link: new RouterLink({
           text: 'Профиль',
           events: {
-            async click () {
+            async click() {
               await Router.go('/profile');
             },
           },
@@ -138,7 +138,7 @@ class PageChats extends Block {
         link: new RouterLink({
           text: 'Создать',
           events: {
-            async click () {
+            async click() {
               ChatController.toggleModalCreateChat(true);
             },
           },
@@ -169,7 +169,7 @@ class PageChats extends Block {
           block: InputBlockType.fill,
           required: true,
           events: {
-            input (evn: Event) {
+            input(evn: Event) {
               const target = evn.target as HTMLInputElement;
               Validator.setErrorValue(target, '');
               const form = target.closest('form')!;
@@ -189,7 +189,7 @@ class PageChats extends Block {
           type: ButtonValueType.submit,
           variant: ButtonVariantType.borderless,
           events: {
-            click (evn: Event) {
+            click(evn: Event) {
               evn.preventDefault();
               const formElement: HTMLFormElement = this.closest('form')!;
               ChatController.sendMessage(formElement);
@@ -224,7 +224,7 @@ class PageChats extends Block {
     });
   }
 
-  static createChatsList (data: ChatType[], activeId: number | null = null) {
+  static createChatsList(data: ChatType[], activeId: number | null = null) {
     return data.reduce((
       acc: LastMessageType[],
       curr: ChatType,
@@ -233,7 +233,7 @@ class PageChats extends Block {
         active: curr.id === activeId ? StatusMessage.active : StatusMessage.default,
         message: curr,
         events: {
-          click () {
+          click() {
             ChatController.selectChat(curr.id);
             ChatController.getUsersSelectedChat(curr.id);
           },
@@ -243,7 +243,7 @@ class PageChats extends Block {
     }, [] as LastMessageType[]);
   }
 
-  static createMessagesList (dialogs: MessageResponseType[]) {
+  static createMessagesList(dialogs: MessageResponseType[]) {
     const state = Store.getState();
     return dialogs.reduce((acc, curr) => {
       acc.push(new Message({
@@ -257,7 +257,7 @@ class PageChats extends Block {
     }, [] as MessageType[]);
   }
 
-  static createModalCreateChat (value: boolean) {
+  static createModalCreateChat(value: boolean) {
     return new Modal({
       isOpen: value ? 'show' : 'hide',
       title: 'Создать чат',
@@ -269,11 +269,11 @@ class PageChats extends Block {
             placeholder: 'Введите название чата',
             block: InputBlockType.fill,
             events: {
-              input (evn: Event) {
+              input(evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.setErrorValue(target, '');
               },
-              blur (evn: Event) {
+              blur(evn: Event) {
                 const target = evn.target as HTMLInputElement;
                 Validator.validateInput(target.value, null, evn);
               },
@@ -286,7 +286,7 @@ class PageChats extends Block {
             block: ButtonBlockType.fill,
             type: ButtonValueType.submit,
             events: {
-              async click (evn: Event) {
+              async click(evn: Event) {
                 evn.preventDefault();
                 const formElement: HTMLFormElement = this.closest('form')!;
                 await ChatController.createChat(formElement);
@@ -301,7 +301,7 @@ class PageChats extends Block {
             variant: ButtonVariantType.secondary,
             block: ButtonBlockType.fill,
             events: {
-              click () {
+              click() {
                 ChatController.toggleModalCreateChat(false);
               },
             },
@@ -311,7 +311,7 @@ class PageChats extends Block {
     });
   }
 
-  static createModalRemoveChat (value: boolean) {
+  static createModalRemoveChat(value: boolean) {
     return new Modal({
       isOpen: value ? 'show' : 'hide',
       title: 'Удалить чат',
@@ -324,7 +324,7 @@ class PageChats extends Block {
             block: ButtonBlockType.fill,
             type: ButtonValueType.submit,
             events: {
-              async click (evn: Event) {
+              async click(evn: Event) {
                 evn.preventDefault();
 
                 await ChatController.removeChat();
@@ -341,7 +341,7 @@ class PageChats extends Block {
             variant: ButtonVariantType.secondary,
             block: ButtonBlockType.fill,
             events: {
-              click () {
+              click() {
                 ChatController.toggleModalRemoveChat(false);
               },
             },
@@ -351,7 +351,7 @@ class PageChats extends Block {
     });
   }
 
-  static createModalAddUser (value: boolean) {
+  static createModalAddUser(value: boolean) {
     return new Modal({
       isOpen: value ? 'show' : 'hide',
       title: 'Добавить пользователя',
@@ -359,7 +359,7 @@ class PageChats extends Block {
         fields: [new Autocomplete({
           id: 'add-user',
 
-          async getData (login: string) {
+          async getData(login: string) {
             const data = await ChatUsersController.getUserByLogin(login);
             console.log(data);
             return data.map((user) => ({
@@ -374,7 +374,7 @@ class PageChats extends Block {
             block: ButtonBlockType.fill,
             type: ButtonValueType.submit,
             events: {
-              async click (evn: Event) {
+              async click(evn: Event) {
                 evn.preventDefault();
                 if (evn.defaultPrevented && (evn as PointerEvent).pointerType !== 'mouse') return;
                 const formElement: HTMLFormElement = this.closest('form')!;
@@ -391,7 +391,7 @@ class PageChats extends Block {
             variant: ButtonVariantType.secondary,
             block: ButtonBlockType.fill,
             events: {
-              click () {
+              click() {
                 ChatController.toggleModalAddUser(false);
               },
             },
@@ -401,7 +401,7 @@ class PageChats extends Block {
     });
   }
 
-  createModalRemoveUser (value: boolean, selectedUser: number | null) {
+  createModalRemoveUser(value: boolean, selectedUser: number | null) {
     const users = this.props.usersSelectedChat;
     return new Modal({
       isOpen: value ? 'show' : 'hide',
@@ -414,7 +414,7 @@ class PageChats extends Block {
             block: ButtonBlockType.fill,
             type: ButtonValueType.submit,
             events: {
-              async click (evn: Event) {
+              async click(evn: Event) {
                 evn.preventDefault();
                 await ChatController.removeUserFromChat();
                 ChatController.toggleModalRemoveUser(false);
@@ -429,7 +429,7 @@ class PageChats extends Block {
             variant: ButtonVariantType.secondary,
             block: ButtonBlockType.fill,
             events: {
-              click () {
+              click() {
                 ChatController.toggleModalRemoveUser(false);
                 ChatController.selectUser(null);
               },
@@ -440,7 +440,7 @@ class PageChats extends Block {
     });
   }
 
-  static createUsersList (data: UsersSelectedChatType[], selectedUser: number | null) {
+  static createUsersList(data: UsersSelectedChatType[], selectedUser: number | null) {
     return data.reduce((acc: UserItemType[], curr) => {
       acc.push(new UserItem({
         first_name: curr.first_name,
@@ -452,7 +452,7 @@ class PageChats extends Block {
           : '',
 
         events: {
-          click () {
+          click() {
             ChatController.selectUser(curr.id);
           },
         },
@@ -461,7 +461,7 @@ class PageChats extends Block {
     }, [] as UserItemType[]);
   }
 
-  static createNotification (notification: NotificationPropsType) {
+  static createNotification(notification: NotificationPropsType) {
     return new Notification({
       title: notification.title,
       message: notification.message,
@@ -470,7 +470,7 @@ class PageChats extends Block {
     });
   }
 
-  render () {
+  render() {
     return this.compile(tpl, {
       lastMessage: this.children.lastMessage,
       dropdownChatActions: this.children.dropdownChatActions,
@@ -488,7 +488,7 @@ class PageChats extends Block {
   }
 }
 
-function mapUserToProps (state: State) {
+function mapUserToProps(state: State) {
   return {
     chats: state.chats,
     messages: state.messanges,

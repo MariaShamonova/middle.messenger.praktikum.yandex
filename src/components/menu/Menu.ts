@@ -1,6 +1,6 @@
 import tpl from './menu.hbs';
 import './menu.less';
-import Block from '../../utils/block';
+import Block from '../../utils/Block';
 import { MenuPropsType } from './types';
 import { AutocompleteBlockType } from '../autocomplete/types';
 

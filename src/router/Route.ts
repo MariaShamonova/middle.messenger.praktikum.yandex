@@ -1,6 +1,6 @@
 import isEqual from '../helpers/isEqual';
 import renderDOM from '../helpers/renderDOM';
-import Block from '../utils/block';
+import Block from '../utils/Block';
 
 export interface BlockConstructable<P extends Record<string, any> = any> {
   new (props: P): Block;
@@ -11,11 +11,11 @@ export default class Route {
 
   private _pathname: string;
 
-  private _block: any;
+  private _block: Block | null;
 
   private _blockClass: BlockConstructable;
 
-  private _props: any;
+  private _props: { rootQuery: string };
 
   private _isProtected: boolean;
 
@@ -70,7 +70,7 @@ export default class Route {
     } else {
       this._block.show();
     }
-    // debugger;
+
     renderDOM(this._props.rootQuery, this._block);
   }
 }

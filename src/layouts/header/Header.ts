@@ -1,12 +1,14 @@
 import tpl from './header.hbs';
 import './header.less';
 import router from '../../router/routes';
-import Block from '../../utils/block';
+import Block from '../../utils/Block';
 import { HeaderPropsType } from './types';
 import RouterLink, { RouterLinkType } from '../../router/components/RouterLink';
 import Route from '../../router/Route';
 import Router from '../../router/Router';
-
+// import registerHelpers from '../../helpers/registerHelpers';
+//
+// registerHelpers();
 export default class Header extends Block {
   constructor(props: HeaderPropsType, tagName = 'div') {
     super(props, tagName);

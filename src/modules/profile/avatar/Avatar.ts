@@ -1,6 +1,6 @@
 import tpl from './avatar.hbs';
 import './avatar.less';
-import Block from '../../../utils/block';
+import Block from '../../../utils/Block';
 import { AvatarProps } from './types';
 import { API_URL } from '../../../utils/HTTPTransport';
 
@@ -13,7 +13,7 @@ export default class Avatar extends Block {
     return this.compile(tpl, {
       id: this.props.id,
       API_URL,
-      avatar: this.props.avatar,
+      path: this.props.avatar,
     });
   }
 }

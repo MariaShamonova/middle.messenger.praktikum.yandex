@@ -5,9 +5,9 @@ import PageNotFound from '../pages/PageNotFound/PageNotFound';
 import PageServerError from '../pages/PageServerError/PageServerError';
 import PageChats from '../pages/PageChats/PageChats';
 import Router from './Router';
-import registerHelpers from '../helpers/registerHelpers';
-
-registerHelpers();
+// import registerHelpers from '../helpers/registerHelpers';
+//
+// registerHelpers();
 
 Router.use('/messenger', 'Chats', PageChats)
   .use('/', 'Login', PageLogin, false)

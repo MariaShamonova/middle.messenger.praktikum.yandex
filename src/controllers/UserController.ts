@@ -4,7 +4,7 @@ import Store from '../store/Store';
 const userApi = new UserAPI();
 
 export default class UserController {
-  public static async getUser () {
+  public static async getUser() {
     try {
       Store.set('user.isLoading', true);
 

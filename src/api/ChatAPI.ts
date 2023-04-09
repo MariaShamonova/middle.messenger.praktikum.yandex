@@ -1,11 +1,11 @@
 import BaseAPI from './BaseAPI';
 
 export default class ChatAPI extends BaseAPI {
-  constructor () {
+  constructor() {
     super('/chats');
   }
 
-  async create (data: { title: string }) {
+  async create(data: { title: string }) {
     try {
       return await this.http.post('', {
         data,
@@ -20,7 +20,7 @@ export default class ChatAPI extends BaseAPI {
     }
   }
 
-  async request () {
+  async request() {
     // Здесь уже не нужно писать полный путь /api/v1/chats/
 
     try {
@@ -31,7 +31,7 @@ export default class ChatAPI extends BaseAPI {
     }
   }
 
-  async getToken (id: number) {
+  async getToken(id: number) {
     try {
       const response = await this.http.post(`/token/${id}`, {
         headers: {
@@ -45,7 +45,7 @@ export default class ChatAPI extends BaseAPI {
     }
   }
 
-  async addUser (data: { users: number[], chatId: number }) {
+  async addUser(data: { users: number[], chatId: number }) {
     try {
       return await this.http.put('/users', {
         data,
@@ -59,7 +59,7 @@ export default class ChatAPI extends BaseAPI {
     }
   }
 
-  async getUsersSelectedChat (id: number) {
+  async getUsersSelectedChat(id: number) {
     try {
       return await this.http.get(`/${id}/users`, {
         headers: {
@@ -72,7 +72,7 @@ export default class ChatAPI extends BaseAPI {
     }
   }
 
-  async removeUserFromChat (data: { users: number[], chatId: number }) {
+  async removeUserFromChat(data: { users: number[], chatId: number }) {
     try {
       return await this.http.delete('/users', {
         data,
@@ -86,7 +86,7 @@ export default class ChatAPI extends BaseAPI {
     }
   }
 
-  async removeChat (chatId: number) {
+  async removeChat(chatId: number) {
     const data = { chatId };
     try {
       return await this.http.delete('', {
